@@ -1,5 +1,5 @@
 """
-WSGI config for numbat_notes_api project.
+WSGI config for numbat_tasks_api project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "numbat_notes_api.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "numbat_tasks_api.settings")
 
 application = get_wsgi_application()
