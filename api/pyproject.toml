@@ -11,6 +11,7 @@ python = "^3.11"
 djangorestframework = "^3.14.0"
 python-decouple = "^3.8"
 psycopg = {extras = ["binary"], version = "^3.1.17"}
+drf-spectacular = {extras = ["sidecar"], version = "^0.27.1"}
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.12.1"
