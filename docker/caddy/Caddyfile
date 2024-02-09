@@ -1,3 +1,4 @@
 :80 {
-	reverse_proxy api:8000
+	reverse_proxy /api/* api:8000
+	reverse_proxy /* frontend:8000
 }
