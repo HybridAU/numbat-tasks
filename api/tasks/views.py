@@ -6,11 +6,8 @@ from tasks.serializers import TaskSerializer
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    """
-    TODO
-    """
-
     permission_classes = [IsAuthenticated, IsOwnerOrNone]
-    # TODO filter to current user
-    queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+    def get_queryset(self):
+        return Task.objects.filter(owner=self.request.user)
