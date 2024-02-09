@@ -1,7 +1,12 @@
 from django.contrib import admin
-from tasks.models import Task
+from tasks.models import List, Task
+
+
+@admin.register(List)
+class ListAdmin(admin.ModelAdmin):
+    list_display = ["id", "owner", "name", "active"]
 
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ["id", "owner", "text_summary", "complete"]
+    list_display = ["id", "text_summary", "complete"]
