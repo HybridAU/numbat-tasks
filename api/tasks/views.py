@@ -1,4 +1,5 @@
 from rest_framework import viewsets
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from tasks.models import List, Task
 from tasks.permissions import IsListOwnerOrNone, IsOwnerOrNone
@@ -18,4 +19,9 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        return Task.objects.filter(list=self.kwargs["list_pk"])
+        task_list = get_object_or_404(
+            List,
+            id=self.kwargs["list_pk"],
+            owner=self.request.user,
+        )
+        return Task.objects.filter(list=task_list)
