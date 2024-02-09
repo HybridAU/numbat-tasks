@@ -19,6 +19,14 @@ services:
             - postgres_data:/var/lib/postgresql/data/
         env_file:
             - .env
+    frontend:
+        build:
+            dockerfile: docker/frontend/development.dockerfile
+            context: .
+        volumes:
+            - ./frontend:/frontend
+        environment:
+            - PORT=8000
     caddy:
         image: caddy:2-alpine
         ports:
@@ -29,6 +37,8 @@ services:
             - caddy_config:/config
         depends_on:
             api:
+                condition: service_started
+            frontend:
                 condition: service_started
 
 volumes:
