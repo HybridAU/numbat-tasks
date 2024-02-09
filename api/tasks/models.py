@@ -15,6 +15,9 @@ class List(models.Model):
     name = models.CharField(max_length=256, null=False, blank=True)
     active = models.BooleanField(null=False, blank=False, default=True)
 
+    def __str__(self):
+        return truncate(self.name)
+
 
 class Task(models.Model):
     id = models.BigAutoField(primary_key=True, db_index=True)
