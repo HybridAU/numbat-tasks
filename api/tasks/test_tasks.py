@@ -59,6 +59,7 @@ def test_create_list(client, base_users):
     # The last item in the list, should be the newly added task
     assert response.json()[-1]["id"] == new_list_id
     assert response.json()[-1]["name"] == "Movies to watch"
+    raise Exception("Fail tests to ensure pipeline has correct exit code")
 
 
 @pytest.mark.django_db

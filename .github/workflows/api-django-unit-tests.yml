@@ -1,0 +1,30 @@
+name: API Django Unit Tests
+
+# Only trigger, when the linting succeeded
+on:
+  workflow_run:
+    workflows: ["API Python Linting"]
+    types:
+      - completed
+
+defaults:
+    run:
+        working-directory: ./api
+
+jobs:
+    run-django-unit-tests:
+        runs-on: ubuntu-latest
+        steps:
+            # Setup
+            - name: Check out repository code
+              uses: actions/checkout@v4
+            # Start the database in the background
+            - run: docker compose up -d database
+            # Wait for the database to be ready to accept connections. This command could
+            # run forever if something is wrong with Postgres, so we limit it to 2 minutes
+            - run: docker compose exec database bash -c "until pg_isready; do sleep 5; done
+              timeout-minutes: 2
+
+            # Actual Tests
+            - run: docker compose run api poetry run pytest
+

@@ -1,4 +1,4 @@
-name: Python Linting
+name: API Python Linting
 on: [pull_request]
 defaults:
     run:
