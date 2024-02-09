@@ -3,11 +3,13 @@ on: [pull_request]
 jobs:
     lint-python-files:
         runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./api
         steps:
             # Setup
             - name: Check out repository code
               uses: actions/checkout@v4
-            - run: cd api
             - run: pip install poetry
             - run: poetry install --only linting
 
