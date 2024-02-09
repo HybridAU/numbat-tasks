@@ -5,4 +5,33 @@ services:
         build:
             dockerfile: docker/api/development.dockerfile
             context: .
+        volumes:
+            # Allow live reloading
+            - ./api:/api
+        env_file:
+            - .env
+        depends_on:
+            database:
+                condition: service_started
+    database:
+        image: postgres:16-bookworm
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+        env_file:
+            - .env
+    caddy:
+        image: caddy:2-alpine
+        ports:
+            - "8000:80"
+        volumes:
+            - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+            api:
+                condition: service_started
 
+volumes:
+    postgres_data:
+    caddy_data:
+    caddy_config:

@@ -1,2 +1,5 @@
 # PyCharm files
 .idea/
+
+# Environment file
+.env
