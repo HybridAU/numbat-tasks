@@ -18,7 +18,11 @@ black = "^23.12.1"
 isort = "^5.13.2"
 flake8 = "^7.0.0"
 ipython = "^8.20.0"
+pytest-django = "^4.8.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "numbat_tasks_api.settings"
