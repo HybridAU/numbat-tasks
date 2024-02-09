@@ -1,0 +1,8 @@
+name: numbat-tasks
+
+services:
+    api:
+        build:
+            dockerfile: docker/api/development.dockerfile
+            context: .
+
