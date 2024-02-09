@@ -3,7 +3,7 @@ FROM node:21-bookworm-slim
 WORKDIR /frontend
 
 COPY ./frontend/package.json .
-COPY ./frontend/package-lock.json* .
+COPY ./frontend/yarn.lock* .
 
 RUN yarn
 
