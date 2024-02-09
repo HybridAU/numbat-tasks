@@ -18,7 +18,10 @@ jobs:
             # Setup
             - name: Check out repository code
               uses: actions/checkout@v4
+
             - run: cp base.env .env
+
+
             # Start the database in the background
             - run: docker compose up -d database
             # Wait for the database to be ready to accept connections. This command could
