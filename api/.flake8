@@ -1,0 +1,3 @@
+[flake8]
+# We use black to enforce line length, if black passes it, we don't want flake8 to fail.
+extend-ignore = E501
