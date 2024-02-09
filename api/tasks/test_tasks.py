@@ -28,8 +28,6 @@ def base_users():
     Task.objects.create(list=shopping, text="eggs")
     Task.objects.create(list=shopping, text="cheese")
 
-    unused_variable = "Hello World!"
-
     # Bob has a shopping list
     bob = CustomUser.objects.create(
         email="bob@numbattasks.com",
