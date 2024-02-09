@@ -17,10 +17,10 @@ jobs:
 
             # Tests
             - name: black
-              run: black --check .
+              run: poetry run black --check .
 
             - name: isort
-              run: isort --check .
+              run: poetry run isort --check .
 
             - name: flake8
-              run: flake8 .
+              run: poetry run flake8 .
