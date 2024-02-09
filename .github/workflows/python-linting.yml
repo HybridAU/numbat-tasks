@@ -1,5 +1,8 @@
 name: Python Linting
 on: [pull_request]
+defaults:
+    run:
+        working-directory: ./api
 jobs:
     lint-python-files:
         runs-on: ubuntu-latest
@@ -7,16 +10,18 @@ jobs:
             # Setup
             - name: Check out repository code
               uses: actions/checkout@v4
-            - run: cd api
             - run: pip install poetry
+            - uses: actions/setup-python@v5
+              with:
+                  python-version: '3.11'
             - run: poetry install --only linting
 
             # Tests
             - name: black
-              run: black --check .
+              run: poetry run black --check .
 
             - name: isort
-              run: isort --check .
+              run: poetry run isort --check .
 
             - name: flake8
-              run: flake8 .
+              run: poetry run flake8 .
