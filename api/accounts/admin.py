@@ -1,7 +1,8 @@
-from accounts.models import CustomUser
 from django import forms
 from django.contrib import admin
 from django.forms import TextInput
+
+from accounts.models import CustomUser
 
 
 class CustomUserAdminForm(forms.ModelForm):
