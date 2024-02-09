@@ -1,5 +1,5 @@
 """
-URL configuration for numbat_notes_api project.
+URL configuration for numbat_tasks_api project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
