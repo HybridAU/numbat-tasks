@@ -3,10 +3,6 @@ name: API Django Unit Tests
 on:
   [pull_request]
 
-defaults:
-    run:
-        working-directory: ./api
-
 jobs:
     run-django-unit-tests:
         runs-on: ubuntu-latest
