@@ -25,6 +25,7 @@ services:
             context: .
         volumes:
             - ./frontend:/frontend
+            - /frontend/node_modules/
         environment:
             - PORT=8000
     caddy:
