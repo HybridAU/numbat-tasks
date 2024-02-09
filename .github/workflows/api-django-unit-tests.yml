@@ -3,7 +3,7 @@ name: API Django Unit Tests
 # Only trigger, when the linting succeeded
 on:
   workflow_run:
-    workflows: ["CI build"]
+    workflows: ["API Python Linting"]
     types:
       - completed
 
