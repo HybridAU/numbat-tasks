@@ -1,2 +1,2 @@
 #!/bin/bash
-yarn dev --port 8000 --host
+yarn dev --host --port 8000
