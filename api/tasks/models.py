@@ -1,4 +1,5 @@
 from django.db import models
+
 from tasks.utils import truncate
 
 
