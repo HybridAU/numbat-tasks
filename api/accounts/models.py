@@ -68,6 +68,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
+    def clean(self):
+        super().clean()
+        # TODO: This is fine for dev, but we don't want to start mangling
+        #       user passwords because the default hashing algorithm changed.
+        if self.password and self.password[:21] != "pbkdf2_sha256$720000$":
+            # password has been changed / set, need to hash it
+            self.password = make_password(self.password)
+
     def get_full_name(self):
         """
         Return the first_name plus the last_name, with a space in between.
