@@ -85,17 +85,15 @@ def test_create_list(client, base_users):
     """
     A user can create a new list
     """
+    alice = base_users["alice"]["auth_header"]
     response = client.post(
         "/api/tasks/list/",
         data={"name": "Movies to watch"},
-        headers=base_users["alice"]["auth_header"],
+        headers=alice,
     )
     assert response.status_code == status.HTTP_201_CREATED
     new_list_id = response.json()["id"]
-    response = client.get(
-        "/api/tasks/list/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    response = client.get("/api/tasks/list/", headers=alice)
     # The last item in the list, should be the newly added task
     assert response.json()[-1]["id"] == new_list_id
     assert response.json()[-1]["name"] == "Movies to watch"
@@ -106,25 +104,20 @@ def test_create_task(client, base_users):
     """
     A user can create a new task
     """
-    response = client.get(
-        "/api/tasks/list/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    alice = base_users["alice"]["auth_header"]
+    response = client.get("/api/tasks/list/", headers=alice)
     assert response.status_code == status.HTTP_200_OK
     first_list_id = response.json()[0]["id"]
     response = client.post(
         f"/api/tasks/list/{first_list_id}/task/",
         data={"text": "wash the dishes"},
-        headers=base_users["alice"]["auth_header"],
+        headers=alice,
     )
     # The new task was created successfully
     assert response.status_code == status.HTTP_201_CREATED
     new_task_id = response.json()["id"]
     # The new task is in the list
-    response = client.get(
-        f"/api/tasks/list/{first_list_id}/task/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    response = client.get(f"/api/tasks/list/{first_list_id}/task/", headers=alice)
     # The last item in the list, should be the newly added task
     assert response.json()[-1]["id"] == new_task_id
     assert response.json()[-1]["text"] == "wash the dishes"
@@ -132,7 +125,7 @@ def test_create_task(client, base_users):
     # And we can access it directly
     response = client.get(
         f"/api/tasks/list/{first_list_id}/task/{new_task_id}/",
-        headers=base_users["alice"]["auth_header"],
+        headers=alice,
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["id"] == new_task_id
@@ -145,28 +138,23 @@ def test_update_a_task(client, base_users):
     """
     A user can update a task
     """
+    alice = base_users["alice"]["auth_header"]
     # Get the first list
-    response = client.get(
-        "/api/tasks/list/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    response = client.get("/api/tasks/list/", headers=alice)
     first_list_id = response.json()[0]["id"]
     # Get the last task on that list
-    response = client.get(
-        f"/api/tasks/list/{first_list_id}/task/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    response = client.get(f"/api/tasks/list/{first_list_id}/task/", headers=alice)
     last_task_id = response.json()[-1]["id"]
     response = client.get(
         f"/api/tasks/list/{first_list_id}/task/{last_task_id}/",
-        headers=base_users["alice"]["auth_header"],
+        headers=alice,
     )
     # Make sure it's not already complete
     assert response.json()["complete"] is False
     # Update the task
     response = client.put(
         f"/api/tasks/list/{first_list_id}/task/{last_task_id}/",
-        headers=base_users["alice"]["auth_header"],
+        headers=alice,
         # We should just be pass a dictionary here, but it seems to be broken
         # so, we pass a string and explicitly set the content type
         data=json.dumps({"complete": True}),
@@ -176,7 +164,7 @@ def test_update_a_task(client, base_users):
     # Check when we get the task again, it's now complete
     response = client.get(
         f"/api/tasks/list/{first_list_id}/task/{last_task_id}/",
-        headers=base_users["alice"]["auth_header"],
+        headers=alice,
     )
     # Make sure it's not already complete
     assert response.json()["complete"] is True
@@ -189,34 +177,21 @@ def test_can_not_access_another_users_tasks(client, base_users):
     """
     Bob can not see Alice's tasks
     """
-    response = client.get(
-        "/api/tasks/list/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    alice = base_users["alice"]["auth_header"]
+    bob = base_users["bob"]["auth_header"]
+    response = client.get("/api/tasks/list/", headers=alice)
     list_id = response.json()[0]["id"]
     # Get the first task by itself
-    response = client.get(
-        f"/api/tasks/list/{list_id}/task/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    response = client.get(f"/api/tasks/list/{list_id}/task/", headers=alice)
     assert response.status_code == status.HTTP_200_OK
     # Get a task from the list
     task_id = response.json()[0]["id"]
-    response = client.get(
-        f"/api/tasks/list/{list_id}/task/{task_id}/",
-        headers=base_users["alice"]["auth_header"],
-    )
+    response = client.get(f"/api/tasks/list/{list_id}/task/{task_id}/", headers=alice)
     assert response.status_code == status.HTTP_200_OK
 
     # Bob can't see the list
-    response = client.get(
-        f"/api/tasks/list/{list_id}/",
-        headers=base_users["bob"]["auth_header"],
-    )
+    response = client.get(f"/api/tasks/list/{list_id}/", headers=bob)
     assert response.status_code == status.HTTP_404_NOT_FOUND
     # Bob can't see the task
-    response = client.get(
-        f"/api/tasks/list/{list_id}/task/{task_id}/",
-        headers=base_users["bob"]["auth_header"],
-    )
+    response = client.get(f"/api/tasks/list/{list_id}/task/{task_id}/", headers=bob)
     assert response.status_code == status.HTTP_404_NOT_FOUND
