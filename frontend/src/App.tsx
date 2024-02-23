@@ -1,8 +1,8 @@
 import './App.css';
 import { RouterProvider } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
-import router from './router.tsx';
-import theme from './theme/theme.tsx';
+import router from './router';
+import theme from './theme/theme';
 
 function App() {
   return (
