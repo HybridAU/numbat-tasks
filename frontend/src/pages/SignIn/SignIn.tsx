@@ -14,22 +14,25 @@ import { useNavigate } from 'react-router-dom';
 //  * get the actual input
 //  * Use react-hook-forms
 //  * Use zod
+//  * Add refresh
+//  * Sign out button
+//  * Make a call with auth.
 export default function SignIn() {
   const signIn = useSignIn();
   const navigate = useNavigate();
   const submitLogin = async () => {
-    const response = await fetch('/api/auth/login/', {
+    const response = await fetch('/api/token/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: 'test@example.com', password: 'password' }),
+      body: JSON.stringify({ email: 'test@example.com', password: 'password' }),
     });
     if (response.ok) {
       const result = await response.json();
-      console.log(result.token);
       signIn({
         auth: {
-          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE4MTYyMzk5MjJ9.afarXDXVD8W9KKiHK0mEAEf24qg3slXOvEw4gktiBBE',
+          token: result.access,
         },
+        // refresh: result.refresh,
       });
       navigate('/');
     }
