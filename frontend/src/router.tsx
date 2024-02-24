@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy } from 'react';
+import RequireAuth from '@auth-kit/react-router/RequireAuth';
 
 // I'm pretty sure this is a false positive based on
 // https://github.com/ArnaudBarre/eslint-plugin-react-refresh/issues/25#issuecomment-1729071347
@@ -10,7 +11,7 @@ const SignIn = lazy(() => import('./pages/SignIn/SignIn'));
 const routerConfig = [
   {
     path: '/',
-    element: <HomePage />,
+    element: <RequireAuth fallbackPath="/sign-in"><HomePage /></RequireAuth>,
   },
   {
     path: '/sign-in',

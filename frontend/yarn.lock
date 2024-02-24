@@ -7,6 +7,13 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
+"@auth-kit/react-router@^3.1.2":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@auth-kit/react-router/-/react-router-3.1.2.tgz#9790272250446d3eb71087e5b610a83fcb5a3d70"
+  integrity sha512-R8CXY1Bd3X8jCS2CtSfl+m6OZ5rYdWtava1Tvn1gS7vDBFDPEcRvG+AHNWi/F8kQdVVm2e9LTokYOWWgngeeFA==
+  dependencies:
+    react-auth-kit "^3.1.2"
+
 "@babel/code-frame@^7.0.0":
   version "7.23.5"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.23.5.tgz#9009b69a8c602293476ad598ff53e4562e15c244"
