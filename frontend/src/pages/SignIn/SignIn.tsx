@@ -14,9 +14,8 @@ import { useNavigate } from 'react-router-dom';
 //  * get the actual input
 //  * Use react-hook-forms
 //  * Use zod
-//  * Add refresh
 //  * Sign out button
-//  * Make a call with auth.
+//  * Make a call with auth
 export default function SignIn() {
   const signIn = useSignIn();
   const navigate = useNavigate();
@@ -32,7 +31,7 @@ export default function SignIn() {
         auth: {
           token: result.access,
         },
-        // refresh: result.refresh,
+        refresh: result.refresh,
       });
       navigate('/');
     }
