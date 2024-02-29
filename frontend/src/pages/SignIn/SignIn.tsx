@@ -2,46 +2,45 @@ import {
   Box,
   Button,
   Container,
-  TextField,
   Typography,
 } from '@mui/material';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import FormTextField from '../../components/form/FormTextField';
+import token, { SignInRequest } from '../../api/token';
 
 // TODO
-//  * Use API library
 //  * Add base path as part of the URL
-//  * get the actual input
-//  * Use react-hook-forms
 //  * Use zod
 //  * Sign out button
 //  * Make a call with auth
+//  * Handle errors (e.g. 401)
 export default function SignIn() {
   const signIn = useSignIn();
   const navigate = useNavigate();
-  const submitLogin = async () => {
-    const response = await fetch('/api/token/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: 'test@example.com', password: 'password' }),
-    });
-    if (response.ok) {
-      const result = await response.json();
-      signIn({
-        auth: {
-          token: result.access,
-        },
-        refresh: result.refresh,
-      });
-      navigate('/');
-    }
-  };
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      email: '', password: '',
+    },
+  });
 
+  const submitLogin = async (data: SignInRequest) => {
+    const result = await token(data);
+    signIn({
+      auth: {
+        token: result.access,
+      },
+      refresh: result.refresh,
+    });
+    navigate('/');
+  };
   return (
     <Container component="main" maxWidth="xs">
       <Typography component="h1" variant="h5">Sign In</Typography>
       <Box>
-        <TextField
+        <FormTextField
+          control={control}
           margin="normal"
           required
           fullWidth
@@ -51,7 +50,8 @@ export default function SignIn() {
           autoComplete="email"
           autoFocus
         />
-        <TextField
+        <FormTextField
+          control={control}
           margin="normal"
           required
           fullWidth
@@ -66,7 +66,7 @@ export default function SignIn() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          onClick={submitLogin}
+          onClick={handleSubmit(submitLogin)}
         >
           Sign In
         </Button>

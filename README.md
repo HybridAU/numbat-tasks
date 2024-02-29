@@ -12,5 +12,7 @@ This is currently in development, enough of the API is fleshed out that I can st
 - [ ] Reorder / custom order for tasks
 - [ ] Share tasks lists with other users
 - [ ] Progressive web app
+- [ ] Figure out how to get refresh token working
+
 
 The irony of having an unfinished todo list written in markdown, on a todo list app is not lost on me.
