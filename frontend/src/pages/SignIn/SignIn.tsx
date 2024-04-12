@@ -1,19 +1,15 @@
 import {
-  Box,
   Button,
   Container,
   Typography,
 } from '@mui/material';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { Form, useForm } from 'react-hook-form';
 import FormTextField from '../../components/form/FormTextField';
 import token, { SignInRequest } from '../../api/token';
 
 // TODO
-//  * Add base path as part of the URL
-//  * Use zod
-//  * Sign out button
 //  * Make a call with auth
 //  * Handle errors (e.g. 401)
 export default function SignIn() {
@@ -38,7 +34,7 @@ export default function SignIn() {
   return (
     <Container component="main" maxWidth="xs">
       <Typography component="h1" variant="h5">Sign In</Typography>
-      <Box>
+      <Form control={control}>
         <FormTextField
           control={control}
           margin="normal"
@@ -70,7 +66,7 @@ export default function SignIn() {
         >
           Sign In
         </Button>
-      </Box>
+      </Form>
     </Container>
   );
 }
