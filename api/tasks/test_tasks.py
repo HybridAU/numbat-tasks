@@ -3,8 +3,9 @@ import random
 import string
 
 import pytest
-from accounts.models import CustomUser
 from rest_framework import status
+
+from accounts.models import CustomUser
 from tasks.models import List, Task
 
 

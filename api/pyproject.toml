@@ -27,9 +27,13 @@ pytest-django = "^4.8.0"
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.20.0"
 
+[tool.isort]
+profile = "black"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "numbat_tasks_api.settings"
+
