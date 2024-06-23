@@ -32,6 +32,8 @@ services:
             # directory except for the `node_modules` directory. So that we don't have to
             # have the packages installed on the docker host.
             - /frontend/node_modules/
+        env_file:
+            - .env
         environment:
             - PORT=8000
     caddy:

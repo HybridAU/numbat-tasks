@@ -21,7 +21,7 @@ module.exports = {
     ],
     // Allow .tsx files to contain jsx, not just .jsx
     "react/jsx-filename-extension": [1, { "extensions": [".jsx", ".tsx"] }],
-    // In react 18 we don't need it import react to use jsx
+    // In react 18 we don't need to import react to use jsx
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off"
   },

@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-from datetime import timedelta
 from pathlib import Path
 
 from decouple import config
@@ -41,7 +40,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "accounts",
     "rest_framework",
-    "knox",
     "tasks",
     "drf_spectacular",
     "drf_spectacular_sidecar",
@@ -138,20 +136,14 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = "/api/tasks/tasks/"
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("knox.auth.TokenAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
         "rest_framework.permissions.IsAdminUser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-}
-
-# By setting the token to 30 days, and turning auto refresh on
-# The token expiry time is extended by 30 each time it is used
-# So a consistent user will only have to log in once
-REST_KNOX = {
-    "TOKEN_TTL": timedelta(days=30),
-    "AUTO_REFRESH": True,
 }
 
 SPECTACULAR_SETTINGS = {

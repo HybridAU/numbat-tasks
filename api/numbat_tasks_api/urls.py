@@ -17,15 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from knox import views as knox_views
-
-from numbat_tasks_api.views import LoginView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path("api/admin/", admin.site.urls),
-    path("api/auth/login/", LoginView.as_view(), name="login"),
-    path("api/auth/logout/", knox_views.LogoutView.as_view(), name="logout"),
-    path("api/auth/logoutall/", knox_views.LogoutAllView.as_view(), name="logoutall"),
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/tasks/", include("tasks.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
