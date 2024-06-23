@@ -1,15 +1,15 @@
 import {
-  Control,
+  type Control,
   Controller,
-  FieldValues,
-  Path,
+  type FieldValues,
+  type Path,
 } from 'react-hook-form';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
+import TextField, { type TextFieldProps } from '@mui/material/TextField';
 
 type FormInputProps<T extends FieldValues> = {
-  name: Path<T>,
-  control: Control<T>,
-  label: string
+  name: Path<T>;
+  control: Control<T>;
+  label: string;
 } & TextFieldProps & FieldValues;
 
 // I'm not saying this is the right way to do it, but it seems to me
@@ -19,7 +19,10 @@ type FormInputProps<T extends FieldValues> = {
 // and figure out why this is a bad idea (and how to fix it) later.
 /* eslint-disable react/jsx-props-no-spreading */
 function FormTextField<T extends FieldValues>({
-  name, control, label, ...props
+  name,
+  control,
+  label,
+  ...props
 }: FormInputProps<T>) {
   return (
     <Controller

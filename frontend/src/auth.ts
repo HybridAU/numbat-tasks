@@ -5,16 +5,13 @@ import createRefresh from 'react-auth-kit/createRefresh';
 const refreshToken = createRefresh({
   interval: 10,
   refreshApiCallback: async (param) => {
-    const response = await fetch(
-      '/api/token/refresh/',
-      {
-        headers: {
-          Authorization: `Bearer ${param.authToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ refresh: param.refreshToken }),
+    const response = await fetch('/api/token/refresh/', {
+      headers: {
+        Authorization: `Bearer ${param.authToken}`,
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({ refresh: param.refreshToken }),
+    });
     if (response.ok) {
       const result = await response.json();
       return {

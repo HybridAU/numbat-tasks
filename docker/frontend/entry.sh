@@ -1,3 +1,3 @@
 #!/bin/bash
-yarn
-yarn dev --host --port 8000
+pnpm install
+pnpm dev --host --port 8000

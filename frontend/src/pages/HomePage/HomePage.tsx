@@ -1,9 +1,5 @@
 import useSignOut from 'react-auth-kit/hooks/useSignOut';
-import {
-  Button,
-  Container,
-  Typography,
-} from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
