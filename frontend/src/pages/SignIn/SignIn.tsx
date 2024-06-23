@@ -1,17 +1,42 @@
 import {
-  Box,
   Button,
   Container,
-  TextField,
   Typography,
 } from '@mui/material';
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import { useNavigate } from 'react-router-dom';
+import { Form, useForm } from 'react-hook-form';
+import FormTextField from '../../components/form/FormTextField';
+import token, { SignInRequest } from '../../api/token';
 
+// TODO
+//  * Make a call with auth
+//  * Handle errors (e.g. 401)
 export default function SignIn() {
+  const signIn = useSignIn();
+  const navigate = useNavigate();
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      email: '', password: '',
+    },
+  });
+
+  const submitLogin = async (data: SignInRequest) => {
+    const result = await token(data);
+    signIn({
+      auth: {
+        token: result.access,
+      },
+      refresh: result.refresh,
+    });
+    navigate('/');
+  };
   return (
     <Container component="main" maxWidth="xs">
       <Typography component="h1" variant="h5">Sign In</Typography>
-      <Box>
-        <TextField
+      <Form control={control}>
+        <FormTextField
+          control={control}
           margin="normal"
           required
           fullWidth
@@ -21,7 +46,8 @@ export default function SignIn() {
           autoComplete="email"
           autoFocus
         />
-        <TextField
+        <FormTextField
+          control={control}
           margin="normal"
           required
           fullWidth
@@ -36,10 +62,11 @@ export default function SignIn() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
+          onClick={handleSubmit(submitLogin)}
         >
           Sign In
         </Button>
-      </Box>
+      </Form>
     </Container>
   );
 }

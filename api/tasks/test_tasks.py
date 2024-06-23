@@ -38,27 +38,29 @@ def base_users(client):
     alice.clean()
     alice.save()
     response = client.post(
-        "/api/auth/login/",
+        "/api/token/",
         data={
-            "username": users["alice"]["email"],
+            "email": users["alice"]["email"],
             "password": users["alice"]["password"],
         },
     )
     users["alice"]["auth_header"] = {
-        "Authorization": f"token {response.json()['token']}"
+        "Authorization": f"Bearer {response.json()['access']}"
     }
 
     bob = CustomUser.objects.create(**users["bob"])
     bob.clean()
     bob.save()
     response = client.post(
-        "/api/auth/login/",
+        "/api/token/",
         data={
-            "username": users["bob"]["email"],
+            "email": users["bob"]["email"],
             "password": users["bob"]["password"],
         },
     )
-    users["bob"]["auth_header"] = {"Authorization": f"token {response.json()['token']}"}
+    users["bob"]["auth_header"] = {
+        "Authorization": f"Bearer {response.json()['access']}"
+    }
 
     # Alice has a list of chores, and a shopping list
     chores = List.objects.create(owner=alice, name="household chores")
