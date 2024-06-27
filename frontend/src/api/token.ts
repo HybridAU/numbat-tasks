@@ -1,11 +1,11 @@
 export type SignInRequest = {
-  email: string,
-  password: string
+  email: string;
+  password: string;
 };
 
 type SignInResponse = {
-  'access': string,
-  'refresh': string
+  access: string;
+  refresh: string;
 };
 
 const token = async (request: SignInRequest): Promise<SignInResponse> => {
@@ -15,7 +15,7 @@ const token = async (request: SignInRequest): Promise<SignInResponse> => {
     body: JSON.stringify({ email: request.email, password: request.password }),
   });
   if (response.ok) {
-    return await response.json() as SignInResponse;
+    return (await response.json()) as SignInResponse;
   }
   throw new Error(`${response.statusText}`);
 };

@@ -11,7 +11,11 @@ const SignIn = lazy(() => import('./pages/SignIn/SignIn'));
 const routerConfig = [
   {
     path: '/',
-    element: <RequireAuth fallbackPath="/sign-in"><HomePage /></RequireAuth>,
+    element: (
+      <RequireAuth fallbackPath="/sign-in">
+        <HomePage />
+      </RequireAuth>
+    ),
   },
   {
     path: '/sign-in',

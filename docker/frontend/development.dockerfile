@@ -1,11 +1,12 @@
-FROM node:21-bookworm-slim
+FROM node:22-bookworm-slim
 
 WORKDIR /frontend
 
 COPY ./frontend/package.json .
-COPY ./frontend/yarn.lock* .
+COPY ./frontend/pnpm-lock.yaml* .
 
-RUN yarn
+RUN corepack enable
+RUN pnpm install
 
 COPY ./frontend /frontend
 
