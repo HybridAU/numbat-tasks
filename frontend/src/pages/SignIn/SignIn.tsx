@@ -1,39 +1,50 @@
 import {
-  Button,
-  Container,
-  Typography,
+  Alert, Button, Container, Typography,
 } from '@mui/material';
 import useSignIn from 'react-auth-kit/hooks/useSignIn';
 import { useNavigate } from 'react-router-dom';
 import { Form, useForm } from 'react-hook-form';
+import { useMutation } from '@tanstack/react-query';
 import FormTextField from '../../components/form/FormTextField';
-import token, { SignInRequest } from '../../api/token';
+import token, { type SignInRequest } from '../../api/token';
 
 // TODO
 //  * Make a call with auth
-//  * Handle errors (e.g. 401)
+
 export default function SignIn() {
   const signIn = useSignIn();
   const navigate = useNavigate();
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      email: '', password: '',
+      email: '',
+      password: '',
     },
   });
 
-  const submitLogin = async (data: SignInRequest) => {
-    const result = await token(data);
-    signIn({
-      auth: {
-        token: result.access,
-      },
-      refresh: result.refresh,
-    });
-    navigate('/');
-  };
+  const { mutate, error } = useMutation({
+    mutationFn: (data: SignInRequest) => token(data),
+    onSuccess: (result) => {
+      signIn({
+        auth: {
+          token: result.access,
+        },
+        refresh: result.refresh,
+      });
+      navigate('/');
+    },
+  });
+
   return (
     <Container component="main" maxWidth="xs">
-      <Typography component="h1" variant="h5">Sign In</Typography>
+      <Typography component="h1" variant="h5">
+        Sign In
+      </Typography>
+      {error && (
+      <Alert severity="error">
+        Error:
+        {error.message}
+      </Alert>
+      )}
       <Form control={control}>
         <FormTextField
           control={control}
@@ -62,7 +73,7 @@ export default function SignIn() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          onClick={handleSubmit(submitLogin)}
+          onClick={handleSubmit((data: SignInRequest) => { mutate(data); })}
         >
           Sign In
         </Button>
