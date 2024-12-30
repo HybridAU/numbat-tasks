@@ -10,8 +10,8 @@ type SignInResponse = {
 
 const token = async (request: SignInRequest): Promise<SignInResponse> => {
   const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/token/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email: request.email, password: request.password }),
   });
   if (response.ok) {
