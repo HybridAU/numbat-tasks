@@ -1,16 +1,17 @@
+import TextField, { type TextFieldProps } from "@mui/material/TextField";
 import {
   type Control,
   Controller,
   type FieldValues,
   type Path,
-} from 'react-hook-form';
-import TextField, { type TextFieldProps } from '@mui/material/TextField';
+} from "react-hook-form";
 
 type FormInputProps<T extends FieldValues> = {
   name: Path<T>;
   control: Control<T>;
   label: string;
-} & TextFieldProps & FieldValues;
+} & TextFieldProps &
+  FieldValues;
 
 // I'm not saying this is the right way to do it, but it seems to me
 // that we want to create a controlled TextField, and we want to pass
@@ -28,10 +29,7 @@ function FormTextField<T extends FieldValues>({
     <Controller
       name={name}
       control={control}
-      render={({
-        field: { onChange, value },
-        fieldState: { error },
-      }) => (
+      render={({ field: { onChange, value }, fieldState: { error } }) => (
         <TextField
           helperText={error ? error.message : null}
           error={!!error}
