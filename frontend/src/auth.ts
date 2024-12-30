@@ -1,14 +1,14 @@
-import createStore from 'react-auth-kit/createStore';
-import createRefresh from 'react-auth-kit/createRefresh';
+import createRefresh from "react-auth-kit/createRefresh";
+import createStore from "react-auth-kit/createStore";
 
 // TODO figure out refresh token works, this looks like it should work, but it doesnt.
 const refreshToken = createRefresh({
   interval: 10,
   refreshApiCallback: async (param) => {
-    const response = await fetch('/api/token/refresh/', {
+    const response = await fetch("/api/token/refresh/", {
       headers: {
         Authorization: `Bearer ${param.authToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ refresh: param.refreshToken }),
     });
@@ -21,14 +21,14 @@ const refreshToken = createRefresh({
     }
     return {
       isSuccess: false,
-      newAuthToken: '',
+      newAuthToken: "",
     };
   },
 });
 
 const store = createStore({
-  authName: 'token',
-  authType: 'localstorage',
+  authName: "token",
+  authType: "localstorage",
   refresh: refreshToken,
 });
 

@@ -1,20 +1,18 @@
-import {
-  Alert, Button, Container, Typography,
-} from '@mui/material';
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
-import { useNavigate } from 'react-router-dom';
-import { Form, useForm } from 'react-hook-form';
-import { useMutation } from '@tanstack/react-query';
-import FormTextField from '../../components/form/FormTextField';
-import token, { type SignInRequest } from '../../api/token';
+import { Alert, Button, Container, Typography } from "@mui/material";
+import { useMutation } from "@tanstack/react-query";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
+import { Form, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import token, { type SignInRequest } from "../../api/token";
+import FormTextField from "../../components/form/FormTextField";
 
 export default function SignIn() {
   const signIn = useSignIn();
   const navigate = useNavigate();
   const { control, handleSubmit } = useForm({
     defaultValues: {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
     },
   });
 
@@ -27,7 +25,7 @@ export default function SignIn() {
         },
         refresh: result.refresh,
       });
-      navigate('/');
+      navigate("/");
     },
   });
 
@@ -37,10 +35,10 @@ export default function SignIn() {
         Sign In
       </Typography>
       {error && (
-      <Alert severity="error">
-        Error:
-        {error.message}
-      </Alert>
+        <Alert severity="error">
+          Error:
+          {error.message}
+        </Alert>
       )}
       <Form control={control}>
         <FormTextField
@@ -70,7 +68,9 @@ export default function SignIn() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          onClick={handleSubmit((data: SignInRequest) => { mutate(data); })}
+          onClick={handleSubmit((data: SignInRequest) => {
+            mutate(data);
+          })}
         >
           Sign In
         </Button>
