@@ -8,9 +8,6 @@ import { useMutation } from '@tanstack/react-query';
 import FormTextField from '../../components/form/FormTextField';
 import token, { type SignInRequest } from '../../api/token';
 
-// TODO
-//  * Make a call with auth
-
 export default function SignIn() {
   const signIn = useSignIn();
   const navigate = useNavigate();
