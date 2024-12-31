@@ -43,11 +43,11 @@ export default function HomePage() {
         Here is a list of your to do lists
       </Typography>
       {tasks && (
-        <ul>
+        <div>
           {tasks?.map((task) => (
             <Task key={task.id} {...task} />
           ))}
-        </ul>
+        </div>
       )}
       <Form control={control}>
         <FormTextField

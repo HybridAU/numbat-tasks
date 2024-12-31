@@ -3,7 +3,7 @@ export type TaskDetails = {
   created: string;
   updated: string;
   text: string;
-  completed: boolean;
+  complete: boolean;
 };
 
 type TasksResponse = TaskDetails[];
@@ -17,6 +17,14 @@ export type addTaskRequest = {
   authHeader: string | null;
   listId: number;
   text: string;
+  complete?: boolean;
+};
+
+export type updateTaskRequest = {
+  authHeader: string | null;
+  listId: number;
+  taskId: number;
+  text?: string;
   complete?: boolean;
 };
 
@@ -58,4 +66,28 @@ const addTask = async ({
   throw new Error(`${response.statusText}`);
 };
 
-export { getTasks, addTask };
+const updateTask = async ({
+  authHeader,
+  text,
+  complete,
+  listId,
+  taskId,
+}: updateTaskRequest): Promise<TaskDetails> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/${taskId}/`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authHeader || "",
+      },
+      body: JSON.stringify({ text: text, complete: complete }),
+    },
+  );
+  if (response.ok) {
+    return (await response.json()) as TaskDetails;
+  }
+  throw new Error(`${response.statusText}`);
+};
+
+export { getTasks, addTask, updateTask };

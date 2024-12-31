@@ -4,10 +4,13 @@ To-do list app
 ## Status
 This is currently in development, enough of the API is fleshed out that I can start on the front end. Once I've got an MVP there are many more things I'd like to add:
 
+- [ ] If no list exists (i.e. on first load) create a "default list"
 - [ ] More Linting
   - [ ] Code review doctor
   - [ ] Dependabot
   - [ ] JS linting tests (biome)
+  - [ ] Black -> Ruff
+  - [ ] Poetry -> Uv
 - [ ] Automation (build release docker images)
 - [ ] Webauthn for login
 - [ ] Reorder / custom order for tasks
