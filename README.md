@@ -7,12 +7,14 @@ This is currently in development, enough of the API is fleshed out that I can st
 - [ ] More Linting
   - [ ] Code review doctor
   - [ ] Dependabot
+  - [ ] JS linting tests (biome)
 - [ ] Automation (build release docker images)
 - [ ] Webauthn for login
 - [ ] Reorder / custom order for tasks
 - [ ] Share tasks lists with other users
 - [ ] Progressive web app
 - [ ] Figure out how to get refresh token working
+  - [ ] Have a nice redirect when getting a 401 from the backend.
 
 
 The irony of having an unfinished todo list written in markdown, on a todo list app is not lost on me.

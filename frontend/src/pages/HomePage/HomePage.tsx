@@ -7,7 +7,8 @@ import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import getLists from "../../api/getLists";
 import { addTask, type addTaskRequest, getTasks } from "../../api/tasks";
-import FormTextField from "../../components/form/FormTextField.tsx";
+import Task from "../../components/Task";
+import FormTextField from "../../components/form/FormTextField";
 
 export default function HomePage() {
   const signOut = useSignOut();
@@ -44,7 +45,7 @@ export default function HomePage() {
       {tasks && (
         <ul>
           {tasks?.map((task) => (
-            <li key={task.id}>{task.text}</li>
+            <Task key={task.id} {...task} />
           ))}
         </ul>
       )}

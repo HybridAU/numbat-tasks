@@ -1,4 +1,4 @@
-type TaskDetails = {
+export type TaskDetails = {
   id: number;
   created: string;
   updated: string;
