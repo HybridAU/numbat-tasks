@@ -3,11 +3,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
-import { Form, SubmitHandler, useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import getLists from "../../api/getLists";
 import { addTask, type addTaskRequest, getTasks } from "../../api/tasks";
-import type { SignInRequest } from "../../api/token.ts";
 import FormTextField from "../../components/form/FormTextField.tsx";
 
 export default function HomePage() {
@@ -18,7 +17,7 @@ export default function HomePage() {
   // TODO just hard coded for now...
   const [listId, _setListId] = useState(1);
   const { control, handleSubmit } = useForm({ defaultValues: { task: "" } });
-  const { mutate, error } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: (data: addTaskRequest) => addTask(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
@@ -36,6 +35,7 @@ export default function HomePage() {
     enabled: !!authHeader,
   });
 
+  console.log(tasks);
   return (
     <Container component="main" maxWidth="xs">
       <Typography variant="body1">
@@ -62,7 +62,7 @@ export default function HomePage() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
           onClick={handleSubmit((data) => {
-            mutate({ ...data, listId: 1, authHeader: authHeader });
+            mutate({ text: data.task, listId: 1, authHeader: authHeader });
           })}
         >
           Add task

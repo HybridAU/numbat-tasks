@@ -25,7 +25,7 @@ const getTasks = async ({
   listId,
 }: tasksRequest): Promise<TasksResponse> => {
   const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/${listId}/`,
+    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/`,
     {
       headers: {
         "Content-Type": "application/json",
@@ -42,8 +42,7 @@ const addTask = async ({
   listId,
 }: addTaskRequest): Promise<TaskDetails> => {
   const response = await fetch(
-    // TODO!!
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/1/task/`,
+    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/`,
     {
       method: "POST",
       headers: {
