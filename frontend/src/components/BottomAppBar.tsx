@@ -1,9 +1,9 @@
 import AddIcon from "@mui/icons-material/Add";
-import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/More";
 import SearchIcon from "@mui/icons-material/Search";
 import { AppBar, Box, Fab, IconButton, Toolbar } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import NavDraw from "./NavDraw.tsx";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -18,9 +18,7 @@ export default function BottomAppBar() {
   return (
     <AppBar position="fixed" color="primary" sx={{ top: "auto", bottom: 0 }}>
       <Toolbar>
-        <IconButton color="inherit" aria-label="open drawer">
-          <MenuIcon />
-        </IconButton>
+        <NavDraw />
         <StyledFab color="secondary" aria-label="add">
           <AddIcon />
         </StyledFab>

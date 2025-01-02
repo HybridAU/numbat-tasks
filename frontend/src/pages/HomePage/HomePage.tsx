@@ -32,9 +32,7 @@ export default function HomePage() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Typography variant="body1">
-        Here is a list of your to do lists
-      </Typography>
+      <Typography variant="h1">{currentList.name}</Typography>
       {tasks ? (
         <div>
           {tasks?.map((task) => (
