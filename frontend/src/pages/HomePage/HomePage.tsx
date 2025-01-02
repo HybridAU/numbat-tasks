@@ -14,20 +14,19 @@ export default function HomePage() {
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
   const queryClient = useQueryClient();
-  const { currentList } = useListsState();
+  const { listsLoaded, currentList } = useListsState();
   const { control, handleSubmit } = useForm({ defaultValues: { task: "" } });
   const { mutate } = useMutation({
     mutationFn: (data: addTaskRequest) => addTask(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", currentList?.id] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
     },
   });
 
   const { data: tasks } = useQuery({
     queryKey: ["tasks", currentList?.id],
-    // TODO find a way to appease the typescript gods
-    queryFn: () => getTasks({ authHeader, listId: currentList?.id }),
-    enabled: !!authHeader && !!currentList?.id,
+    queryFn: () => getTasks({ authHeader, listId: currentList.id }),
+    enabled: !!authHeader && listsLoaded,
   });
 
   return (

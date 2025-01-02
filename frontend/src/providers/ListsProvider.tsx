@@ -9,11 +9,22 @@ import {
 } from "../api/lists.ts";
 
 export type ListsProviderState = {
-  currentList?: ListDetails;
+  listsLoaded: boolean;
+  currentList: ListDetails;
   lists: ListDetails[];
 };
 
-const initialState: ListsProviderState = { lists: [] };
+const initialState: ListsProviderState = {
+  listsLoaded: false,
+  currentList: {
+    id: 1,
+    name: "Default List",
+    active: true,
+    created: "",
+    updated: "",
+  },
+  lists: [],
+};
 
 export type ListsAction =
   | { type: "SET_CURRENT_LIST"; payload: ListDetails }
@@ -62,7 +73,7 @@ export default function ListsProvider({
   const { data } = useQuery({
     queryKey: ["Lists"],
     queryFn: () => lists(authHeader),
-    enabled: !!authHeader && !state.currentList,
+    enabled: !!authHeader,
   });
 
   const { mutate } = useMutation({
@@ -78,7 +89,11 @@ export default function ListsProvider({
     } else if (data) {
       dispatch({
         type: "INITIAL_LOAD",
-        payload: { currentList: data[0], lists: data },
+        payload: {
+          listsLoaded: true,
+          currentList: data[0],
+          lists: data,
+        },
       });
     }
   }, [data, mutate, authHeader]);
