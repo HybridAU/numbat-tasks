@@ -5,9 +5,10 @@ import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { addTask, type addTaskRequest, getTasks } from "../../api/tasks";
+import BottomAppBar from "../../components/BottomAppBar";
 import Task from "../../components/Task";
 import FormTextField from "../../components/form/FormTextField";
-import { useListsState } from "../../providers/ListsProvider.tsx";
+import { useListsState } from "../../providers/ListsProvider";
 
 export default function HomePage() {
   const signOut = useSignOut();
@@ -78,6 +79,7 @@ export default function HomePage() {
       >
         Sign out
       </Button>
+      <BottomAppBar />
     </Container>
   );
 }

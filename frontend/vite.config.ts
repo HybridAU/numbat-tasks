@@ -11,6 +11,6 @@ export default defineConfig({
         replacement: "src",
       },
     ],
-    extensions: [".ts", ".tsx"],
+    extensions: [".ts", ".tsx", ".js"],
   },
 });
