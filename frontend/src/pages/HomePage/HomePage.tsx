@@ -1,6 +1,5 @@
 import { Button, Container, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { Form, useForm } from "react-hook-form";
@@ -9,19 +8,19 @@ import getLists from "../../api/getLists";
 import { addTask, type addTaskRequest, getTasks } from "../../api/tasks";
 import Task from "../../components/Task";
 import FormTextField from "../../components/form/FormTextField";
+import { useListsState } from "../../providers/ListsProvider.tsx";
 
 export default function HomePage() {
   const signOut = useSignOut();
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
   const queryClient = useQueryClient();
-  // TODO just hard coded for now...
-  const [listId, _setListId] = useState(1);
+  const { currentListId } = useListsState();
   const { control, handleSubmit } = useForm({ defaultValues: { task: "" } });
   const { mutate } = useMutation({
     mutationFn: (data: addTaskRequest) => addTask(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentListId] });
     },
   });
 
@@ -31,12 +30,11 @@ export default function HomePage() {
     enabled: !!authHeader,
   });
   const { data: tasks } = useQuery({
-    queryKey: ["tasks", listId],
-    queryFn: () => getTasks({ authHeader, listId: listId }),
+    queryKey: ["tasks", currentListId],
+    queryFn: () => getTasks({ authHeader, listId: currentListId }),
     enabled: !!authHeader,
   });
 
-  console.log(tasks);
   return (
     <Container component="main" maxWidth="xs">
       <Typography variant="body1">

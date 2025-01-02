@@ -2,24 +2,24 @@ import { Checkbox, Stack, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { type TaskDetails, updateTask } from "../api/tasks.ts";
+import { useListsState } from "../providers/ListsProvider.tsx";
 
 export default function Task({ text, complete, id }: TaskDetails) {
   const queryClient = useQueryClient();
   const authHeader = useAuthHeader();
-  // TODO list id is hard coded to 1, build a list provider to give state / context...
-  const listId = 1;
+  const { currentListId } = useListsState();
   const { mutate } = useMutation({
     mutationFn: () => {
       return updateTask({
         authHeader: authHeader,
-        listId: listId,
+        listId: currentListId,
         taskId: id,
         complete: !complete,
         text: text,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentListId] });
     },
   });
   return (

@@ -1,4 +1,4 @@
-type ListDetails = {
+export type ListDetails = {
   id: number;
   created: string;
   updated: string;
