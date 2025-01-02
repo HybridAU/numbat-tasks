@@ -7,19 +7,19 @@ import { useListsState } from "../providers/ListsProvider.tsx";
 export default function Task({ text, complete, id }: TaskDetails) {
   const queryClient = useQueryClient();
   const authHeader = useAuthHeader();
-  const { currentListId } = useListsState();
+  const { currentList } = useListsState();
   const { mutate } = useMutation({
     mutationFn: () => {
       return updateTask({
         authHeader: authHeader,
-        listId: currentListId,
+        listId: currentList?.id,
         taskId: id,
         complete: !complete,
         text: text,
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", currentListId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
     },
   });
   return (

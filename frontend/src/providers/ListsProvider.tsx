@@ -1,16 +1,24 @@
-import { createContext, useContext, useReducer } from "react";
-import type { ListDetails } from "../api/getLists.ts";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createContext, useContext, useEffect, useReducer } from "react";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import {
+  type ListDetails,
+  addList,
+  type addListRequest,
+  lists,
+} from "../api/lists.ts";
 
 export type ListsProviderState = {
-  currentListId: number;
+  currentList?: ListDetails;
   lists: ListDetails[];
 };
 
-const initialState: ListsProviderState = { currentListId: 1, lists: [] };
+const initialState: ListsProviderState = { lists: [] };
 
 export type ListsAction =
-  | { type: "SET_CURRENT_LIST_ID"; payload: number }
-  | { type: "SET_LISTS"; payload: ListDetails[] };
+  | { type: "SET_CURRENT_LIST"; payload: ListDetails }
+  | { type: "SET_LISTS"; payload: ListDetails[] }
+  | { type: "INITIAL_LOAD"; payload: ListsProviderState };
 
 type ListsDispatch = (action: ListsAction) => void;
 
@@ -24,16 +32,21 @@ export function ListsReducer(
   action: ListsAction,
 ): ListsProviderState {
   switch (action.type) {
-    case "SET_CURRENT_LIST_ID": {
+    case "SET_CURRENT_LIST": {
       return {
         ...state,
-        currentListId: action.payload,
+        currentList: action.payload,
       };
     }
     case "SET_LISTS": {
       return {
         ...state,
         lists: action.payload,
+      };
+    }
+    case "INITIAL_LOAD": {
+      return {
+        ...action.payload,
       };
     }
   }
@@ -43,6 +56,33 @@ export default function ListsProvider({
   children,
 }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(ListsReducer, initialState);
+  const authHeader = useAuthHeader();
+  const queryClient = useQueryClient();
+
+  const { data } = useQuery({
+    queryKey: ["Lists"],
+    queryFn: () => lists(authHeader),
+    enabled: !!authHeader && !state.currentList,
+  });
+
+  const { mutate } = useMutation({
+    mutationFn: (data: addListRequest) => addList(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Lists"] });
+    },
+  });
+
+  useEffect(() => {
+    if (data?.length === 0) {
+      mutate({ name: "Default List", authHeader: authHeader });
+    } else if (data) {
+      dispatch({
+        type: "INITIAL_LOAD",
+        payload: { currentList: data[0], lists: data },
+      });
+    }
+  }, [data, mutate, authHeader]);
+
   return (
     <ListsContext.Provider value={state}>
       <ListsDispatchContext.Provider value={dispatch}>

@@ -4,7 +4,10 @@ To-do list app
 ## Status
 This is currently in development, enough of the API is fleshed out that I can start on the front end. Once I've got an MVP there are many more things I'd like to add:
 
-- [ ] If no list exists (i.e. on first load) create a "default list"
+- [X] If no list exists (i.e. on first load) create a "default list"
+- [ ] Some basic styling pin things to top, bottem and draw.
+- [ ] Sign out sometimes, but not always blows up. Figure out why and fix it.
+  - [ ] "A component suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix, updates that suspend should be wrapped with startTransition."
 - [ ] More Linting
   - [ ] Code review doctor
   - [ ] Dependabot
@@ -20,4 +23,4 @@ This is currently in development, enough of the API is fleshed out that I can st
   - [ ] Have a nice redirect when getting a 401 from the backend.
 
 
-The irony of having an unfinished todo list written in markdown, on a todo list app is not lost on me.
+The irony of having a todo list written in markdown, on a todo list app is not lost on me.
