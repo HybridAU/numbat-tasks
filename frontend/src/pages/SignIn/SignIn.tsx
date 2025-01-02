@@ -31,9 +31,7 @@ export default function SignIn() {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Typography component="h1" variant="h5">
-        Sign In
-      </Typography>
+      <Typography variant="h1">Sign In</Typography>
       {error && (
         <Alert severity="error">
           Error:

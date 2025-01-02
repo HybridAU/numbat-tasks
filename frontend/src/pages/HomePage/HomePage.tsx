@@ -1,9 +1,7 @@
 import { Button, CircularProgress, Container, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { Form, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
 import { addTask, type addTaskRequest, getTasks } from "../../api/tasks";
 import BottomAppBar from "../../components/BottomAppBar";
 import Task from "../../components/Task";
@@ -11,8 +9,6 @@ import FormTextField from "../../components/form/FormTextField";
 import { useListsState } from "../../providers/ListsProvider";
 
 export default function HomePage() {
-  const signOut = useSignOut();
-  const navigate = useNavigate();
   const authHeader = useAuthHeader();
   const queryClient = useQueryClient();
   const { listsLoaded, currentList } = useListsState();
@@ -66,17 +62,6 @@ export default function HomePage() {
           Add task
         </Button>
       </Form>
-
-      <Button
-        sx={{ my: "2em" }}
-        variant="contained"
-        onClick={() => {
-          signOut();
-          navigate("/sign-in");
-        }}
-      >
-        Sign out
-      </Button>
       <BottomAppBar />
     </Container>
   );

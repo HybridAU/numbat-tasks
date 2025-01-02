@@ -1,8 +1,8 @@
 import AddIcon from "@mui/icons-material/Add";
-import MoreIcon from "@mui/icons-material/More";
 import SearchIcon from "@mui/icons-material/Search";
 import { AppBar, Box, Fab, IconButton, Toolbar } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import AccountMenu from "./AccountMenu.tsx";
 import NavDraw from "./NavDraw.tsx";
 
 const StyledFab = styled(Fab)({
@@ -26,9 +26,7 @@ export default function BottomAppBar() {
         <IconButton color="inherit">
           <SearchIcon />
         </IconButton>
-        <IconButton color="inherit">
-          <MoreIcon />
-        </IconButton>
+        <AccountMenu />
       </Toolbar>
     </AppBar>
   );
