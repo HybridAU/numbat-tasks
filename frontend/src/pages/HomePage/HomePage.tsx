@@ -1,53 +1,47 @@
-import { Button, Container, Typography } from "@mui/material";
+import { Button, CircularProgress, Container, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import getLists from "../../api/getLists";
 import { addTask, type addTaskRequest, getTasks } from "../../api/tasks";
 import Task from "../../components/Task";
 import FormTextField from "../../components/form/FormTextField";
+import { useListsState } from "../../providers/ListsProvider.tsx";
 
 export default function HomePage() {
   const signOut = useSignOut();
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
   const queryClient = useQueryClient();
-  // TODO just hard coded for now...
-  const [listId, _setListId] = useState(1);
+  const { listsLoaded, currentList } = useListsState();
   const { control, handleSubmit } = useForm({ defaultValues: { task: "" } });
   const { mutate } = useMutation({
     mutationFn: (data: addTaskRequest) => addTask(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", listId] });
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
     },
   });
 
-  const { data: _lists } = useQuery({
-    queryKey: ["Lists"],
-    queryFn: () => getLists(authHeader),
-    enabled: !!authHeader,
-  });
   const { data: tasks } = useQuery({
-    queryKey: ["tasks", listId],
-    queryFn: () => getTasks({ authHeader, listId: listId }),
-    enabled: !!authHeader,
+    queryKey: ["tasks", currentList?.id],
+    queryFn: () => getTasks({ authHeader, listId: currentList.id }),
+    enabled: !!authHeader && listsLoaded,
   });
 
-  console.log(tasks);
   return (
     <Container component="main" maxWidth="xs">
       <Typography variant="body1">
         Here is a list of your to do lists
       </Typography>
-      {tasks && (
+      {tasks ? (
         <div>
           {tasks?.map((task) => (
             <Task key={task.id} {...task} />
           ))}
         </div>
+      ) : (
+        <CircularProgress />
       )}
       <Form control={control}>
         <FormTextField
@@ -63,7 +57,11 @@ export default function HomePage() {
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
           onClick={handleSubmit((data) => {
-            mutate({ text: data.task, listId: 1, authHeader: authHeader });
+            mutate({
+              text: data.task,
+              listId: currentList?.id,
+              authHeader: authHeader,
+            });
           })}
         >
           Add task
