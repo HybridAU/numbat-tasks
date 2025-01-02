@@ -1,6 +1,6 @@
-import MailIcon from "@mui/icons-material/Mail";
+import ListIcon from "@mui/icons-material/List";
 import MenuIcon from "@mui/icons-material/Menu";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { IconButton } from "@mui/material";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
@@ -11,9 +11,16 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import * as React from "react";
+import type { ListDetails } from "../api/lists.ts";
+import { useListsDispatch, useListsState } from "../providers/ListsProvider";
 
 export default function NavDraw() {
   const [open, setOpen] = React.useState(false);
+  const { lists } = useListsState();
+  const listDispatch = useListsDispatch();
+  const handleSelect = (list: ListDetails) => {
+    listDispatch({ type: "SET_CURRENT_LIST", payload: list });
+  };
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -36,29 +43,31 @@ export default function NavDraw() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
+        {lists.map((list) => (
+          <ListItem key={list.id} disablePadding>
+            <ListItemButton
+              onClick={() => {
+                handleSelect(list);
+              }}
+            >
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <ListIcon />
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={list.name} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
       <Divider />
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <SettingsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Manage lists" />
+          </ListItemButton>
+        </ListItem>
       </List>
     </Box>
   );
