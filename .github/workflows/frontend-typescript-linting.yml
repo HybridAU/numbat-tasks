@@ -1,7 +1,8 @@
 name: Frontend TypeScript Linting
 on: [pull_request]
 defaults:
-    working-directory: ./frontend
+    run:
+        working-directory: ./frontend
 jobs:
     lint-typescript-files:
         runs-on: ubuntu-latest
@@ -13,6 +14,7 @@ jobs:
               with:
                 node-version: 22
                 cache: 'npm'
+                cache-dependency-path: frontend/pnpm-lock.yaml
             - run: pnpm install
             - name: TypeScript Check
               run: pnpm tsc
