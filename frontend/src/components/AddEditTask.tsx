@@ -25,6 +25,8 @@ import {
   type addTaskRequest,
   deleteTask,
   type deleteTaskRequest,
+  updateTask,
+  type updateTaskRequest,
 } from "../api/tasks.ts";
 import { useListsState } from "../providers/ListsProvider.tsx";
 import FormTextField from "./form/FormTextField.tsx";
@@ -59,6 +61,23 @@ export default function AddEditTask(task?: TaskDetails) {
     setOpen(true);
   };
 
+  const handleSaveClick = (text: string) => {
+    if (task) {
+      doUpdateTask({
+        listId: currentList.id,
+        taskId: task.id,
+        text: text,
+        authHeader: authHeader,
+      });
+    } else {
+      doAddTask({
+        text: text,
+        listId: currentList.id,
+        authHeader: authHeader,
+      });
+    }
+  };
+
   const handleClose = () => {
     reset();
     setOpen(false);
@@ -77,6 +96,13 @@ export default function AddEditTask(task?: TaskDetails) {
   });
   const { mutate: doDeleteTask } = useMutation({
     mutationFn: (data: deleteTaskRequest) => deleteTask(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
+      handleClose();
+    },
+  });
+  const { mutate: doUpdateTask } = useMutation({
+    mutationFn: (data: updateTaskRequest) => updateTask(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
       handleClose();
@@ -123,11 +149,7 @@ export default function AddEditTask(task?: TaskDetails) {
                 color="inherit"
                 type="submit"
                 onClick={handleSubmit((data) => {
-                  doAddTask({
-                    text: data.text,
-                    listId: currentList?.id,
-                    authHeader: authHeader,
-                  });
+                  handleSaveClick(data.text);
                 })}
               >
                 <SaveIcon />
