@@ -28,6 +28,12 @@ export type updateTaskRequest = {
   complete?: boolean;
 };
 
+export type deleteTaskRequest = {
+  authHeader: string | null;
+  listId: number;
+  taskId: number;
+};
+
 const getTasks = async ({
   authHeader,
   listId,
@@ -90,4 +96,25 @@ const updateTask = async ({
   throw new Error(`${response.statusText}`);
 };
 
-export { getTasks, addTask, updateTask };
+const deleteTask = async ({
+  authHeader,
+  listId,
+  taskId,
+}: deleteTaskRequest): Promise<void> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/${taskId}/`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: authHeader || "",
+      },
+    },
+  );
+  if (response.ok) {
+    return;
+  }
+  throw new Error(`${response.statusText}`);
+};
+
+export { getTasks, addTask, updateTask, deleteTask };

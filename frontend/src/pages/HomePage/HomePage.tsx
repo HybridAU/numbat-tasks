@@ -1,24 +1,14 @@
-import { Button, CircularProgress, Container, Typography } from "@mui/material";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CircularProgress, Stack, Typography } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-import { Form, useForm } from "react-hook-form";
-import { addTask, type addTaskRequest, getTasks } from "../../api/tasks";
+import { getTasks } from "../../api/tasks";
 import BottomAppBar from "../../components/BottomAppBar";
 import Task from "../../components/Task";
-import FormTextField from "../../components/form/FormTextField";
 import { useListsState } from "../../providers/ListsProvider";
 
 export default function HomePage() {
   const authHeader = useAuthHeader();
-  const queryClient = useQueryClient();
   const { listsLoaded, currentList } = useListsState();
-  const { control, handleSubmit } = useForm({ defaultValues: { task: "" } });
-  const { mutate } = useMutation({
-    mutationFn: (data: addTaskRequest) => addTask(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
-    },
-  });
 
   const { data: tasks } = useQuery({
     queryKey: ["tasks", currentList?.id],
@@ -26,43 +16,32 @@ export default function HomePage() {
     enabled: !!authHeader && listsLoaded,
   });
 
+  const sortedTasks = tasks?.sort((a, b) => {
+    // https://typeofnan.dev/sort-array-objects-multiple-properties-javascript/
+    // Only sort on complete if not identical
+    if (a.complete && !b.complete) return 1;
+    if (!a.complete && b.complete) return -1;
+    // if identical (both completed or both not) then sort by date created
+    if (a.created < b.created) return 1;
+    if (a.created > b.created) return -1;
+    // // Both identical, return 0
+    return 0;
+  });
+
   return (
-    <Container component="main" maxWidth="xs">
+    <>
       <Typography variant="h1">{currentList.name}</Typography>
-      {tasks ? (
-        <div>
-          {tasks?.map((task) => (
+      {sortedTasks ? (
+        // By adding lots of space at the bottom, it makes it clear we have scrolled to the end of the list.
+        <Stack pb="6rem">
+          {sortedTasks?.map((task) => (
             <Task key={task.id} {...task} />
           ))}
-        </div>
+        </Stack>
       ) : (
         <CircularProgress />
       )}
-      <Form control={control}>
-        <FormTextField
-          control={control}
-          label="task"
-          variant="outlined"
-          id="task"
-          name="task"
-        />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-          onClick={handleSubmit((data) => {
-            mutate({
-              text: data.task,
-              listId: currentList?.id,
-              authHeader: authHeader,
-            });
-          })}
-        >
-          Add task
-        </Button>
-      </Form>
       <BottomAppBar />
-    </Container>
+    </>
   );
 }
