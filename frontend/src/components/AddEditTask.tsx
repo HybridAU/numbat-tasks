@@ -102,7 +102,7 @@ export default function AddEditTask() {
               </IconButton>
             </Toolbar>
           </AppBar>
-          <Stack padding="1rem">
+          <Stack pt="2rem" px="1rem">
             <FormTextField
               autoFocus
               required

@@ -25,7 +25,7 @@ export default function Task({ text, complete, id }: TaskDetails) {
   return (
     <Stack direction="row" alignItems="center">
       <Checkbox checked={complete} onClick={() => mutate()} />
-      <Typography>{text}</Typography>
+      <Typography color={complete ? "grey" : "black"}>{text}</Typography>
     </Stack>
   );
 }

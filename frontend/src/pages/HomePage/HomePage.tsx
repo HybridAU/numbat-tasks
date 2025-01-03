@@ -16,12 +16,24 @@ export default function HomePage() {
     enabled: !!authHeader && listsLoaded,
   });
 
+  const sortedTasks = tasks?.sort((a, b) => {
+    // https://typeofnan.dev/sort-array-objects-multiple-properties-javascript/
+    // Only sort on complete if not identical
+    if (a.complete && !b.complete) return 1;
+    if (!a.complete && b.complete) return -1;
+    // if identical (both completed or both not) then sort by date created
+    if (a.created < b.created) return 1;
+    if (a.created > b.created) return -1;
+    // // Both identical, return 0
+    return 0;
+  });
+
   return (
     <Container component="main" maxWidth="xs">
       <Typography variant="h1">{currentList.name}</Typography>
-      {tasks ? (
+      {sortedTasks ? (
         <div>
-          {tasks?.map((task) => (
+          {sortedTasks?.map((task) => (
             <Task key={task.id} {...task} />
           ))}
         </div>
