@@ -1,10 +1,11 @@
-import { Checkbox, Stack, Typography } from "@mui/material";
+import { Checkbox, Stack } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { type TaskDetails, updateTask } from "../api/tasks.ts";
 import { useListsState } from "../providers/ListsProvider.tsx";
+import AddEditTask from "./AddEditTask.tsx";
 
-export default function Task({ text, complete, id }: TaskDetails) {
+export default function Task(task: TaskDetails) {
   const queryClient = useQueryClient();
   const authHeader = useAuthHeader();
   const { currentList } = useListsState();
@@ -13,9 +14,9 @@ export default function Task({ text, complete, id }: TaskDetails) {
       return updateTask({
         authHeader: authHeader,
         listId: currentList?.id,
-        taskId: id,
-        complete: !complete,
-        text: text,
+        taskId: task.id,
+        complete: !task.complete,
+        text: task.text,
       });
     },
     onSuccess: () => {
@@ -24,8 +25,8 @@ export default function Task({ text, complete, id }: TaskDetails) {
   });
   return (
     <Stack direction="row" alignItems="center">
-      <Checkbox checked={complete} onClick={() => mutate()} />
-      <Typography color={complete ? "grey" : "black"}>{text}</Typography>
+      <Checkbox checked={task.complete} onClick={() => mutate()} />
+      <AddEditTask {...task} />
     </Stack>
   );
 }

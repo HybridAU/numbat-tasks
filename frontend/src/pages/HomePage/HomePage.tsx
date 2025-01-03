@@ -1,4 +1,4 @@
-import { CircularProgress, Container, Typography } from "@mui/material";
+import { CircularProgress, Stack, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { getTasks } from "../../api/tasks";
@@ -29,18 +29,19 @@ export default function HomePage() {
   });
 
   return (
-    <Container component="main" maxWidth="xs">
+    <>
       <Typography variant="h1">{currentList.name}</Typography>
       {sortedTasks ? (
-        <div>
+        // By adding lots of space at the bottom, it makes it clear we have scrolled to the end of the list.
+        <Stack pb="6rem">
           {sortedTasks?.map((task) => (
             <Task key={task.id} {...task} />
           ))}
-        </div>
+        </Stack>
       ) : (
         <CircularProgress />
       )}
       <BottomAppBar />
-    </Container>
+    </>
   );
 }
