@@ -1,8 +1,7 @@
 name: Frontend TypeScript Linting
 on: [pull_request]
 defaults:
-    run:
-        working-directory: ./frontend
+    working-directory: ./frontend
 jobs:
     lint-typescript-files:
         runs-on: ubuntu-latest
