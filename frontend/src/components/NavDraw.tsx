@@ -61,6 +61,7 @@ export default function NavDraw() {
       <Divider />
       <List>
         <ListItem disablePadding>
+          {/* TODO this button does nothing, it's just a place holder */}
           <ListItemButton>
             <ListItemIcon>
               <SettingsIcon />

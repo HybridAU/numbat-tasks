@@ -47,6 +47,7 @@ export default function AccountMenu() {
           "aria-labelledby": "basic-button",
         }}
       >
+        {/* TODO this button does nothing, it's just a place holder */}
         <MenuItem onClick={handleClose}>Profile</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleSignOut}>Logout</MenuItem>
