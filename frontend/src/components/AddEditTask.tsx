@@ -62,7 +62,7 @@ export default function AddEditTask(task?: TaskDetails) {
   };
 
   const handleSaveClick = (text: string) => {
-    if (task) {
+    if (task?.id) {
       doUpdateTask({
         listId: currentList.id,
         taskId: task.id,
