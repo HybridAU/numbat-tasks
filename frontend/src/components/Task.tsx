@@ -5,7 +5,7 @@ import { type TaskDetails, updateTask } from "../api/tasks.ts";
 import { useListsState } from "../providers/ListsProvider.tsx";
 import AddEditTask from "./AddEditTask.tsx";
 
-export default function Task(task: TaskDetails) {
+export default function Task({ task }: { task: TaskDetails }) {
   const queryClient = useQueryClient();
   const authHeader = useAuthHeader();
   const { currentList } = useListsState();
@@ -26,7 +26,7 @@ export default function Task(task: TaskDetails) {
   return (
     <Stack direction="row" alignItems="center">
       <Checkbox checked={task.complete} onClick={() => mutate()} />
-      <AddEditTask {...task} />
+      <AddEditTask task={task} />
     </Stack>
   );
 }

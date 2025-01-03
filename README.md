@@ -20,7 +20,8 @@ This is currently in development, at some point I'll make this repo public.
 - [ ] More Linting
   - [ ] Code review doctor
   - [ ] Dependabot
-  - [ ] JS linting tests (biome)
+  - [ ] JS linting (biome / typescript)
+  - [ ] JS Tests (jest)
   - [ ] Black -> Ruff
   - [ ] Poetry -> Uv
 - [ ] Docs how to get set up from zero to self-hosted.
