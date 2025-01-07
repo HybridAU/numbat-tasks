@@ -2,7 +2,7 @@ export type TaskDetails = {
   id: number;
   created: string;
   updated: string;
-  text: string // upset biome
+  text: string;
   complete: boolean;
 };
 

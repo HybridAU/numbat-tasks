@@ -20,7 +20,7 @@ This is currently in development, at some point I'll make this repo public.
 - [ ] More Linting
   - [ ] Code review doctor
   - [ ] Dependabot
-  - [ ] JS linting (biome / typescript)
+  - [X] JS linting (biome / typescript)
   - [ ] JS Tests (jest)
   - [ ] Black -> Ruff
   - [ ] Poetry -> Uv
