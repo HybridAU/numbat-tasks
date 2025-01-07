@@ -7,7 +7,7 @@ from accounts.models import CustomUser
 
 class CustomUserAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super(CustomUserAdminForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields["password"].widget = TextInput(attrs={"type": "password"})
 
 

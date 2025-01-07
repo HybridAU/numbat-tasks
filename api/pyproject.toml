@@ -16,20 +16,12 @@ drf-spectacular = {extras = ["sidecar"], version = "^0.27.1"}
 drf-nested-routers = "^0.94.1"
 djangorestframework-simplejwt = "^5.3.1"
 
-
-[tool.poetry.group.linting.dependencies]
-black = "^24.4.2"
-isort = "^5.13.2"
-flake8 = "^7.0.0"
-
 [tool.poetry.group.test.dependencies]
 pytest-django = "^4.8.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.20.0"
-
-[tool.isort]
-profile = "black"
+ruff = "^0.8.6"
 
 [build-system]
 requires = ["poetry-core"]
@@ -38,3 +30,28 @@ build-backend = "poetry.core.masonry.api"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "numbat_tasks_api.settings"
 
+[tool.ruff.lint]
+select = [
+    # pycodestyle
+    "E",
+    # Pyflakes
+    "F",
+    # pyupgrade
+    "UP",
+    # flake8-bugbear
+    "B",
+    # flake8-simplify
+    "SIM",
+    # flake8-bandit
+    "S",
+    # isort
+    "I",
+    # pep8-naming
+    "N"
+]
+# Ignore line lenght as that is handled else where.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore "No assertions" rule in tests.
+"test*.py" = ["S101", "S311"]
