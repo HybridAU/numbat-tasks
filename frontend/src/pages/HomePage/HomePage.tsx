@@ -35,7 +35,7 @@ export default function HomePage() {
         // By adding lots of space at the bottom, it makes it clear we have scrolled to the end of the list.
         <Stack pb="6rem">
           {sortedTasks?.map((task) => (
-            <Task key={task.id} {...task} />
+            <Task key={task.id} task={task} />
           ))}
         </Stack>
       ) : (

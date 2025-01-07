@@ -49,7 +49,11 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AddEditTask(task?: TaskDetails) {
+type AddEditTaskProps = {
+  task?: TaskDetails;
+};
+
+export default function AddEditTask({ task }: AddEditTaskProps) {
   const queryClient = useQueryClient();
   const { currentList } = useListsState();
   const authHeader = useAuthHeader();
