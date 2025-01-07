@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 
-from decouple import config
+from decouple import Csv, config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,15 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# TODO load this from .env
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-e$efkmcw8vv&9!pzyew1^y(+ir*gl0uw_fa3_1sj5=mo_ps&sf"
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# TODO load this from .env
-ALLOWED_HOSTS = ["*"]
+config("ALLOWED_HOSTS", cast=Csv())
 
 
 # Application definition
