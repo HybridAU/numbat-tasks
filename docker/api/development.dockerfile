@@ -2,12 +2,12 @@ FROM python:3.13-slim-bookworm
 
 WORKDIR /api
 
-RUN pip install poetry
+RUN pip install uv
 
 COPY ./api/pyproject.toml .
-COPY ./api/poetry.lock* .
+COPY ./api/uv.lock* .
 
-RUN poetry install --no-root
+RUN UV_PROJECT_ENVIRONMENT=/venv uv sync
 
 COPY ./api /api
 
