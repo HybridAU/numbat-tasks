@@ -16,5 +16,5 @@ jobs:
               timeout-minutes: 2
 
             # Actual Tests
-            - run: docker compose run api poetry run pytest
+            - run: docker compose run api uv run pytest
 
