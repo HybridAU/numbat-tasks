@@ -23,8 +23,8 @@ This is currently in development, at some point I'll make this repo public.
   - [ ] Dependabot
   - [X] JS linting (biome / typescript)
   - [ ] JS Tests (jest)
-  - [ ] Black -> Ruff
-  - [ ] Poetry -> Uv
+  - [x] Black -> Ruff
+  - [x] Poetry -> Uv
 - [ ] Docs how to get set up from zero to self-hosted.
 
 ### To be actually useful as a todo list app
