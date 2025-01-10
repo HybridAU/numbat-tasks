@@ -1,10 +1,11 @@
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import * as React from "react";
+import ListSettingsDialog from "./ListSettingsDialog.tsx";
 
-export default function AccountMenu() {
+export default function ListActionsMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -24,7 +25,7 @@ export default function AccountMenu() {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
       >
-        <AccountCircleIcon />
+        <MoreVertIcon />
       </IconButton>
       <Menu
         id="basic-menu"
@@ -38,8 +39,9 @@ export default function AccountMenu() {
         }}
       >
         {/* TODO this button does nothing, it's just a place holder */}
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Uncheck all items</MenuItem>
+        {/* TODO pass handle close or some way of closing menu on click*/}
+        <ListSettingsDialog />
       </Menu>
     </div>
   );

@@ -15,8 +15,9 @@ This is currently in development, at some point I'll make this repo public.
 - [ ] Config to sign up and create users on a fresh install (not using django admin console.)
 - [ ] Figure out how to get refresh token working
   - [ ] Have a nice redirect when getting a 401 from the backend rather than an error page.
-- [ ] Sign out sometimes, but not always blows up. Figure out why and fix it.
-  - [ ] "A component suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix, updates that suspend should be wrapped with startTransition."
+- [X] Sign out sometimes, but not always blows up. Figure out why and fix it.
+  - [X] "A component suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix, updates that suspend should be wrapped with startTransition."
+  - Lazy loading was the problem
 - [ ] More Linting
   - [ ] Code review doctor
   - [ ] Dependabot

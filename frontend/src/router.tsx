@@ -1,11 +1,9 @@
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
-import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import ListsProvider from "./providers/ListsProvider.tsx";
-
-const Home = lazy(() => import("./pages/Home/Home"));
-const Settings = lazy(() => import("./pages/Settings/Settings"));
-const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
+import Home from "./pages/Home/Home";
+import Settings from "./pages/Settings/Settings";
+import SignIn from "./pages/SignIn/SignIn";
+import ListsProvider from "./providers/ListsProvider";
 
 const routerConfig = [
   {
