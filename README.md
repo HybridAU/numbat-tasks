@@ -38,5 +38,6 @@ This is currently in development, at some point I'll make this repo public.
 - [ ] Start date / Due date for 
   - [ ] Push notifications
 - [ ] Sub tasks
+- [ ] Play a happy chime when a task is marked as completed
 
 The irony of having a todo list written in markdown, on a todo list app is not lost on me.

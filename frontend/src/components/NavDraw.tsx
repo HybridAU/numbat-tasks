@@ -11,6 +11,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import type { ListDetails } from "../api/lists.ts";
 import { useListsDispatch, useListsState } from "../providers/ListsProvider";
 
@@ -18,6 +19,8 @@ export default function NavDraw() {
   const [open, setOpen] = React.useState(false);
   const { lists } = useListsState();
   const listDispatch = useListsDispatch();
+  const navigate = useNavigate();
+
   const handleSelect = (list: ListDetails) => {
     listDispatch({ type: "SET_CURRENT_LIST", payload: list });
   };
@@ -61,12 +64,14 @@ export default function NavDraw() {
       <Divider />
       <List>
         <ListItem disablePadding>
-          {/* TODO this button does nothing, it's just a place holder */}
           <ListItemButton>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText primary="Manage lists" />
+            <ListItemText
+              primary="Settings"
+              onClick={() => navigate("/settings")}
+            />
           </ListItemButton>
         </ListItem>
       </List>

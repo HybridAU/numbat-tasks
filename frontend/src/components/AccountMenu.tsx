@@ -3,8 +3,6 @@ import { IconButton } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import * as React from "react";
-import useSignOut from "react-auth-kit/hooks/useSignOut";
-import { useNavigate } from "react-router-dom";
 
 export default function AccountMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -12,16 +10,8 @@ export default function AccountMenu() {
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const signOut = useSignOut();
-  const navigate = useNavigate();
   const handleClose = () => {
     setAnchorEl(null);
-  };
-
-  const handleSignOut = () => {
-    setAnchorEl(null);
-    signOut();
-    navigate("/sign-in");
   };
 
   return (
@@ -50,7 +40,6 @@ export default function AccountMenu() {
         {/* TODO this button does nothing, it's just a place holder */}
         <MenuItem onClick={handleClose}>Profile</MenuItem>
         <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleSignOut}>Logout</MenuItem>
       </Menu>
     </div>
   );
