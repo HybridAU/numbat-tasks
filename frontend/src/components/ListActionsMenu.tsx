@@ -40,8 +40,7 @@ export default function ListActionsMenu() {
       >
         {/* TODO this button does nothing, it's just a place holder */}
         <MenuItem onClick={handleClose}>Uncheck all items</MenuItem>
-        {/* TODO pass handle close or some way of closing menu on click*/}
-        <ListSettingsDialog />
+        <ListSettingsDialog clearActionMenu={handleClose} />
       </Menu>
     </div>
   );

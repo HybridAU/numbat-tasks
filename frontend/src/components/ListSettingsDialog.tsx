@@ -36,7 +36,14 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ListSettingsDialog() {
+type ListSettingsDialogProps = {
+  // A function that can be called to clear the actions menu when closing the dialog
+  clearActionMenu: () => void;
+};
+
+export default function ListSettingsDialog({
+  clearActionMenu,
+}: ListSettingsDialogProps) {
   const [open, setOpen] = useState(false);
   const { currentList, lists } = useListsState();
   const authHeader = useAuthHeader();
@@ -54,6 +61,7 @@ export default function ListSettingsDialog() {
   const handleClose = () => {
     reset();
     setOpen(false);
+    clearActionMenu();
   };
 
   const handleSaveClick = ({
