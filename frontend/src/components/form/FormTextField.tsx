@@ -13,12 +13,6 @@ type FormInputProps<T extends FieldValues> = {
 } & TextFieldProps &
   FieldValues;
 
-// I'm not saying this is the right way to do it, but it seems to me
-// that we want to create a controlled TextField, and we want to pass
-// through any props, without needing to explicitly list all the possible
-// props that a text filed can have. I'm going to disable the linter for now
-// and figure out why this is a bad idea (and how to fix it) later.
-/* eslint-disable react/jsx-props-no-spreading */
 function FormTextField<T extends FieldValues>({
   name,
   control,

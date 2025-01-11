@@ -52,6 +52,7 @@ export function ListsReducer(
     case "SET_LISTS": {
       return {
         ...state,
+        // TODO this refreshes the lists (as shown in the nav bar) but not the current list.
         lists: action.payload,
       };
     }
@@ -86,7 +87,7 @@ export default function ListsProvider({
   useEffect(() => {
     if (data?.length === 0) {
       mutate({ name: "Default List", authHeader: authHeader });
-    } else if (data) {
+    } else if (data && !state.listsLoaded) {
       dispatch({
         type: "INITIAL_LOAD",
         payload: {
@@ -95,8 +96,13 @@ export default function ListsProvider({
           lists: data,
         },
       });
+    } else if (data && state.listsLoaded) {
+      dispatch({
+        type: "SET_LISTS",
+        payload: data,
+      });
     }
-  }, [data, mutate, authHeader]);
+  }, [data, mutate, authHeader, state.listsLoaded]);
 
   return (
     <ListsContext.Provider value={state}>
