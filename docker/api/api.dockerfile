@@ -7,7 +7,7 @@ RUN pip install uv
 COPY ./api/pyproject.toml .
 COPY ./api/uv.lock* .
 
-RUN UV_PROJECT_ENVIRONMENT=/venv uv sync
+RUN UV_PROJECT_ENVIRONMENT=/venv uv sync --group production --no-group dev
 
 COPY ./api /api
 

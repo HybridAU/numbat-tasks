@@ -21,6 +21,9 @@ dev = [
     "pytest-django>=4.9.0",
     "ruff>=0.8.6",
 ]
+production = [
+    "gunicorn>=23.0.0",
+]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "numbat_tasks_api.settings"

@@ -1,4 +1,10 @@
 #!/bin/bash
 cd /api
-uv run python manage.py migrate
-uv run python manage.py runserver 0.0.0.0:8000
+/venv/bin/python manage.py migrate
+if [[ "$DEBUG" == "True" ]]; then
+    # Install development packages (e.g. Pytest and ruff) and start the development server
+    uv sync
+    uv run python manage.py runserver 0.0.0.0:8000
+else
+    /venv/bin/gunicorn numbat_tasks_api.wsgi --bind 0.0.0.0:8000
+fi
