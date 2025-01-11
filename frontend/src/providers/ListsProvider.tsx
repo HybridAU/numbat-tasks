@@ -6,12 +6,13 @@ import {
   addList,
   type addListRequest,
   lists,
-} from "../api/lists.ts";
+} from "../api/lists";
 
 export type ListsProviderState = {
   listsLoaded: boolean;
   currentList: ListDetails;
   lists: ListDetails[];
+  newListId?: number;
 };
 
 const initialState: ListsProviderState = {
@@ -28,6 +29,7 @@ const initialState: ListsProviderState = {
 
 export type ListsAction =
   | { type: "SET_CURRENT_LIST"; payload: ListDetails }
+  | { type: "SET_CURRENT_LIST_BY_ID"; payload: number }
   | { type: "SET_LISTS"; payload: ListDetails[] }
   | { type: "INITIAL_LOAD"; payload: ListsProviderState };
 
@@ -49,10 +51,30 @@ export function ListsReducer(
         currentList: action.payload,
       };
     }
-    case "SET_LISTS": {
+    case "SET_CURRENT_LIST_BY_ID": {
+      // TODO This feels loopy and I'm sure it's there is a better way to do this.
+      //  I originally just set the current list here, but that wasn't working because Lists query
+      //  had been marked as invalidated but hadn't finished refreshing yet when this is called,
+      //  so what we do here is save the id we are looking for to the state, then next time the
+      //  Lists query (data) is updated, we use the newListId if it exists.
+      //  The joy of working with asynchronous code.
       return {
         ...state,
+        newListId: action.payload,
+      };
+    }
+    case "SET_LISTS": {
+      // Use the "newListId" if it exists, otherwise keep the current list,
+      // and if that's been deleted just take the first list in the array
+      const newCurrentList =
+        action.payload.find((obj) => obj.id === state.newListId) ||
+        action.payload.find((obj) => obj.id === state.currentList.id) ||
+        action.payload[0];
+      return {
+        ...state,
+        currentList: newCurrentList,
         lists: action.payload,
+        newListId: undefined,
       };
     }
     case "INITIAL_LOAD": {
@@ -86,7 +108,7 @@ export default function ListsProvider({
   useEffect(() => {
     if (data?.length === 0) {
       mutate({ name: "Default List", authHeader: authHeader });
-    } else if (data) {
+    } else if (data && !state.listsLoaded) {
       dispatch({
         type: "INITIAL_LOAD",
         payload: {
@@ -95,8 +117,13 @@ export default function ListsProvider({
           lists: data,
         },
       });
+    } else if (data && state.listsLoaded) {
+      dispatch({
+        type: "SET_LISTS",
+        payload: data,
+      });
     }
-  }, [data, mutate, authHeader]);
+  }, [data, mutate, authHeader, state.listsLoaded]);
 
   return (
     <ListsContext.Provider value={state}>

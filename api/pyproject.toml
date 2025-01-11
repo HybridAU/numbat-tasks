@@ -42,7 +42,9 @@ select = [
     # isort
     "I",
     # pep8-naming
-    "N"
+    "N",
+    # datetimez (ban the usage of unsafe naive datetime)
+    "DTZ",
 ]
 # Ignore line lenght as that is handled else where.
 ignore = ["E501"]

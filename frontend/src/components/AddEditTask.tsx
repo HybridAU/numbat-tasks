@@ -27,9 +27,9 @@ import {
   type deleteTaskRequest,
   updateTask,
   type updateTaskRequest,
-} from "../api/tasks.ts";
-import { useListsState } from "../providers/ListsProvider.tsx";
-import FormTextField from "./form/FormTextField.tsx";
+} from "../api/tasks";
+import { useListsState } from "../providers/ListsProvider";
+import FormTextField from "./form/FormTextField";
 
 const StyledFab = styled(Fab)({
   position: "absolute",

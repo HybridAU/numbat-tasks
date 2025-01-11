@@ -6,7 +6,7 @@ import BottomAppBar from "../../components/BottomAppBar";
 import Task from "../../components/Task";
 import { useListsState } from "../../providers/ListsProvider";
 
-export default function HomePage() {
+export default function Home() {
   const authHeader = useAuthHeader();
   const { listsLoaded, currentList } = useListsState();
 

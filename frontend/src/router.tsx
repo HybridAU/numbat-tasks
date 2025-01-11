@@ -1,10 +1,9 @@
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
-import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import ListsProvider from "./providers/ListsProvider.tsx";
-
-const HomePage = lazy(() => import("./pages/HomePage/HomePage"));
-const SignIn = lazy(() => import("./pages/SignIn/SignIn"));
+import Home from "./pages/Home/Home";
+import Settings from "./pages/Settings/Settings";
+import SignIn from "./pages/SignIn/SignIn";
+import ListsProvider from "./providers/ListsProvider";
 
 const routerConfig = [
   {
@@ -12,7 +11,17 @@ const routerConfig = [
     element: (
       <RequireAuth fallbackPath="/sign-in">
         <ListsProvider>
-          <HomePage />
+          <Home />
+        </ListsProvider>
+      </RequireAuth>
+    ),
+  },
+  {
+    path: "/settings",
+    element: (
+      <RequireAuth fallbackPath="/sign-in">
+        <ListsProvider>
+          <Settings />
         </ListsProvider>
       </RequireAuth>
     ),
