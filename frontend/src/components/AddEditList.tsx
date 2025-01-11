@@ -104,8 +104,8 @@ export default function AddEditList({
   const { mutate: doAddList } = useMutation({
     mutationFn: (data: addListRequest) => addList(data),
     onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: ["Lists"] });
       listsDispatch({ type: "SET_CURRENT_LIST_BY_ID", payload: response.id });
+      queryClient.invalidateQueries({ queryKey: ["Lists"] });
     },
   });
 
