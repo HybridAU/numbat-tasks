@@ -8,7 +8,7 @@ This is currently in development, at some point I'll make this repo public.
 - [X] If no list exists (i.e. on first load) create a "default list"
 - [X] Some basic styling pin things to top, bottem and draw.
 - [X] Dialog to add/edit tasks
-- [ ] Dialog to manage lists
+- [X] Dialog to manage lists
 - [ ] Automation (build release docker images)
 
 ### MVP to make repo public
