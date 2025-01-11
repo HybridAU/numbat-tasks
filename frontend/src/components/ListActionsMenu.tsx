@@ -3,7 +3,7 @@ import { IconButton } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import * as React from "react";
-import ListSettingsDialog from "./ListSettingsDialog.tsx";
+import AddEditList from "./AddEditList";
 
 export default function ListActionsMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -40,7 +40,7 @@ export default function ListActionsMenu() {
       >
         {/* TODO this button does nothing, it's just a place holder */}
         <MenuItem onClick={handleClose}>Uncheck all items</MenuItem>
-        <ListSettingsDialog clearActionMenu={handleClose} />
+        <AddEditList editCurrentList={true} clearActionMenu={handleClose} />
       </Menu>
     </div>
   );

@@ -9,6 +9,7 @@ export type ListDetails = {
 export type addListRequest = {
   authHeader: string | null;
   name: string;
+  active?: boolean;
 };
 
 export type updateListRequest = {
@@ -41,6 +42,7 @@ const lists = async (authHeader: string | null): Promise<ListsResponse> => {
 const addList = async ({
   authHeader,
   name,
+  active,
 }: addListRequest): Promise<ListDetails> => {
   const response = await fetch(
     `${import.meta.env.VITE_API_BASE_URL}/tasks/list/`,
@@ -50,7 +52,7 @@ const addList = async ({
         "Content-Type": "application/json",
         Authorization: authHeader || "",
       },
-      body: JSON.stringify({ name: name }),
+      body: JSON.stringify({ name: name, active: active }),
     },
   );
   if (response.ok) {

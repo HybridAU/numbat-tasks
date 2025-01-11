@@ -14,6 +14,7 @@ import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import type { ListDetails } from "../api/lists.ts";
 import { useListsDispatch, useListsState } from "../providers/ListsProvider";
+import AddEditList from "./AddEditList";
 
 export default function NavDraw() {
   const [open, setOpen] = React.useState(false);
@@ -60,6 +61,7 @@ export default function NavDraw() {
             </ListItemButton>
           </ListItem>
         ))}
+        <AddEditList editCurrentList={false} />
       </List>
       <Divider />
       <List>

@@ -1,3 +1,4 @@
+import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
@@ -10,6 +11,10 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import type { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -18,6 +23,8 @@ import * as React from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { Form, useForm } from "react-hook-form";
 import {
+  addList,
+  type addListRequest,
   deleteList,
   type deleteListRequest,
   updateList,
@@ -38,42 +45,53 @@ const Transition = React.forwardRef(function Transition(
 
 type ListSettingsDialogProps = {
   // A function that can be called to clear the actions menu when closing the dialog
-  clearActionMenu: () => void;
+  editCurrentList: boolean;
+  clearActionMenu?: () => void;
 };
 
-export default function ListSettingsDialog({
+export default function AddEditList({
+  editCurrentList,
   clearActionMenu,
 }: ListSettingsDialogProps) {
   const [open, setOpen] = useState(false);
   const { currentList, lists } = useListsState();
   const authHeader = useAuthHeader();
   const queryClient = useQueryClient();
-  const deleteEnabled = lists.length > 1;
+  const deleteEnabled = lists.length > 1 && editCurrentList;
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: { name: "", active: true },
   });
 
   const handleOpen = () => {
-    reset({ name: currentList.name, active: currentList.active });
+    editCurrentList &&
+      reset({ name: currentList.name, active: currentList.active });
     setOpen(true);
   };
   const handleClose = () => {
     reset();
     setOpen(false);
-    clearActionMenu();
+    if (clearActionMenu !== undefined) clearActionMenu();
   };
 
   const handleSaveClick = ({
     name,
     active,
   }: { name: string; active: boolean }) => {
-    doUpdateList({
-      name: name,
-      active: active,
-      listId: currentList.id,
-      authHeader: authHeader,
-    });
+    if (editCurrentList) {
+      doUpdateList({
+        name: name,
+        active: active,
+        listId: currentList.id,
+        authHeader: authHeader,
+      });
+    } else {
+      doAddList({
+        name: name,
+        active: active,
+        authHeader: authHeader,
+      });
+    }
     handleClose();
   };
 
@@ -81,6 +99,13 @@ export default function ListSettingsDialog({
     doDeleteList({ listId: currentList.id, authHeader: authHeader });
     handleClose();
   };
+
+  const { mutate: doAddList } = useMutation({
+    mutationFn: (data: addListRequest) => addList(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Lists"] });
+    },
+  });
 
   const { mutate: doUpdateList } = useMutation({
     mutationFn: (data: updateListRequest) => updateList(data),
@@ -155,7 +180,18 @@ export default function ListSettingsDialog({
           </Stack>
         </Form>
       </Dialog>
-      <MenuItem onClick={handleOpen}>List Settings</MenuItem>
+      {editCurrentList ? (
+        <MenuItem onClick={handleOpen}>List Settings</MenuItem>
+      ) : (
+        <ListItem disablePadding>
+          <ListItemButton>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="New list" onClick={handleOpen} />
+          </ListItemButton>
+        </ListItem>
+      )}
     </>
   );
 }
