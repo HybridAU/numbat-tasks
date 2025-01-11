@@ -6,7 +6,7 @@ import {
   addList,
   type addListRequest,
   lists,
-} from "../api/lists.ts";
+} from "../api/lists";
 
 export type ListsProviderState = {
   listsLoaded: boolean;
@@ -28,6 +28,7 @@ const initialState: ListsProviderState = {
 
 export type ListsAction =
   | { type: "SET_CURRENT_LIST"; payload: ListDetails }
+  | { type: "SET_CURRENT_LIST_BY_ID"; payload: number }
   | { type: "SET_LISTS"; payload: ListDetails[] }
   | { type: "INITIAL_LOAD"; payload: ListsProviderState };
 
@@ -49,7 +50,18 @@ export function ListsReducer(
         currentList: action.payload,
       };
     }
+    case "SET_CURRENT_LIST_BY_ID": {
+      // Get the list by ID if we can find it, otherwise stay on the current list
+      const newCurrentList =
+        state.lists.find((obj) => obj.id === action.payload) ||
+        state.currentList;
+      return {
+        ...state,
+        currentList: newCurrentList,
+      };
+    }
     case "SET_LISTS": {
+      // Get the current list by ID if we can find it, otherwise use the first list in the array
       const newCurrentList =
         action.payload.find((obj) => obj.id === state.currentList.id) ||
         action.payload[0];

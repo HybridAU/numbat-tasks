@@ -30,7 +30,7 @@ import {
   updateList,
   type updateListRequest,
 } from "../api/lists";
-import { useListsState } from "../providers/ListsProvider";
+import { useListsDispatch, useListsState } from "../providers/ListsProvider";
 import FormCheckbox from "./form/FormCheckbox";
 import FormTextField from "./form/FormTextField";
 
@@ -55,6 +55,7 @@ export default function AddEditList({
 }: ListSettingsDialogProps) {
   const [open, setOpen] = useState(false);
   const { currentList, lists } = useListsState();
+  const listsDispatch = useListsDispatch();
   const authHeader = useAuthHeader();
   const queryClient = useQueryClient();
   const deleteEnabled = lists.length > 1 && editCurrentList;
@@ -102,8 +103,9 @@ export default function AddEditList({
 
   const { mutate: doAddList } = useMutation({
     mutationFn: (data: addListRequest) => addList(data),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries({ queryKey: ["Lists"] });
+      listsDispatch({ type: "SET_CURRENT_LIST_BY_ID", payload: response.id });
     },
   });
 
@@ -184,11 +186,11 @@ export default function AddEditList({
         <MenuItem onClick={handleOpen}>List Settings</MenuItem>
       ) : (
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={handleOpen}>
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>
-            <ListItemText primary="New list" onClick={handleOpen} />
+            <ListItemText primary="New list" />
           </ListItemButton>
         </ListItem>
       )}

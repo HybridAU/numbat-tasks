@@ -12,7 +12,7 @@ import ListItemText from "@mui/material/ListItemText";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import type { ListDetails } from "../api/lists.ts";
+import type { ListDetails } from "../api/lists";
 import { useListsDispatch, useListsState } from "../providers/ListsProvider";
 import AddEditList from "./AddEditList";
 
@@ -66,14 +66,11 @@ export default function NavDraw() {
       <Divider />
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => navigate("/settings")}>
             <ListItemIcon>
               <SettingsIcon />
             </ListItemIcon>
-            <ListItemText
-              primary="Settings"
-              onClick={() => navigate("/settings")}
-            />
+            <ListItemText primary="Settings" />
           </ListItemButton>
         </ListItem>
       </List>

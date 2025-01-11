@@ -1,8 +1,8 @@
 import SearchIcon from "@mui/icons-material/Search";
 import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
-import AddEditTask from "./AddEditTask.tsx";
-import ListActionsMenu from "./ListActionsMenu.tsx";
-import NavDraw from "./NavDraw.tsx";
+import AddEditTask from "./AddEditTask";
+import ListActionsMenu from "./ListActionsMenu";
+import NavDraw from "./NavDraw";
 
 export default function BottomAppBar() {
   return (
