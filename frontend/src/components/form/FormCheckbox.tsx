@@ -4,7 +4,7 @@ import {
   FormGroup,
   FormHelperText,
 } from "@mui/material";
-import CheckBox, { type CheckboxProps } from "@mui/material/Checkbox";
+import Checkbox, { type CheckboxProps } from "@mui/material/Checkbox";
 import {
   type Control,
   Controller,
@@ -19,7 +19,7 @@ type FormInputProps<T extends FieldValues> = {
 } & CheckboxProps &
   FieldValues;
 
-function FormCheckBox<T extends FieldValues>({
+function FormCheckbox<T extends FieldValues>({
   name,
   control,
   label,
@@ -35,7 +35,7 @@ function FormCheckBox<T extends FieldValues>({
           <FormGroup>
             <FormControlLabel
               control={
-                <CheckBox onChange={onChange} value={value} {...props} />
+                <Checkbox onChange={onChange} value={value} {...props} />
               }
               label={label}
             />
@@ -47,4 +47,4 @@ function FormCheckBox<T extends FieldValues>({
   );
 }
 
-export default FormCheckBox;
+export default FormCheckbox;

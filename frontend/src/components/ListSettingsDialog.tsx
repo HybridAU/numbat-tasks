@@ -22,10 +22,10 @@ import {
   type deleteListRequest,
   updateList,
   type updateListRequest,
-} from "../api/lists.ts";
-import { useListsState } from "../providers/ListsProvider.tsx";
-import FormCheckBox from "./form/FormCheckBox.tsx";
-import FormTextField from "./form/FormTextField.tsx";
+} from "../api/lists";
+import { useListsState } from "../providers/ListsProvider";
+import FormCheckbox from "./form/FormCheckbox";
+import FormTextField from "./form/FormTextField";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -146,7 +146,7 @@ export default function ListSettingsDialog({
               id="name"
               name="name"
             />
-            <FormCheckBox
+            <FormCheckbox
               control={control}
               label="Active"
               id="active"
