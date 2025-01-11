@@ -50,9 +50,12 @@ export function ListsReducer(
       };
     }
     case "SET_LISTS": {
+      const newCurrentList =
+        action.payload.find((obj) => obj.id === state.currentList.id) ||
+        action.payload[0];
       return {
         ...state,
-        // TODO this refreshes the lists (as shown in the nav bar) but not the current list.
+        currentList: newCurrentList,
         lists: action.payload,
       };
     }

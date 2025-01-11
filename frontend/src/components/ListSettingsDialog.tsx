@@ -17,7 +17,12 @@ import { useState } from "react";
 import * as React from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { Form, useForm } from "react-hook-form";
-import { updateList, type updateListRequest } from "../api/lists.ts";
+import {
+  deleteList,
+  type deleteListRequest,
+  updateList,
+  type updateListRequest,
+} from "../api/lists.ts";
 import { useListsState } from "../providers/ListsProvider.tsx";
 import FormCheckBox from "./form/FormCheckBox.tsx";
 import FormTextField from "./form/FormTextField.tsx";
@@ -33,9 +38,10 @@ const Transition = React.forwardRef(function Transition(
 
 export default function ListSettingsDialog() {
   const [open, setOpen] = useState(false);
-  const { currentList } = useListsState();
+  const { currentList, lists } = useListsState();
   const authHeader = useAuthHeader();
   const queryClient = useQueryClient();
+  const deleteEnabled = lists.length > 1;
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: { name: "", active: true },
@@ -63,8 +69,20 @@ export default function ListSettingsDialog() {
     handleClose();
   };
 
+  const handleDeleteClick = () => {
+    doDeleteList({ listId: currentList.id, authHeader: authHeader });
+    handleClose();
+  };
+
   const { mutate: doUpdateList } = useMutation({
     mutationFn: (data: updateListRequest) => updateList(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Lists"] });
+    },
+  });
+
+  const { mutate: doDeleteList } = useMutation({
+    mutationFn: (data: deleteListRequest) => deleteList(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["Lists"] });
     },
@@ -93,14 +111,11 @@ export default function ListSettingsDialog() {
               <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
                 List Settings
               </Typography>
-              <IconButton
-                color="error"
-                onClick={() => {
-                  /* TODO */
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              {deleteEnabled && (
+                <IconButton color="error" onClick={handleDeleteClick}>
+                  <DeleteIcon />
+                </IconButton>
+              )}
               <IconButton
                 color="inherit"
                 type="submit"
