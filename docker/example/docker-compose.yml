@@ -2,11 +2,9 @@ name: numbat-tasks-example
 
 services:
     api:
-        build:
-            dockerfile: docker/api/api.dockerfile
-            context: .
+        image: numbat_tasks_api:latest
         env_file:
-            - .env
+            - settings.env
         depends_on:
             database:
                 condition: service_started
@@ -15,21 +13,19 @@ services:
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         env_file:
-            - .env
+            - settings.env
     frontend:
-        build:
-            dockerfile: docker/frontend/frontend.dockerfile
-            context: .
+        image: numbat_tasks_frontend:latest
         volumes:
           - static_files:/static_files
         env_file:
-            - .env
+            - settings.env
     caddy:
         image: caddy:2-alpine
         ports:
-            - "0.0.0.0:8000:80"
+            - "127.0.0.1:8000:80"
         volumes:
-            - ./docker/caddy/Caddyfile_example:/etc/caddy/Caddyfile:ro
+            - ./Caddyfile:/etc/caddy/Caddyfile:ro
             - caddy_data:/data
             - caddy_config:/config
             - static_files:/static_files:ro
