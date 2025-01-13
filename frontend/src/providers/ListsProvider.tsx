@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, useContext, useEffect, useReducer } from "react";
+import { createContext, use, useEffect, useReducer } from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import {
   type ListDetails,
@@ -135,7 +135,7 @@ export default function ListsProvider({
 }
 
 export function useListsState() {
-  const context = useContext(ListsContext);
+  const context = use(ListsContext);
   if (context === undefined)
     throw new Error("useListsState must be used within a ListsContext");
 
@@ -143,7 +143,7 @@ export function useListsState() {
 }
 
 export function useListsDispatch() {
-  const context = useContext(ListsDispatchContext);
+  const context = use(ListsDispatchContext);
   if (context === undefined)
     throw new Error("useListsDispatch must be used within a ListsContext");
 
