@@ -5,6 +5,6 @@ if [[ "$DEBUG" == "True" ]]; then
     pnpm dev --host --port 8000
 else
     pnpm run build
-    rm -rf /static_files/*
-    mv /frontend/dist/* /static_files/
+    rm -rf /static_files/frontend
+    mv /frontend/dist /static_files/frontend
 fi

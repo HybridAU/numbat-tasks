@@ -6,5 +6,6 @@ if [[ "$DEBUG" == "True" ]]; then
     uv sync
     uv run python manage.py runserver 0.0.0.0:8000
 else
+    /venv/bin/python manage.py collectstatic --noinput
     /venv/bin/gunicorn numbat_tasks_api.wsgi --bind 0.0.0.0:8000
 fi
