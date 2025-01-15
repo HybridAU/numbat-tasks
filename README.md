@@ -9,11 +9,12 @@ This is currently in development, at some point I'll make this repo public.
 - [X] Some basic styling pin things to top, bottem and draw.
 - [X] Dialog to add/edit tasks
 - [X] Dialog to manage lists
-- [ ] Automation (build release docker images)
+- [X] Automation (build release docker images)
 
 ### MVP to make repo public
 - [ ] Config to sign up and create users on a fresh install (not using django admin console.)
 - [ ] Figure out how to get refresh token working
+  - [ ] Looks like redirect is not working for unauthenticated users (so home page just errors)
   - [ ] Have a nice redirect when getting a 401 from the backend rather than an error page.
 - [X] Sign out sometimes, but not always blows up. Figure out why and fix it.
   - [X] "A component suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix, updates that suspend should be wrapped with startTransition."

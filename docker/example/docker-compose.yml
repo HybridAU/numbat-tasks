@@ -2,12 +2,14 @@ name: numbat-tasks-example
 
 services:
     api:
-        image: numbat_tasks_api:latest
+        image: ghcr.io/hybridau/numbat-tasks-api:0.2.0
         env_file:
             - settings.env
         depends_on:
             database:
                 condition: service_started
+        volumes:
+            - static_files:/static_files
     database:
         image: postgres:16-bookworm
         volumes:
@@ -15,7 +17,7 @@ services:
         env_file:
             - settings.env
     frontend:
-        image: numbat_tasks_frontend:latest
+        image: ghcr.io/hybridau/numbat-tasks-frontend:0.2.0
         volumes:
           - static_files:/static_files
         env_file:
