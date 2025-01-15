@@ -44,8 +44,8 @@ const Transition = React.forwardRef(function Transition(
 });
 
 type ListSettingsDialogProps = {
-  // A function that can be called to clear the actions menu when closing the dialog
   editCurrentList: boolean;
+  // A function that can be called to clear the actions menu when closing the dialog
   clearActionMenu?: () => void;
 };
 

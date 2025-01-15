@@ -3,7 +3,7 @@ name: numbat-tasks
 services:
     api:
         build:
-            dockerfile: docker/api/development.dockerfile
+            dockerfile: docker/api/api.dockerfile
             context: .
         volumes:
             # Allow live reloading
@@ -24,7 +24,7 @@ services:
             - .env
     frontend:
         build:
-            dockerfile: docker/frontend/development.dockerfile
+            dockerfile: docker/frontend/frontend.dockerfile
             context: .
         volumes:
             - ./frontend:/frontend
