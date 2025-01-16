@@ -7,26 +7,26 @@ export type ListDetails = {
 };
 
 export type addListRequest = {
-  authHeader: string | null;
+  authHeader?: string;
   name: string;
   active?: boolean;
 };
 
 export type updateListRequest = {
-  authHeader: string | null;
+  authHeader?: string;
   name: string;
   active: boolean;
   listId: number;
 };
 
 export type deleteListRequest = {
-  authHeader: string | null;
+  authHeader?: string;
   listId: number;
 };
 
 type ListsResponse = ListDetails[];
 
-const lists = async (authHeader: string | null): Promise<ListsResponse> => {
+const lists = async (authHeader?: string): Promise<ListsResponse> => {
   const response = await fetch(
     `${import.meta.env.VITE_API_BASE_URL}/tasks/list/`,
     {

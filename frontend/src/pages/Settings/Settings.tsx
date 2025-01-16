@@ -8,14 +8,14 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import useSignOut from "react-auth-kit/hooks/useSignOut";
 import { useNavigate } from "react-router-dom";
+import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
 export default function Settings() {
   const navigate = useNavigate();
-  const signOut = useSignOut();
+  const authenticationsDispatch = useAuthenticationsDispatch();
   const handleSignOut = () => {
-    signOut();
+    authenticationsDispatch({ type: "SET_LOGGED_OUT", payload: null });
     navigate("/sign-in");
   };
 

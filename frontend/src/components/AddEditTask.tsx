@@ -17,7 +17,6 @@ import type { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import * as React from "react";
-import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { Form, useForm } from "react-hook-form";
 import {
   type TaskDetails,
@@ -28,6 +27,7 @@ import {
   updateTask,
   type updateTaskRequest,
 } from "../api/tasks";
+import { useAuthenticationsState } from "../providers/AuthenticationProvider.tsx";
 import { useListsState } from "../providers/ListsProvider";
 import FormTextField from "./form/FormTextField";
 
@@ -56,7 +56,7 @@ type AddEditTaskProps = {
 export default function AddEditTask({ task }: AddEditTaskProps) {
   const queryClient = useQueryClient();
   const { currentList } = useListsState();
-  const authHeader = useAuthHeader();
+  const { authHeader } = useAuthenticationsState();
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     if (task) {

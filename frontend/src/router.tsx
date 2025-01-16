@@ -1,4 +1,3 @@
-import RequireAuth from "@auth-kit/react-router/RequireAuth";
 import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Settings from "./pages/Settings/Settings";
@@ -9,21 +8,17 @@ const routerConfig = [
   {
     path: "/",
     element: (
-      <RequireAuth fallbackPath="/sign-in">
-        <ListsProvider>
-          <Home />
-        </ListsProvider>
-      </RequireAuth>
+      <ListsProvider>
+        <Home />
+      </ListsProvider>
     ),
   },
   {
     path: "/settings",
     element: (
-      <RequireAuth fallbackPath="/sign-in">
-        <ListsProvider>
-          <Settings />
-        </ListsProvider>
-      </RequireAuth>
+      <ListsProvider>
+        <Settings />
+      </ListsProvider>
     ),
   },
   {

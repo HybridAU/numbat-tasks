@@ -1,13 +1,13 @@
 import { Alert, Button, Container, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
-import useSignIn from "react-auth-kit/hooks/useSignIn";
 import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import token, { type SignInRequest } from "../../api/token";
 import FormTextField from "../../components/form/FormTextField";
+import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
 export default function SignIn() {
-  const signIn = useSignIn();
+  const authenticationsDispatch = useAuthenticationsDispatch();
   const navigate = useNavigate();
   const { control, handleSubmit } = useForm({
     defaultValues: {
@@ -19,11 +19,9 @@ export default function SignIn() {
   const { mutate, error } = useMutation({
     mutationFn: (data: SignInRequest) => token(data),
     onSuccess: (result) => {
-      signIn({
-        auth: {
-          token: result.access,
-        },
-        refresh: result.refresh,
+      authenticationsDispatch({
+        type: "SET_LOGGED_IN",
+        payload: { accessToken: result.access, refreshToken: result.refresh },
       });
       navigate("/");
     },
