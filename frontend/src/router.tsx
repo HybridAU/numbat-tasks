@@ -2,23 +2,28 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Settings from "./pages/Settings/Settings";
 import SignIn from "./pages/SignIn/SignIn";
+import { AuthenticationSpinner } from "./providers/AuthenticationProvider";
 import ListsProvider from "./providers/ListsProvider";
 
 const routerConfig = [
   {
     path: "/",
     element: (
-      <ListsProvider>
-        <Home />
-      </ListsProvider>
+      <AuthenticationSpinner>
+        <ListsProvider>
+          <Home />
+        </ListsProvider>
+      </AuthenticationSpinner>
     ),
   },
   {
     path: "/settings",
     element: (
-      <ListsProvider>
-        <Settings />
-      </ListsProvider>
+      <AuthenticationSpinner>
+        <ListsProvider>
+          <Settings />
+        </ListsProvider>
+      </AuthenticationSpinner>
     ),
   },
   {

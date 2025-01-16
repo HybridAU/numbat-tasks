@@ -1,3 +1,5 @@
+import { Stack } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   type ReactNode,
   createContext,
@@ -91,4 +93,20 @@ export function useAuthenticationsDispatch() {
     );
 
   return context;
+}
+
+// A little spinner to show so we don't render content before redirecting to the sign-in page
+// this could be a separate component, but I thought it was logical to put it here.
+export function AuthenticationSpinner({ children }: { children: ReactNode }) {
+  const { accessToken } = useAuthenticationsState();
+  if (accessToken) return children;
+  return (
+    <Stack
+      height="400px"
+      width="100%"
+      sx={{ justifyContent: "center", alignItems: "center" }}
+    >
+      <CircularProgress size="4rem" />
+    </Stack>
+  );
 }
