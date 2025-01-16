@@ -45,6 +45,8 @@ export function AuthenticationReducer(
       };
     }
     case "SET_LOGGED_OUT": {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
       return { accessToken: undefined, refreshToken: undefined };
     }
     default: {
@@ -59,13 +61,26 @@ export default function AuthenticationProvider({
   const [state, dispatch] = useReducer(AuthenticationReducer, initialState);
   useEffect(() => {
     if (state.accessToken === undefined) {
+      // The first thing we do is try to load the tokens from local storage, if they exist
+      const accessToken = localStorage.getItem("accessToken");
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (accessToken && refreshToken) {
+        dispatch({
+          type: "SET_LOGGED_IN",
+          payload: { accessToken: accessToken, refreshToken: refreshToken },
+        });
+        return;
+      }
       // Because the AuthenticationProvider comes before the RouterProvider we can't use useNavigation here
       const path = window.location.pathname;
       if (!path.includes("sign-in")) {
         window.location.href = "/sign-in";
       }
+    } else if (state.accessToken && state.refreshToken) {
+      localStorage.setItem("accessToken", state.accessToken);
+      localStorage.setItem("refreshToken", state.refreshToken);
     }
-  }, [state.accessToken]);
+  }, [state.accessToken, state.refreshToken]);
   return (
     <AuthenticationContext.Provider value={state}>
       <AuthenticationDispatchContext value={dispatch}>
