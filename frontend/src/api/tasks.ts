@@ -9,19 +9,19 @@ export type TaskDetails = {
 type TasksResponse = TaskDetails[];
 
 type tasksRequest = {
-  authHeader: string | null;
+  authHeader?: string;
   listId: number;
 };
 
 export type addTaskRequest = {
-  authHeader: string | null;
+  authHeader?: string;
   listId: number;
   text: string;
   complete?: boolean;
 };
 
 export type updateTaskRequest = {
-  authHeader: string | null;
+  authHeader?: string;
   listId: number;
   taskId: number;
   text?: string;
@@ -29,7 +29,7 @@ export type updateTaskRequest = {
 };
 
 export type deleteTaskRequest = {
-  authHeader: string | null;
+  authHeader?: string;
   listId: number;
   taskId: number;
 };

@@ -1,29 +1,29 @@
-import RequireAuth from "@auth-kit/react-router/RequireAuth";
 import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Settings from "./pages/Settings/Settings";
 import SignIn from "./pages/SignIn/SignIn";
+import { AuthenticationSpinner } from "./providers/AuthenticationProvider";
 import ListsProvider from "./providers/ListsProvider";
 
 const routerConfig = [
   {
     path: "/",
     element: (
-      <RequireAuth fallbackPath="/sign-in">
+      <AuthenticationSpinner>
         <ListsProvider>
           <Home />
         </ListsProvider>
-      </RequireAuth>
+      </AuthenticationSpinner>
     ),
   },
   {
     path: "/settings",
     element: (
-      <RequireAuth fallbackPath="/sign-in">
+      <AuthenticationSpinner>
         <ListsProvider>
           <Settings />
         </ListsProvider>
-      </RequireAuth>
+      </AuthenticationSpinner>
     ),
   },
   {

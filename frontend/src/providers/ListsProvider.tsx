@@ -1,12 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createContext, use, useEffect, useReducer } from "react";
-import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import {
+  type ReactNode,
+  createContext,
+  use,
+  useEffect,
+  useReducer,
+} from "react";
 import {
   type ListDetails,
   addList,
   type addListRequest,
   lists,
 } from "../api/lists";
+import { useAuthenticationsState } from "./AuthenticationProvider.tsx";
 
 export type ListsProviderState = {
   listsLoaded: boolean;
@@ -85,11 +91,9 @@ export function ListsReducer(
   }
 }
 
-export default function ListsProvider({
-  children,
-}: { children: React.ReactNode }) {
+export default function ListsProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(ListsReducer, initialState);
-  const authHeader = useAuthHeader();
+  const { authHeader } = useAuthenticationsState();
   const queryClient = useQueryClient();
 
   const { data } = useQuery({

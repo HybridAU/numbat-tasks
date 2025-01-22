@@ -1,13 +1,13 @@
 import { Checkbox, Stack } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { type TaskDetails, updateTask } from "../api/tasks";
+import { useAuthenticationsState } from "../providers/AuthenticationProvider.tsx";
 import { useListsState } from "../providers/ListsProvider";
 import AddEditTask from "./AddEditTask";
 
 export default function Task({ task }: { task: TaskDetails }) {
   const queryClient = useQueryClient();
-  const authHeader = useAuthHeader();
+  const { authHeader } = useAuthenticationsState();
   const { currentList } = useListsState();
   const { mutate } = useMutation({
     mutationFn: () => {
