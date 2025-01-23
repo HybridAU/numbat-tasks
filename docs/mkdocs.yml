@@ -1,0 +1,18 @@
+site_name: Numbat Tasks Documentation
+site_url: https://example.com/docs
+dev_addr: 0.0.0.0:8000
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - content.code.annotate
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences

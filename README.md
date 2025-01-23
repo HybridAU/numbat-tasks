@@ -29,10 +29,15 @@ This is currently in development, at some point I'll make this repo public.
   - [ ] JS Tests (jest)
   - [X] Black -> Ruff
   - [X] Poetry -> Uv
-- [ ] Docs how to get set up from zero to self-hosted.
+- [X] Docs how to get set up from zero to self-hosted.
+- [ ] Automatically bump versions after build
 - [ ] Draw a better logo
 
 ### To be actually useful as a todo list app
+- [ ] Get a domain name and host
+  - [ ] Home page
+  - [ ] Docs
+  - [ ] Demo site
 - [ ] Basic sorting and filtering (by date / name)
 - [ ] Search tasks
   - [ ] Search current list (client side)

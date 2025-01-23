@@ -1,5 +1,8 @@
 FROM python:3.13-slim-bookworm
 
+ENV UV_PROJECT_ENVIRONMENT=/venv
+ENV DEBUG=False
+
 WORKDIR /api
 
 RUN pip install uv
@@ -7,7 +10,7 @@ RUN pip install uv
 COPY ./api/pyproject.toml .
 COPY ./api/uv.lock* .
 
-RUN UV_PROJECT_ENVIRONMENT=/venv uv sync --group production --no-group dev
+RUN uv sync --group production --no-group dev
 
 COPY ./api /api
 

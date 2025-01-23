@@ -1,4 +1,4 @@
-name: numbat-tasks
+name: numbat-tasks-development
 
 services:
     api:
@@ -36,6 +36,14 @@ services:
             - .env
         environment:
             - PORT=8000
+    docs:
+        build:
+            dockerfile: docker/docs/docs.dockerfile
+            context: .
+        volumes:
+            - ./docs:/docs
+        env_file:
+            - .env
     caddy:
         image: caddy:2-alpine
         ports:

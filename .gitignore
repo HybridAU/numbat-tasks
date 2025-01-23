@@ -3,3 +3,7 @@
 
 # Environment file
 .env
+
+# mkdocs
+docs/.venv
+docs/site/
