@@ -1,4 +1,4 @@
-name: numbat-tasks
+name: numbat-tasks-development
 
 services:
     api:

@@ -64,7 +64,7 @@ The api will refuse to start if the secret key is blank or contains the string `
 A key can be generated with
 
 ```shell
-echo SECRET_KEY=$(dd if=/dev/urandom bs=1 count=42 status=none | base64)
+echo SECRET_KEY=$(dd if=/dev/urandom bs=1 count=42 status=none | base64) >> .env
 ```
 
 ## UV_PROJECT_ENVIRONMENT
@@ -74,6 +74,12 @@ echo SECRET_KEY=$(dd if=/dev/urandom bs=1 count=42 status=none | base64)
 Specifies the path for
 the [uv virtual environment](https://docs.astral.sh/uv/configuration/environment/#uv_project_environment). Only really
 relent during development.
+
+## VERSION
+
+**Default:** `""` (empty string)
+
+Not used in the docker containers directly, but by docker compose to select the correct image to pull down and run.
 
 ## VITE_API_BASE_URL
 

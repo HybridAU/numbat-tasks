@@ -29,7 +29,7 @@ This is currently in development, at some point I'll make this repo public.
   - [ ] JS Tests (jest)
   - [X] Black -> Ruff
   - [X] Poetry -> Uv
-- [ ] Docs how to get set up from zero to self-hosted.
+- [X] Docs how to get set up from zero to self-hosted.
 - [ ] Draw a better logo
 
 ### To be actually useful as a todo list app
