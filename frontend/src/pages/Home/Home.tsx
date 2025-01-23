@@ -1,13 +1,13 @@
 import { CircularProgress, Stack, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { getTasks } from "../../api/tasks";
 import BottomAppBar from "../../components/BottomAppBar";
 import Task from "../../components/Task";
+import { useAuthenticationsState } from "../../providers/AuthenticationProvider.tsx";
 import { useListsState } from "../../providers/ListsProvider";
 
 export default function Home() {
-  const authHeader = useAuthHeader();
+  const { authHeader } = useAuthenticationsState();
   const { listsLoaded, currentList } = useListsState();
 
   const { data: tasks } = useQuery({
