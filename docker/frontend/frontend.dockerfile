@@ -1,5 +1,8 @@
 FROM node:22-bookworm-slim
 
+ENV VITE_API_BASE_URL=/api
+ENV DEBUG=False
+
 WORKDIR /frontend
 
 COPY ./frontend/package.json .
