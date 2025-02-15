@@ -33,12 +33,14 @@ services:
                 condition: service_started
         volumes:
             - static_files:/static_files
+        restart: always
     database:
         image: postgres:16-bookworm
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         env_file:
             - .env
+        restart: always
     frontend: # (2)!
         image: ghcr.io/hybridau/numbat-tasks-frontend:$VERSION
         volumes:
@@ -54,6 +56,7 @@ services:
             - caddy_data:/data
             - caddy_config:/config
             - static_files:/static_files:ro
+        restart: always
 
 volumes:
     postgres_data:

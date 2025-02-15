@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "./fetch.ts";
+
 export type ListDetails = {
   id: number;
   created: string;
@@ -7,32 +9,28 @@ export type ListDetails = {
 };
 
 export type addListRequest = {
-  authHeader?: string;
   name: string;
   active?: boolean;
 };
 
 export type updateListRequest = {
-  authHeader?: string;
   name: string;
   active: boolean;
   listId: number;
 };
 
 export type deleteListRequest = {
-  authHeader?: string;
   listId: number;
 };
 
 type ListsResponse = ListDetails[];
 
-const lists = async (authHeader?: string): Promise<ListsResponse> => {
-  const response = await fetch(
+const lists = async (): Promise<ListsResponse> => {
+  const response = await fetchWithAuth(
     `${import.meta.env.VITE_API_BASE_URL}/tasks/list/`,
     {
       headers: {
         "Content-Type": "application/json",
-        Authorization: authHeader || "",
       },
     },
   );
@@ -40,17 +38,15 @@ const lists = async (authHeader?: string): Promise<ListsResponse> => {
 };
 
 const addList = async ({
-  authHeader,
   name,
   active,
 }: addListRequest): Promise<ListDetails> => {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${import.meta.env.VITE_API_BASE_URL}/tasks/list/`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: authHeader || "",
       },
       body: JSON.stringify({ name: name, active: active }),
     },
@@ -62,18 +58,16 @@ const addList = async ({
 };
 
 const updateList = async ({
-  authHeader,
   name,
   active,
   listId,
 }: updateListRequest): Promise<ListDetails> => {
-  const response = await fetch(
+  const response = await fetchWithAuth(
     `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/`,
     {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: authHeader || "",
       },
       body: JSON.stringify({ name: name, active: active }),
     },
@@ -84,17 +78,13 @@ const updateList = async ({
   throw new Error(`${response.statusText}`);
 };
 
-const deleteList = async ({
-  authHeader,
-  listId,
-}: deleteListRequest): Promise<void> => {
-  const response = await fetch(
+const deleteList = async ({ listId }: deleteListRequest): Promise<void> => {
+  const response = await fetchWithAuth(
     `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/`,
     {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        Authorization: authHeader || "",
       },
     },
   );

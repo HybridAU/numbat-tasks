@@ -98,7 +98,7 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
 
   const { data } = useQuery({
     queryKey: ["Lists"],
-    queryFn: () => lists(authHeader),
+    queryFn: () => lists(),
     enabled: !!authHeader,
   });
 
@@ -111,7 +111,7 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (data?.length === 0) {
-      mutate({ name: "Default List", authHeader: authHeader });
+      mutate({ name: "Default List" });
     } else if (data && !state.listsLoaded) {
       dispatch({
         type: "INITIAL_LOAD",
@@ -127,7 +127,7 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
         payload: data,
       });
     }
-  }, [data, mutate, authHeader, state.listsLoaded]);
+  }, [data, mutate, state.listsLoaded]);
 
   return (
     <ListsContext.Provider value={state}>
