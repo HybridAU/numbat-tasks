@@ -26,14 +26,7 @@ export type deleteListRequest = {
 type ListsResponse = ListDetails[];
 
 const lists = async (): Promise<ListsResponse> => {
-  const response = await fetchWithAuth(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    },
-  );
+  const response = await fetchWithAuth("/api/tasks/list");
   return (await response.json()) as ListsResponse;
 };
 
@@ -41,16 +34,14 @@ const addList = async ({
   name,
   active,
 }: addListRequest): Promise<ListDetails> => {
-  const response = await fetchWithAuth(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: name, active: active }),
+  console.log("adding");
+  const response = await fetchWithAuth("/api/tasks/list/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ name: name, active: active }),
+  });
   if (response.ok) {
     return (await response.json()) as ListDetails;
   }
@@ -62,16 +53,13 @@ const updateList = async ({
   active,
   listId,
 }: updateListRequest): Promise<ListDetails> => {
-  const response = await fetchWithAuth(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: name, active: active }),
+  const response = await fetchWithAuth(`/api/tasks/list/${listId}/`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    body: JSON.stringify({ name: name, active: active }),
+  });
   if (response.ok) {
     return (await response.json()) as ListDetails;
   }
@@ -79,15 +67,12 @@ const updateList = async ({
 };
 
 const deleteList = async ({ listId }: deleteListRequest): Promise<void> => {
-  const response = await fetchWithAuth(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/`,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const response = await fetchWithAuth(`/api/tasks/list/${listId}/`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+  });
   if (response.ok) {
     return;
   }

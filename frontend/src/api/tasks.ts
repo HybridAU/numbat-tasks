@@ -1,3 +1,5 @@
+import { fetchWithAuth } from "./fetch.ts";
+
 export type TaskDetails = {
   id: number;
   created: string;
@@ -9,19 +11,16 @@ export type TaskDetails = {
 type TasksResponse = TaskDetails[];
 
 type tasksRequest = {
-  authHeader?: string;
   listId: number;
 };
 
 export type addTaskRequest = {
-  authHeader?: string;
   listId: number;
   text: string;
   complete?: boolean;
 };
 
 export type updateTaskRequest = {
-  authHeader?: string;
   listId: number;
   taskId: number;
   text?: string;
@@ -29,43 +28,23 @@ export type updateTaskRequest = {
 };
 
 export type deleteTaskRequest = {
-  authHeader?: string;
   listId: number;
   taskId: number;
 };
 
-const getTasks = async ({
-  authHeader,
-  listId,
-}: tasksRequest): Promise<TasksResponse> => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authHeader || "",
-      },
-    },
-  );
+const getTasks = async ({ listId }: tasksRequest): Promise<TasksResponse> => {
+  const response = await fetchWithAuth(`/api/tasks/list/${listId}/task/`);
   return (await response.json()) as TasksResponse;
 };
 
 const addTask = async ({
-  authHeader,
   text,
   listId,
 }: addTaskRequest): Promise<TaskDetails> => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authHeader || "",
-      },
-      body: JSON.stringify({ text: text }),
-    },
-  );
+  const response = await fetchWithAuth(`/api/tasks/list/${listId}/task/`, {
+    method: "POST",
+    body: JSON.stringify({ text: text }),
+  });
   if (response.ok) {
     return (await response.json()) as TaskDetails;
   }
@@ -73,20 +52,15 @@ const addTask = async ({
 };
 
 const updateTask = async ({
-  authHeader,
   text,
   complete,
   listId,
   taskId,
 }: updateTaskRequest): Promise<TaskDetails> => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/${taskId}/`,
+  const response = await fetchWithAuth(
+    `/api/tasks/list/${listId}/task/${taskId}/`,
     {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authHeader || "",
-      },
       body: JSON.stringify({ text: text, complete: complete }),
     },
   );
@@ -97,18 +71,13 @@ const updateTask = async ({
 };
 
 const deleteTask = async ({
-  authHeader,
   listId,
   taskId,
 }: deleteTaskRequest): Promise<void> => {
-  const response = await fetch(
-    `${import.meta.env.VITE_API_BASE_URL}/tasks/list/${listId}/task/${taskId}/`,
+  const response = await fetchWithAuth(
+    `/api/tasks/list/${listId}/task/${taskId}/`,
     {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: authHeader || "",
-      },
     },
   );
   if (response.ok) {

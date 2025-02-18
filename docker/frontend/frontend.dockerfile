@@ -1,6 +1,6 @@
 FROM node:22-bookworm-slim
 
-ENV VITE_API_BASE_URL=/api
+ENV VITE_API_BASE_URL=""
 ENV DEBUG=False
 
 WORKDIR /frontend

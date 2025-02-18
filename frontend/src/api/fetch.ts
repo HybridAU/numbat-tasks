@@ -1,13 +1,16 @@
-import { useAuthenticationsState } from "../providers/AuthenticationProvider.tsx";
-
 export const fetchWithAuth = async (
   url: string,
-  options: RequestInit,
+  options?: RequestInit,
 ): Promise<Response> => {
-  const { accessToken } = useAuthenticationsState();
   // TODO actually check expiry / handle refresh.
-  return await fetch(url, {
+  const accessToken = localStorage.getItem("accessToken");
+  // const refreshToken = localStorage.getItem("refreshToken");
+  return await fetch(`${import.meta.env.VITE_API_BASE_URL}${url}`, {
     ...options,
-    headers: { ...options?.headers, Authorization: `Bearer ${accessToken}` },
+    headers: {
+      "Content-Type": "application/json",
+      ...options?.headers,
+      Authorization: `Bearer ${accessToken}`,
+    },
   });
 };
