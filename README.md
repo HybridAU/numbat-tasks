@@ -16,8 +16,9 @@ This is currently in development, at some point I'll make this repo public.
   - [X] Redirect to sign in if not logged in
   - [X] Use a component so we don't render anything on the page until after auth has done its thing
   - [X] Save / Load token in local storage
-  - [ ] Use refresh token
-  - [ ] Wrapper around fetch to handle 401
+  - [X] Use refresh token
+    - [ ] Show nice toast notification if kicking the user back to the login screen.
+    - [ ] Wrapper around fetch to handle 401
 - [ ] Config to sign up and create users on a fresh install (not using django admin console.)
 - [X] Sign out sometimes, but not always blows up. Figure out why and fix it.
   - [X] "A component suspended while responding to synchronous input. This will cause the UI to be replaced with a loading indicator. To fix, updates that suspend should be wrapped with startTransition."

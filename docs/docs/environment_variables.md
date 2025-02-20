@@ -83,8 +83,8 @@ Not used in the docker containers directly, but by docker compose to select the 
 
 ## VITE_API_BASE_URL
 
-**Default:** `/api`
+**Default:** `""` (empty string)
 
 URL for the api, this can be a full domain name for example you could have the frontend hosted by a CDN at
-`https://tasks.example.com/` and the API on a different server at `https://api.example.com/api`. Although then you would
+`https://tasks.example.com/` and the API on a different server at `https://api.example.com/`. Although then you would
 need to set up [Django CORS headers](https://pypi.org/project/django-cors-headers/) which is not implemented yet.

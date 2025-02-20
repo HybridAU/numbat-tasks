@@ -12,7 +12,6 @@ import {
   type addListRequest,
   lists,
 } from "../api/lists";
-import { useAuthenticationsState } from "./AuthenticationProvider.tsx";
 
 export type ListsProviderState = {
   listsLoaded: boolean;
@@ -93,13 +92,11 @@ export function ListsReducer(
 
 export default function ListsProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(ListsReducer, initialState);
-  const { authHeader } = useAuthenticationsState();
   const queryClient = useQueryClient();
 
   const { data } = useQuery({
     queryKey: ["Lists"],
-    queryFn: () => lists(authHeader),
-    enabled: !!authHeader,
+    queryFn: () => lists(),
   });
 
   const { mutate } = useMutation({
@@ -111,7 +108,7 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (data?.length === 0) {
-      mutate({ name: "Default List", authHeader: authHeader });
+      mutate({ name: "Default List" });
     } else if (data && !state.listsLoaded) {
       dispatch({
         type: "INITIAL_LOAD",
@@ -127,7 +124,7 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
         payload: data,
       });
     }
-  }, [data, mutate, authHeader, state.listsLoaded]);
+  }, [data, mutate, state.listsLoaded]);
 
   return (
     <ListsContext.Provider value={state}>

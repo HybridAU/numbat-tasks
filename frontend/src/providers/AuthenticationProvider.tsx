@@ -11,7 +11,6 @@ import {
 export type AuthenticationProviderState = {
   accessToken?: string;
   refreshToken?: string;
-  authHeader?: string;
 };
 
 const initialState: AuthenticationProviderState = {};
@@ -41,7 +40,6 @@ export function AuthenticationReducer(
       return {
         accessToken: action.payload.accessToken,
         refreshToken: action.payload.refreshToken,
-        authHeader: `Bearer ${action.payload.accessToken}`,
       };
     }
     case "SET_LOGGED_OUT": {

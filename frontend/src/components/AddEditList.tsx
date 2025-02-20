@@ -29,7 +29,6 @@ import {
   updateList,
   type updateListRequest,
 } from "../api/lists";
-import { useAuthenticationsState } from "../providers/AuthenticationProvider.tsx";
 import { useListsDispatch, useListsState } from "../providers/ListsProvider";
 import FormCheckbox from "./form/FormCheckbox";
 import FormTextField from "./form/FormTextField";
@@ -56,7 +55,6 @@ export default function AddEditList({
   const [open, setOpen] = useState(false);
   const { currentList, lists } = useListsState();
   const listsDispatch = useListsDispatch();
-  const { authHeader } = useAuthenticationsState();
   const queryClient = useQueryClient();
   const deleteEnabled = lists.length > 1 && editCurrentList;
 
@@ -84,20 +82,18 @@ export default function AddEditList({
         name: name,
         active: active,
         listId: currentList.id,
-        authHeader: authHeader,
       });
     } else {
       doAddList({
         name: name,
         active: active,
-        authHeader: authHeader,
       });
     }
     handleClose();
   };
 
   const handleDeleteClick = () => {
-    doDeleteList({ listId: currentList.id, authHeader: authHeader });
+    doDeleteList({ listId: currentList.id });
     handleClose();
   };
 
