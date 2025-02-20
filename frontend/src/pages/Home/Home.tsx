@@ -3,17 +3,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "../../api/tasks";
 import BottomAppBar from "../../components/BottomAppBar";
 import Task from "../../components/Task";
-import { useAuthenticationsState } from "../../providers/AuthenticationProvider.tsx";
 import { useListsState } from "../../providers/ListsProvider";
 
 export default function Home() {
-  const { authHeader } = useAuthenticationsState();
   const { listsLoaded, currentList } = useListsState();
 
   const { data: tasks } = useQuery({
     queryKey: ["tasks", currentList?.id],
     queryFn: () => getTasks({ listId: currentList.id }),
-    enabled: !!authHeader && listsLoaded,
+    enabled: listsLoaded,
   });
 
   const sortedTasks = tasks?.sort((a, b) => {

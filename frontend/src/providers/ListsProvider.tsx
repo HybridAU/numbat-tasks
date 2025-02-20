@@ -12,7 +12,6 @@ import {
   type addListRequest,
   lists,
 } from "../api/lists";
-import { useAuthenticationsState } from "./AuthenticationProvider.tsx";
 
 export type ListsProviderState = {
   listsLoaded: boolean;
@@ -93,13 +92,11 @@ export function ListsReducer(
 
 export default function ListsProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(ListsReducer, initialState);
-  const { authHeader } = useAuthenticationsState();
   const queryClient = useQueryClient();
 
   const { data } = useQuery({
     queryKey: ["Lists"],
     queryFn: () => lists(),
-    enabled: !!authHeader,
   });
 
   const { mutate } = useMutation({
