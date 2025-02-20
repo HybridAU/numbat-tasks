@@ -26,7 +26,7 @@ export type deleteListRequest = {
 type ListsResponse = ListDetails[];
 
 const lists = async (): Promise<ListsResponse> => {
-  const response = await fetchWithAuth("/api/tasks/list");
+  const response = await fetchWithAuth("/api/tasks/list/");
   return (await response.json()) as ListsResponse;
 };
 

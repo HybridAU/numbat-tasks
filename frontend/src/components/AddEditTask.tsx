@@ -27,7 +27,6 @@ import {
   updateTask,
   type updateTaskRequest,
 } from "../api/tasks";
-import { useAuthenticationsState } from "../providers/AuthenticationProvider.tsx";
 import { useListsState } from "../providers/ListsProvider";
 import FormTextField from "./form/FormTextField";
 
@@ -56,7 +55,6 @@ type AddEditTaskProps = {
 export default function AddEditTask({ task }: AddEditTaskProps) {
   const queryClient = useQueryClient();
   const { currentList } = useListsState();
-  const { authHeader } = useAuthenticationsState();
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     if (task) {
@@ -71,13 +69,11 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
         listId: currentList.id,
         taskId: task.id,
         text: text,
-        authHeader: authHeader,
       });
     } else {
       doAddTask({
         text: text,
         listId: currentList.id,
-        authHeader: authHeader,
       });
     }
   };
@@ -140,7 +136,6 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
                   color="error"
                   onClick={() =>
                     doDeleteTask({
-                      authHeader: authHeader,
                       listId: currentList.id,
                       taskId: task.id,
                     })

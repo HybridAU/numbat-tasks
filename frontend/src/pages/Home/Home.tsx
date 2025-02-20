@@ -12,7 +12,7 @@ export default function Home() {
 
   const { data: tasks } = useQuery({
     queryKey: ["tasks", currentList?.id],
-    queryFn: () => getTasks({ authHeader, listId: currentList.id }),
+    queryFn: () => getTasks({ listId: currentList.id }),
     enabled: !!authHeader && listsLoaded,
   });
 
