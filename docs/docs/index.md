@@ -124,11 +124,7 @@ Place those three files in the same directory and to start the site run
 docker compose up -d
 ```
 
-User managment is still on the to do list, so for now to create a user run
-```shell
-docker compose exec -it api /venv/bin/python /api/manage.py createsuperuser
-```
-
+Once the docker containers have started, run through the [initial setup](initial_setup.md) to create an admin user.
 
 ## Delete everything and start again
 

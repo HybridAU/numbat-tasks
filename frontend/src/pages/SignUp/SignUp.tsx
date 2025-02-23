@@ -8,13 +8,14 @@ import token, { type SignInRequest } from "../../api/token";
 import FormTextField from "../../components/form/FormTextField";
 import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
-export default function SignIn() {
+export default function SignUp() {
   const authenticationsDispatch = useAuthenticationsDispatch();
   const navigate = useNavigate();
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -33,20 +34,27 @@ export default function SignIn() {
     queryKey: ["config"],
     queryFn: () => getConfig(),
   });
+  const signUpAvailable = config?.signup_enabled || config?.initial_setup;
 
-  if (config?.initial_setup) navigate("/sign-up");
+  if (isLoading)
+    return (
+      <Stack
+        height="400px"
+        width="100%"
+        sx={{ justifyContent: "center", alignItems: "center" }}
+      >
+        <CircularProgress size="4rem" />
+      </Stack>
+    );
 
-  return isLoading ? (
-    <Stack
-      height="400px"
-      width="100%"
-      sx={{ justifyContent: "center", alignItems: "center" }}
-    >
-      <CircularProgress size="4rem" />
-    </Stack>
-  ) : (
+  if (!signUpAvailable)
+    return (
+      <Typography variant="h1">Signups are not currently available</Typography>
+    );
+
+  return (
     <Container component="main" maxWidth="xs">
-      <Typography variant="h1">Sign In</Typography>
+      <Typography variant="h1">Create a new account</Typography>
       {error && (
         <Alert severity="error">
           Error:
@@ -76,6 +84,17 @@ export default function SignIn() {
           id="password"
           autoComplete="current-password"
         />
+        <FormTextField
+          control={control}
+          margin="normal"
+          required
+          fullWidth
+          name="confirmPassword"
+          label="Confirm Password"
+          type="password"
+          id="confirmPassword"
+          autoComplete="current-password"
+        />
         <Button
           type="submit"
           fullWidth
@@ -85,12 +104,9 @@ export default function SignIn() {
             mutate(data);
           })}
         >
-          Sign In
+          Sign Up
         </Button>
       </Form>
-      {config?.signup_enabled && (
-        <Button onClick={() => navigate("/sign-up")}>New here? Sign up</Button>
-      )}
     </Container>
   );
 }

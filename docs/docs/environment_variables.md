@@ -67,6 +67,15 @@ A key can be generated with
 echo SECRET_KEY=$(dd if=/dev/urandom bs=1 count=42 status=none | base64) >> .env
 ```
 
+## SIGNUP_ENABLED
+
+**Default:** `false`
+
+When enabled, new users can sign up.
+
+!!! Note
+    Even when this is disabled, one user can sign up as part of the [initial setup](initial_setup.md).
+
 ## UV_PROJECT_ENVIRONMENT
 
 **Default:** `/venv`
