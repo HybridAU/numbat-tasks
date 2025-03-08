@@ -180,7 +180,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
             WebkitLineClamp: "2",
             WebkitBoxOrient: "vertical",
           }}
-          color={task.complete ? "gray" : "black"}
+          color={task.complete ? "text.secondary" : "text.primary"}
         >
           {task.text}
         </Typography>

@@ -1,7 +1,7 @@
 import ListIcon from "@mui/icons-material/List";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { IconButton } from "@mui/material";
+import { IconButton, Stack, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
@@ -21,6 +21,10 @@ export default function NavDraw() {
   const { lists } = useListsState();
   const listDispatch = useListsDispatch();
   const navigate = useNavigate();
+
+  const activeLists = lists.filter((list) => list.active);
+  const archivedLists = lists.filter((list) => !list.active);
+  const hasArchivedLists = archivedLists.length > 0;
 
   const handleSelect = (list: ListDetails) => {
     listDispatch({ type: "SET_CURRENT_LIST", payload: list });
@@ -47,7 +51,7 @@ export default function NavDraw() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {lists.map((list) => (
+        {activeLists.map((list) => (
           <ListItem key={list.id} disablePadding>
             <ListItemButton
               onClick={() => {
@@ -62,6 +66,28 @@ export default function NavDraw() {
           </ListItem>
         ))}
         <AddEditList editCurrentList={false} />
+        {hasArchivedLists && (
+          <Stack pt={3}>
+            <Divider />
+            <Typography color="text.secondary" textAlign="center" pt={1}>
+              Archived lists
+            </Typography>
+            {archivedLists.map((list) => (
+              <ListItem key={list.id} disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    handleSelect(list);
+                  }}
+                >
+                  <ListItemIcon>
+                    <ListIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={list.name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </Stack>
+        )}
       </List>
       <Divider />
       <List>

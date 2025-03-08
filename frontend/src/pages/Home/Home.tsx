@@ -56,7 +56,7 @@ export default function Home() {
             <Accordion defaultExpanded disableGutters>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography>
-                  {completedTasks?.length} Completed tasks
+                  {completedTasks?.length} completed tasks
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
