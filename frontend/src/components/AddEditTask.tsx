@@ -170,7 +170,20 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
         </Form>
       </Dialog>
       {task?.id ? (
-        <Typography onClick={handleClickOpen}>{task.text}</Typography>
+        <Typography
+          onClick={handleClickOpen}
+          align="left"
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
+            WebkitLineClamp: "2",
+            WebkitBoxOrient: "vertical",
+          }}
+          color={task.complete ? "gray" : "black"}
+        >
+          {task.text}
+        </Typography>
       ) : (
         <StyledFab color="secondary" aria-label="add">
           <AddIcon onClick={handleClickOpen} />
