@@ -1,22 +1,29 @@
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import permissions, viewsets
 
 from accounts.models import CustomUser
+from accounts.serializers import CustomUserSerializer
 
 
-# TODO make this a viewsets.ModelViewSet and make some tests so we don't introduce some vulnerability
-class Signup(APIView):
-    """
-    View to check if user signup is available
-    """
+class CustomUserViewSet(viewsets.ModelViewSet):
+    """ """
 
-    authentication_classes = ()
-    permission_classes = ()
+    # TODO build custom permission class for
+    #  * Super user can do anything (e.g manage users)
+    #  * Regular user can see themself
+    #  * Regular user can update their password (with old one)
+    #  * Unauthenticated user can sign up if there are no users (initial setup) or sign ups are enabled.
+    #  * Serializer so we don't return the password but it can be set
+    #  * Make a bunch of tests so we don't introduce some vulnerability
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = CustomUserSerializer
+    queryset = CustomUser.objects.all()
 
-    def post(self, request, format=None):
-        """
-        Return a list of all users.
-        """
-        # Just a silly placeholder example
-        users = CustomUser.objects.all()
-        return Response(users.count())
+    # def get_queryset(self):
+    #     CustomUser.objects.all()
+
+    # def create(self, request):
+    #     total_users = CustomUser.objects.all().count()
+    #     breakpoint()
+    #     # if not (settings.SIGNUP_ENABLED or total_users == 0):
+    #     #     raise PermissionDenied()
+    #     return Response({})
