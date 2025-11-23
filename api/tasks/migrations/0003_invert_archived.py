@@ -7,8 +7,8 @@ from django.db.models.expressions import F
 
 
 def invert_archived(apps, _schema_editor):
-    Lists = apps.get_model("tasks", "List")
-    Lists.objects.all().update(archived=~F("archived"))
+    lists = apps.get_model("tasks", "List")
+    lists.objects.all().update(archived=~F("archived"))
 
 
 class Migration(migrations.Migration):
