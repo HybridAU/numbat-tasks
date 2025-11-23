@@ -22,8 +22,8 @@ export default function NavDraw() {
   const listDispatch = useListsDispatch();
   const navigate = useNavigate();
 
-  const activeLists = lists.filter((list) => list.active);
-  const archivedLists = lists.filter((list) => !list.active);
+  const activeLists = lists.filter((list) => !list.archived);
+  const archivedLists = lists.filter((list) => list.archived);
   const hasArchivedLists = archivedLists.length > 0;
 
   const handleSelect = (list: ListDetails) => {

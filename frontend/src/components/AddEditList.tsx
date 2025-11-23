@@ -59,12 +59,12 @@ export default function AddEditList({
   const deleteEnabled = lists.length > 1 && editCurrentList;
 
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: { name: "", active: true },
+    defaultValues: { name: "", archived: false },
   });
 
   const handleOpen = () => {
     editCurrentList &&
-      reset({ name: currentList.name, active: currentList.active });
+      reset({ name: currentList.name, archived: currentList.archived });
     setOpen(true);
   };
   const handleClose = () => {
@@ -75,18 +75,18 @@ export default function AddEditList({
 
   const handleSaveClick = ({
     name,
-    active,
-  }: { name: string; active: boolean }) => {
+    archived,
+  }: { name: string; archived: boolean }) => {
     if (editCurrentList) {
       doUpdateList({
         name: name,
-        active: active,
+        archived: archived,
         listId: currentList.id,
       });
     } else {
       doAddList({
         name: name,
-        active: active,
+        archived: archived,
       });
     }
     handleClose();
@@ -171,9 +171,9 @@ export default function AddEditList({
             />
             <FormCheckbox
               control={control}
-              label="Active"
-              id="active"
-              name="active"
+              label="archived"
+              id="archived"
+              name="archived"
             />
           </Stack>
         </Form>
