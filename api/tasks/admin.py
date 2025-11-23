@@ -5,7 +5,7 @@ from tasks.models import List, Task
 
 @admin.register(List)
 class ListAdmin(admin.ModelAdmin):
-    list_display = ["id", "owner", "name", "active"]
+    list_display = ["id", "owner", "name", "archived"]
 
 
 @admin.register(Task)

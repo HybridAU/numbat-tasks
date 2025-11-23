@@ -5,17 +5,17 @@ export type ListDetails = {
   created: string;
   updated: string;
   name: string;
-  active: boolean;
+  archived: boolean;
 };
 
 export type addListRequest = {
   name: string;
-  active?: boolean;
+  archived?: boolean;
 };
 
 export type updateListRequest = {
   name: string;
-  active: boolean;
+  archived: boolean;
   listId: number;
 };
 
@@ -32,7 +32,7 @@ const lists = async (): Promise<ListsResponse> => {
 
 const addList = async ({
   name,
-  active,
+  archived,
 }: addListRequest): Promise<ListDetails> => {
   console.log("adding");
   const response = await fetchWithAuth("/api/tasks/list/", {
@@ -40,7 +40,7 @@ const addList = async ({
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: name, active: active }),
+    body: JSON.stringify({ name: name, archived: archived }),
   });
   if (response.ok) {
     return (await response.json()) as ListDetails;
@@ -50,7 +50,7 @@ const addList = async ({
 
 const updateList = async ({
   name,
-  active,
+  archived,
   listId,
 }: updateListRequest): Promise<ListDetails> => {
   const response = await fetchWithAuth(`/api/tasks/list/${listId}/`, {
@@ -58,7 +58,7 @@ const updateList = async ({
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: name, active: active }),
+    body: JSON.stringify({ name: name, archived: archived }),
   });
   if (response.ok) {
     return (await response.json()) as ListDetails;
