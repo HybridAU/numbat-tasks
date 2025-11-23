@@ -17,9 +17,9 @@ services:
         stdin_open: true
         tty: true
     database:
-        image: postgres:16-bookworm
+        image: postgres:18-trixie
         volumes:
-            - postgres_data:/var/lib/postgresql/data/
+            - postgres_data:/var/lib/postgresql/
         env_file:
             - .env
     frontend:
