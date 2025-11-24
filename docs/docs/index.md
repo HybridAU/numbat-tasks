@@ -82,7 +82,7 @@ All the settings should live in here. The following is the minimum configuration
 variables](./environment_variables.md) is available.
 
 ``` title=".env"
-VERSION=0.5.0
+VERSION=0.6.0
 # Reasonable defaults
 POSTGRES_DB=numbat_tasks
 POSTGRES_USER=numbat
