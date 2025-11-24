@@ -51,7 +51,7 @@ export function ListsReducer(
 ): ListsProviderState {
   switch (action.type) {
     case "SET_CURRENT_LIST": {
-			localStorage.setItem("listId", action.payload.id.toString());
+      localStorage.setItem("listId", action.payload.id.toString());
       return {
         ...state,
         currentList: action.payload,
@@ -64,7 +64,7 @@ export function ListsReducer(
       //  so what we do here is save the id we are looking for to the state, then next time the
       //  Lists query (data) is updated, we use the newListId if it exists.
       //  The joy of working with asynchronous code.
-			localStorage.setItem("listId", action.payload.toString());
+      localStorage.setItem("listId", action.payload.toString());
       return {
         ...state,
         newListId: action.payload,
@@ -112,9 +112,9 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
     if (data?.length === 0) {
       mutate({ name: "Default List" });
     } else if (data && !state.listsLoaded) {
-			// Check if the previously loaded listId is in local storage, and if so use it.
-			const listId = localStorage.getItem("listId")
-			const previousList = data.find((list) => list.id === Number(listId))
+      // Check if the previously loaded listId is in local storage, and if so use it.
+      const listId = localStorage.getItem("listId");
+      const previousList = data.find((list) => list.id === Number(listId));
       dispatch({
         type: "INITIAL_LOAD",
         payload: {
