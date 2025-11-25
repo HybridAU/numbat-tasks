@@ -1,7 +1,7 @@
 import { Alert, Button, Container, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import { Form, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import token, { type SignInRequest } from "../../api/token";
 import FormTextField from "../../components/form/FormTextField";
 import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";

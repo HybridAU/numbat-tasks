@@ -18,8 +18,8 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuItem from "@mui/material/MenuItem";
 import type { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import * as React from "react";
+import { useState } from "react";
 import { Form, useForm } from "react-hook-form";
 import {
   addList,
@@ -76,7 +76,10 @@ export default function AddEditList({
   const handleSaveClick = ({
     name,
     archived,
-  }: { name: string; archived: boolean }) => {
+  }: {
+    name: string;
+    archived: boolean;
+  }) => {
     if (editCurrentList) {
       doUpdateList({
         name: name,

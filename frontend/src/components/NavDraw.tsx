@@ -11,7 +11,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import type { ListDetails } from "../api/lists";
 import { useListsDispatch, useListsState } from "../providers/ListsProvider";
 import AddEditList from "./AddEditList";

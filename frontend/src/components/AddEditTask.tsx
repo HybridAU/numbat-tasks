@@ -15,15 +15,15 @@ import {
 import { styled } from "@mui/material/styles";
 import type { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import * as React from "react";
+import { useState } from "react";
 import { Form, useForm } from "react-hook-form";
 import {
-  type TaskDetails,
   addTask,
   type addTaskRequest,
   deleteTask,
   type deleteTaskRequest,
+  type TaskDetails,
   updateTask,
   type updateTaskRequest,
 } from "../api/tasks";
