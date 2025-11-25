@@ -1,8 +1,8 @@
 import { Stack } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   use,
   useEffect,
   useReducer,
@@ -55,7 +55,9 @@ export function AuthenticationReducer(
 
 export default function AuthenticationProvider({
   children,
-}: { children: ReactNode }) {
+}: {
+  children: ReactNode;
+}) {
   const [state, dispatch] = useReducer(AuthenticationReducer, initialState);
   useEffect(() => {
     if (state.accessToken === undefined) {

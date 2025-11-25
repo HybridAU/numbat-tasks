@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   use,
   useEffect,
   useReducer,
 } from "react";
 import {
-  type ListDetails,
   addList,
   type addListRequest,
+  type ListDetails,
   lists,
 } from "../api/lists";
 
