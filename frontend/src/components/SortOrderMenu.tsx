@@ -1,8 +1,8 @@
-// Copied straight from https://mui.com/material-ui/react-menu/#BasicMenu.tsx
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import * as React from "react";
+import { useListsState } from "../providers/ListsProvider.tsx";
 
 export default function SortOrderMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -13,6 +13,7 @@ export default function SortOrderMenu() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const { currentList } = useListsState();
 
   return (
     <div>
@@ -23,7 +24,7 @@ export default function SortOrderMenu() {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
       >
-        Sort by
+        {currentList.sort_order}
       </Button>
       <Menu
         id="basic-menu"
@@ -36,9 +37,10 @@ export default function SortOrderMenu() {
           },
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleClose}>A-Z</MenuItem>
+        <MenuItem onClick={handleClose}>Created</MenuItem>
+        <MenuItem onClick={handleClose}>Updated</MenuItem>
+        <MenuItem onClick={handleClose}>Manual</MenuItem>
       </Menu>
     </div>
   );
