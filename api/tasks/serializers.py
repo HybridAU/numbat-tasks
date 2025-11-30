@@ -22,7 +22,7 @@ class ParentListDefault:
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
-        fields = ["id", "owner", "created", "updated", "name", "archived"]
+        fields = ["id", "owner", "created", "updated", "name", "sort_order", "archived"]
 
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 

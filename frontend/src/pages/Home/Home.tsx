@@ -23,30 +23,15 @@ export default function Home() {
     enabled: listsLoaded,
   });
 
-  const activeTasks = tasks
-    ?.filter((task) => !task.complete)
-    .sort((a, b) => {
-      // Sort by creation date for active
-      if (a.created < b.created) return 1;
-      if (a.created > b.created) return -1;
-      // Both identical, return 0
-      return 0;
-    });
+  const activeTasks = tasks?.filter((task) => !task.complete);
 
-  const completedTasks = tasks
-    ?.filter((task) => task.complete)
-    .sort((a, b) => {
-      // sort by date last updated for complete tasks
-      if (a.updated < b.updated) return 1;
-      if (a.updated > b.updated) return -1;
-      // Both identical, return 0
-      return 0;
-    });
+  const completedTasks = tasks?.filter((task) => task.complete);
+
   const hasCompletedTasks = (completedTasks?.length || 0) > 0;
 
   return (
     <>
-      <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h1">{currentList.name}</Typography>
         <SortOrderMenu />
       </Stack>

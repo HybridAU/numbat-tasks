@@ -3,6 +3,16 @@ from django.db import models
 from tasks.utils import truncate
 
 
+class SortOrder(models.TextChoices):
+    TEXT_ASCENDING = "text"
+    TEXT_DESCENDING = "-text"
+    CREATED_ASCENDING = "created"
+    CREATED_DESCENDING = "-created"
+    UPDATED_ASCENDING = "updated"
+    UPDATED_DESCENDING = "-updated"
+    MANUAL = "manual"
+
+
 class List(models.Model):
     id = models.BigAutoField(primary_key=True, db_index=True)
     owner = models.ForeignKey(
@@ -14,6 +24,13 @@ class List(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     updated = models.DateTimeField(auto_now=True, null=False, blank=False)
     name = models.CharField(max_length=256, null=False, blank=True)
+    sort_order = models.CharField(
+        max_length=20,
+        choices=SortOrder,
+        default=SortOrder.CREATED_ASCENDING,
+        null=False,
+        blank=False,
+    )
     archived = models.BooleanField(null=False, blank=False, default=False)
 
     def __str__(self):
