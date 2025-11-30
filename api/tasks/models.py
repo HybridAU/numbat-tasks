@@ -14,7 +14,7 @@ class List(models.Model):
     created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     updated = models.DateTimeField(auto_now=True, null=False, blank=False)
     name = models.CharField(max_length=256, null=False, blank=True)
-    archived = models.BooleanField(null=False, blank=False, default=True)
+    archived = models.BooleanField(null=False, blank=False, default=False)
 
     def __str__(self):
         return truncate(self.name)

@@ -10,6 +10,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "../../api/tasks";
 import BottomAppBar from "../../components/BottomAppBar";
+import SortOrderMenu from "../../components/SortOrderMenu.tsx";
 import Task from "../../components/Task";
 import { useListsState } from "../../providers/ListsProvider";
 
@@ -45,7 +46,10 @@ export default function Home() {
 
   return (
     <>
-      <Typography variant="h1">{currentList.name}</Typography>
+      <Stack direction="row" justifyContent="space-between">
+        <Typography variant="h1">{currentList.name}</Typography>
+        <SortOrderMenu />
+      </Stack>
       {activeTasks ? (
         // By adding lots of space at the bottom, it makes it clear we have scrolled to the end of the list.
         <Stack pb="6rem">

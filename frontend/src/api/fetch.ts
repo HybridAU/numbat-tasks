@@ -53,6 +53,11 @@ const handleRefresh = async () => {
       body: JSON.stringify({ refresh: refreshToken }),
     },
   );
+  if (!(await response.ok)) {
+    // If we can't refresh the JWT remove the keys, which triggers the user to be logged out and kicked back to the sign in screen.
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  }
   const json = await response.json();
   const newAccessToken = json.access;
   localStorage.setItem("accessToken", newAccessToken);

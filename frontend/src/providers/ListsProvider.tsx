@@ -25,7 +25,7 @@ const initialState: ListsProviderState = {
   currentList: {
     id: 1,
     name: "Default List",
-    archived: true,
+    archived: false,
     created: "",
     updated: "",
   },
