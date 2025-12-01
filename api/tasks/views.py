@@ -25,11 +25,12 @@ class TaskViewSet(viewsets.ModelViewSet):
             id=self.kwargs["list_pk"],
             owner=self.request.user,
         )
-        tasks = Task.objects.filter(list=list_object)
         if list_object.sort_order == SortOrder.MANUAL:
             # Not implemented yet
-            pass
+            tasks = Task.objects.filter(list=list_object)
         else:
-            tasks.order_by(list_object.sort_order)
+            tasks = Task.objects.filter(list=list_object).order_by(
+                list_object.sort_order
+            )
 
         return tasks
