@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tasks', '0003_invert_archived'),
+        ("tasks", "0003_invert_archived"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='list',
-            name='archived',
+            model_name="list",
+            name="archived",
             field=models.BooleanField(default=False),
         ),
     ]

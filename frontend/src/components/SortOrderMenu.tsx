@@ -45,7 +45,16 @@ const getButtonIcon = (sortOrder: SortOrder) => {
   }
 };
 
-// TODO handel inverting, add arrow icon
+const getNewSortOrder = (
+  currentSortOrder: SortOrder,
+  value: SortOrder,
+): SortOrder => {
+  // Handel inverting the current order (e.g. ascending / descending)
+  if (currentSortOrder === value && value !== "manual") {
+    return `-${value}` as SortOrder;
+  }
+  return value;
+};
 
 export default function SortOrderMenu() {
   const queryClient = useQueryClient();
@@ -66,10 +75,10 @@ export default function SortOrderMenu() {
   };
 
   const handelSelect = (value: SortOrder) => {
-    // TODO this is silly, but testing...
-    const send =
-      value === "text" && currentList.sort_order === "text" ? "-text" : value;
-    mutate({ sort_order: send, listId: currentList.id });
+    mutate({
+      sort_order: getNewSortOrder(currentList.sort_order, value),
+      listId: currentList.id,
+    });
     handleClose();
   };
 
