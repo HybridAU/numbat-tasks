@@ -10,6 +10,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "../../api/tasks";
 import BottomAppBar from "../../components/BottomAppBar";
+import { SortableList } from "../../components/SortableList.tsx";
 import SortOrderMenu from "../../components/SortOrderMenu.tsx";
 import Task from "../../components/Task";
 import { useListsState } from "../../providers/ListsProvider";
@@ -38,9 +39,7 @@ export default function Home() {
       {activeTasks ? (
         // By adding lots of space at the bottom, it makes it clear we have scrolled to the end of the list.
         <Stack pb="6rem">
-          {activeTasks?.map((task) => (
-            <Task key={task.id} task={task} />
-          ))}
+          <SortableList />
           {hasCompletedTasks && (
             <Accordion defaultExpanded disableGutters>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>

@@ -12,7 +12,7 @@ This is currently in development, at some point I'll make this repo public.
 - [X] Automation (build release docker images)
 
 ### MVP to make repo public
-- [ ] Complete Authentication Provider
+- [X] Complete Authentication Provider
   - [X] Redirect to sign in if not logged in
   - [X] Use a component so we don't render anything on the page until after auth has done its thing
   - [X] Save / Load token in local storage
