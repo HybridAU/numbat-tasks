@@ -1,3 +1,4 @@
+from django.db.models import Case, IntegerField, When
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
@@ -26,8 +27,21 @@ class TaskViewSet(viewsets.ModelViewSet):
             owner=self.request.user,
         )
         if list_object.sort_order == SortOrder.MANUAL:
-            # Not implemented yet
-            tasks = Task.objects.filter(list=list_object)
+            # TODO explain what's going on here... and write some unit tests
+            when_statements = []
+            for position, task_id in enumerate(list_object.manual_order):
+                when_statements.append(When(id=task_id, then=position + 1))
+            tasks = (
+                Task.objects.filter(list=list_object)
+                .annotate(
+                    position=Case(
+                        *when_statements,
+                        default=0,
+                        output_field=IntegerField(),
+                    )
+                )
+                .order_by("position")
+            )
         else:
             tasks = Task.objects.filter(list=list_object).order_by(
                 list_object.sort_order

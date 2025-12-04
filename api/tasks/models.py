@@ -1,6 +1,16 @@
 from django.db import models
+from jsonschema import validate
 
 from tasks.utils import truncate
+
+
+def validate_manual_order(value):
+    schema = {
+        "type": "array",
+        "items": {"type": "integer"},
+        "minItems": 0,
+    }
+    validate(instance=value, schema=schema)
 
 
 class SortOrder(models.TextChoices):
@@ -30,6 +40,9 @@ class List(models.Model):
         default=SortOrder.CREATED_ASCENDING,
         null=False,
         blank=False,
+    )
+    manual_order = models.JSONField(
+        default=list, blank=True, null=False, validators=[validate_manual_order]
     )
     archived = models.BooleanField(null=False, blank=False, default=False)
 

@@ -28,6 +28,8 @@ const initialState: ListsProviderState = {
     archived: false,
     created: "",
     updated: "",
+    sort_order: "created",
+    manual_order: [],
   },
   lists: [],
 };

@@ -15,6 +15,7 @@ export type ListDetails = {
   updated: string;
   name: string;
   sort_order: SortOrder;
+  manual_order: number[];
   archived: boolean;
 };
 
@@ -22,12 +23,14 @@ export type addListRequest = {
   name: string;
   archived?: boolean;
   sort_order?: SortOrder;
+  manual_order?: number[];
 };
 
 export type updateListRequest = {
   name?: string;
   archived?: boolean;
   sort_order?: SortOrder;
+  manual_order?: number[];
   listId: number;
 };
 
@@ -46,6 +49,7 @@ const addList = async ({
   name,
   archived,
   sort_order,
+  manual_order,
 }: addListRequest): Promise<ListDetails> => {
   console.log("adding");
   const response = await fetchWithAuth("/api/tasks/list/", {
@@ -57,6 +61,7 @@ const addList = async ({
       name: name,
       archived: archived,
       sort_order: sort_order,
+      manual_order: manual_order,
     }),
   });
   if (response.ok) {
@@ -69,6 +74,7 @@ const updateList = async ({
   name,
   archived,
   sort_order,
+  manual_order,
   listId,
 }: updateListRequest): Promise<ListDetails> => {
   const response = await fetchWithAuth(`/api/tasks/list/${listId}/`, {
@@ -80,6 +86,7 @@ const updateList = async ({
       name: name,
       archived: archived,
       sort_order: sort_order,
+      manual_order: manual_order,
     }),
   });
   if (response.ok) {
