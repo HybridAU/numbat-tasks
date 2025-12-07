@@ -1,8 +1,9 @@
+from django.db.models import Case, IntegerField, When
 from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
-from tasks.models import List, Task
+from tasks.models import List, SortOrder, Task
 from tasks.permissions import IsListOwnerOrNone, IsOwnerOrNone
 from tasks.serializers import ListSerializer, TaskSerializer
 
@@ -20,9 +21,33 @@ class TaskViewSet(viewsets.ModelViewSet):
     serializer_class = TaskSerializer
 
     def get_queryset(self):
-        task_list = get_object_or_404(
+        list_object = get_object_or_404(
             List,
             id=self.kwargs["list_pk"],
             owner=self.request.user,
         )
-        return Task.objects.filter(list=task_list)
+        if list_object.sort_order == SortOrder.MANUAL:
+            # This essentially creates an ephemeral column called "position"
+            # then adds a "when" statement e.g. When(id=5, position=3)
+            # for each value in the manual_order list. If the task id is not
+            # in the manual_order list, we default to position 0 make it show at the top.
+            when_statements = []
+            for position, task_id in enumerate(list_object.manual_order):
+                when_statements.append(When(id=task_id, then=position + 1))
+            tasks = (
+                Task.objects.filter(list=list_object)
+                .annotate(
+                    position=Case(
+                        *when_statements,
+                        default=0,
+                        output_field=IntegerField(),
+                    )
+                )
+                .order_by("position")
+            )
+        else:
+            tasks = Task.objects.filter(list=list_object).order_by(
+                list_object.sort_order
+            )
+
+        return tasks
