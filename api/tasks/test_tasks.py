@@ -10,12 +10,12 @@ from tasks.models import List, Task
 
 
 @pytest.fixture()
-def base_users(client):
+def base_data(client):
     """
     To make the setup of most tests easier, we create two base users, Alice and Bob
     each with 2 lists, and 5 tasks, (2 complete, 3 pending)
     """
-    users = {
+    data = {
         "alice": {
             "email": "alice@numbattasks.com",
             "first_name": "Alice",
@@ -34,66 +34,106 @@ def base_users(client):
         },
     }
     # Create and login for both users
-    alice = CustomUser.objects.create(**users["alice"])
+    alice = CustomUser.objects.create(**data["alice"])
     alice.clean()
     alice.save()
     response = client.post(
         "/api/token/",
         data={
-            "email": users["alice"]["email"],
-            "password": users["alice"]["password"],
+            "email": data["alice"]["email"],
+            "password": data["alice"]["password"],
         },
     )
-    users["alice"]["auth_header"] = {
+    data["alice"]["auth_header"] = {
         "Authorization": f"Bearer {response.json()['access']}"
     }
 
-    bob = CustomUser.objects.create(**users["bob"])
+    bob = CustomUser.objects.create(**data["bob"])
     bob.clean()
     bob.save()
     response = client.post(
         "/api/token/",
         data={
-            "email": users["bob"]["email"],
-            "password": users["bob"]["password"],
+            "email": data["bob"]["email"],
+            "password": data["bob"]["password"],
         },
     )
-    users["bob"]["auth_header"] = {
+    data["bob"]["auth_header"] = {
         "Authorization": f"Bearer {response.json()['access']}"
     }
 
     # Alice has a list of chores, and a shopping list
-    chores = List.objects.create(owner=alice, name="household chores")
-    Task.objects.create(list=chores, text="wash cloths", complete=True)
-    Task.objects.create(list=chores, text="ironing")
-    shopping = List.objects.create(owner=alice, name="Shopping")
-    Task.objects.create(list=shopping, text="spam", complete=True)
-    Task.objects.create(list=shopping, text="eggs")
-    Task.objects.create(list=shopping, text="cheese")
+    data["alice"]["chores"] = List.objects.create(owner=alice, name="household chores")
+    data["alice"]["wash cloths"] = Task.objects.create(
+        list=data["alice"]["chores"],
+        text="wash cloths",
+        complete=True,
+    )
+    data["alice"]["ironing"] = Task.objects.create(
+        list=data["alice"]["chores"],
+        text="ironing",
+    )
+    data["alice"]["shopping"] = List.objects.create(
+        owner=alice,
+        name="Shopping",
+        sort_order="manual",
+    )
+    data["alice"]["spam"] = Task.objects.create(
+        list=data["alice"]["shopping"],
+        text="spam",
+        complete=True,
+    )
+    data["alice"]["eggs"] = Task.objects.create(
+        list=data["alice"]["shopping"],
+        text="eggs",
+    )
+    data["alice"]["cheese"] = Task.objects.create(
+        list=data["alice"]["shopping"],
+        text="cheese",
+    )
+    # Set a manual order for Alice's shopping list
+    data["alice"]["shopping"].manual_order = [
+        data["alice"]["eggs"].id,
+        data["alice"]["cheese"].id,
+        data["alice"]["spam"].id,
+    ]
+    data["alice"]["shopping"].save()
 
     # Bob has a jobs to do, and books to read
-    jobs = List.objects.create(owner=bob, name="jobs to be done")
-    Task.objects.create(list=jobs, text="mow the lawn", complete=True)
-    Task.objects.create(list=jobs, text="paint the house")
-    books = List.objects.create(
-        owner=bob,
-        name="books I want to read",
-        sort_order="manual",
-        manual_order=[10, 8, 9],  # TODO order after creating
+    data["bob"]["jobs"] = List.objects.create(owner=bob, name="jobs to be done")
+    data["bob"]["mow the lawn"] = Task.objects.create(
+        list=data["bob"]["jobs"],
+        text="mow the lawn",
+        complete=True,
     )
-    # These tasks get id 8, 9 and 10
-    Task.objects.create(list=books, text="Terry Pratchett - Night Watch", complete=True)
-    Task.objects.create(list=books, text="Andy Weir - Project Hail Mary")
-    Task.objects.create(list=books, text="Ben Aaronovitch - Rivers of London")
-    return users
+    data["bob"]["paint the house"] = Task.objects.create(
+        list=data["bob"]["jobs"],
+        text="paint the house",
+    )
+    data["bob"]["books"] = List.objects.create(owner=bob, name="books I want to read")
+    Task.objects.create(
+        list=data["bob"]["books"],
+        text="Terry Pratchett - Night Watch",
+        complete=True,
+    )
+    Task.objects.create(
+        list=data["bob"]["books"],
+        text="Andy Weir - Project Hail Mary",
+    )
+    Task.objects.create(
+        list=data["bob"]["books"],
+        text="Ben Aaronovitch - Rivers of London",
+    )
+
+    return data
 
 
 @pytest.mark.django_db
-def test_create_list(client, base_users):
+def test_create_list(client, base_data):
     """
     A user can create a new list
     """
-    alice = base_users["alice"]["auth_header"]
+    alice = base_data["alice"]["auth_header"]
     response = client.post(
         "/api/tasks/list/",
         data={"name": "Movies to watch"},
@@ -108,11 +148,11 @@ def test_create_list(client, base_users):
 
 
 @pytest.mark.django_db
-def test_create_task(client, base_users):
+def test_create_task(client, base_data):
     """
     A user can create a new task
     """
-    alice = base_users["alice"]["auth_header"]
+    alice = base_data["alice"]["auth_header"]
     response = client.get("/api/tasks/list/", headers=alice)
     assert response.status_code == status.HTTP_200_OK
     first_list_id = response.json()[0]["id"]
@@ -142,11 +182,11 @@ def test_create_task(client, base_users):
 
 
 @pytest.mark.django_db
-def test_update_a_task(client, base_users):
+def test_update_a_task(client, base_data):
     """
     A user can update a task
     """
-    alice = base_users["alice"]["auth_header"]
+    alice = base_data["alice"]["auth_header"]
     # Get the first list
     response = client.get("/api/tasks/list/", headers=alice)
     first_list_id = response.json()[0]["id"]
@@ -181,12 +221,12 @@ def test_update_a_task(client, base_users):
 # TODO: More of these tests, this feels like somewhere it's easy to slip up
 #       and have direct object reference bugs or similar.
 @pytest.mark.django_db
-def test_can_not_access_another_users_tasks(client, base_users):
+def test_can_not_access_another_users_tasks(client, base_data):
     """
     Bob can not see Alice's tasks
     """
-    alice = base_users["alice"]["auth_header"]
-    bob = base_users["bob"]["auth_header"]
+    alice = base_data["alice"]["auth_header"]
+    bob = base_data["bob"]["auth_header"]
     response = client.get("/api/tasks/list/", headers=alice)
     list_id = response.json()[0]["id"]
     # Get the first task by itself
@@ -205,64 +245,138 @@ def test_can_not_access_another_users_tasks(client, base_users):
     assert response.status_code == status.HTTP_404_NOT_FOUND
 
 
-# TODO These tests don't work, but just committing what I've got and I'll come back to it when
-# I've got some free time
 @pytest.mark.django_db
-def test_manual_list_order(client, base_users):
+def test_manual_list_order(client, base_data):
     """
     A user can manually sort a list
     """
-    bob = base_users["bob"]["auth_header"]
-    response = client.get("/api/tasks/list/4/task/", headers=bob)
+    headers = base_data["alice"]["auth_header"]
+    shopping = base_data["alice"]["shopping"]
+    response = client.get(f"/api/tasks/list/{shopping.id}/task/", headers=headers)
     assert response.status_code == status.HTTP_200_OK
-    # Check the books are returned in the order set in manual_order
-    assert response.json()[0]["id"] == 10
-    assert response.json()[1]["id"] == 8
-    assert response.json()[2]["id"] == 9
+    # Check the shopping items are returned in the order set in manual_order
+    assert response.json()[0]["id"] == base_data["alice"]["eggs"].id
+    assert response.json()[1]["id"] == base_data["alice"]["cheese"].id
+    assert response.json()[2]["id"] == base_data["alice"]["spam"].id
 
 
 @pytest.mark.django_db
-def test_manual_list_order_new_tasks(client, base_users):
+def test_manual_list_order_new_tasks(client, base_data):
     """
     New tasks are added to the top of the list if they don't exist in the manual_order
     """
-    bob = base_users["bob"]["auth_header"]
+    headers = base_data["alice"]["auth_header"]
+    shopping = base_data["alice"]["shopping"]
     # Add a new book to the list
-    client.post(
-        "/api/tasks/list/4/task/",
-        data={"text": "Old man's war"},
-        headers=bob,
+    response = client.post(
+        f"/api/tasks/list/{shopping.id}/task/",
+        data={"text": "bacon"},
+        headers=headers,
     )
-    response = client.get("/api/tasks/list/4/", headers=bob)
-    breakpoint()
+    assert response.status_code == status.HTTP_201_CREATED
+    bacon_id = response.json()["id"]
+    response = client.get(f"/api/tasks/list/{shopping.id}/", headers=headers)
     assert response.status_code == status.HTTP_200_OK
     # Check the manual order still only has 3 items
-    assert response.json()["manual_order"] == [10, 8, 9]
+    assert response.json()["manual_order"] == [
+        base_data["alice"]["eggs"].id,
+        base_data["alice"]["cheese"].id,
+        base_data["alice"]["spam"].id,
+    ]
 
-    # Check the books are returned in the order set in manual_order,
-    # but with the new book at the top of the list
-    response = client.get("/api/tasks/list/4/task/", headers=bob)
+    # Check the shopping list is returned in the order set in manual_order,
+    # but with the new item at the top of the list
+    response = client.get(f"/api/tasks/list/{shopping.id}/task/", headers=headers)
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()[0]["id"] == 11
-    assert response.json()[1]["id"] == 10
-    assert response.json()[2]["id"] == 8
-    assert response.json()[3]["id"] == 9
+    assert response.json()[0]["id"] == bacon_id
+    assert response.json()[1]["id"] == base_data["alice"]["eggs"].id
+    assert response.json()[2]["id"] == base_data["alice"]["cheese"].id
+    assert response.json()[3]["id"] == base_data["alice"]["spam"].id
 
 
 @pytest.mark.django_db
-def test_manual_list_order_update_order(client, base_users):
+def test_manual_list_order_update_order(client, base_data):
     """
     Updating the manual_order changes the order the tasks are returned
     """
-    bob = base_users["bob"]["auth_header"]
-    # Add a new book to the list
-    client.post(
-        "/api/tasks/list/4/",
-        data={"manual_order": "[9, 8, 10]"},
-        headers=bob,
+    headers = base_data["alice"]["auth_header"]
+    shopping = base_data["alice"]["shopping"]
+    # Update the order
+    client.patch(
+        f"/api/tasks/list/{shopping.id}/",
+        # patch doesn't have the "json" parameter, so we have to do data that we json encode ourselves,
+        # and we also need to add the content type header.
+        content_type="application/json",
+        data=json.dumps(
+            {
+                "manual_order": [
+                    base_data["alice"]["cheese"].id,
+                    base_data["alice"]["spam"].id,
+                    base_data["alice"]["eggs"].id,
+                ]
+            }
+        ),
+        headers=headers,
     )
-    response = client.get("/api/tasks/list/4/", headers=bob)
+    response = client.get(f"/api/tasks/list/{shopping.id}/task/", headers=headers)
     assert response.status_code == status.HTTP_200_OK
-    assert response.json()[1]["id"] == 9
-    assert response.json()[2]["id"] == 8
-    assert response.json()[3]["id"] == 10
+    assert response.json()[0]["id"] == base_data["alice"]["cheese"].id
+    assert response.json()[1]["id"] == base_data["alice"]["spam"].id
+    assert response.json()[2]["id"] == base_data["alice"]["eggs"].id
+
+
+@pytest.mark.django_db
+def test_manual_list_order_id_from_another_list(client, base_data):
+    """
+    Including an id from another list (or another user) doesn't include the task in the response.
+    """
+    headers = base_data["alice"]["auth_header"]
+    shopping = base_data["alice"]["shopping"]
+    # Update the order
+    client.patch(
+        f"/api/tasks/list/{shopping.id}/",
+        content_type="application/json",
+        data=json.dumps(
+            {
+                "manual_order": [
+                    base_data["alice"]["cheese"].id,
+                    # Another users task
+                    base_data["bob"]["mow the lawn"].id,
+                    base_data["alice"]["spam"].id,
+                    # Alice's task, but from another list
+                    base_data["alice"]["ironing"].id,
+                    base_data["alice"]["eggs"].id,
+                    # A random negative number thrown in for kicks
+                    -5,
+                ]
+            }
+        ),
+        headers=headers,
+    )
+    response = client.get(f"/api/tasks/list/{shopping.id}/task/", headers=headers)
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.json()) == 3
+    assert response.json()[0]["id"] == base_data["alice"]["cheese"].id
+    assert response.json()[1]["id"] == base_data["alice"]["spam"].id
+    assert response.json()[2]["id"] == base_data["alice"]["eggs"].id
+
+
+@pytest.mark.django_db
+def test_alphabetical_list_order(client, base_data):
+    """
+    Can set the list order to alphabetical
+    """
+    headers = base_data["alice"]["auth_header"]
+    shopping = base_data["alice"]["shopping"]
+    # Update the order to alpha
+    client.patch(
+        f"/api/tasks/list/{shopping.id}/",
+        content_type="application/json",
+        data=json.dumps({"sort_order": "text"}),
+        headers=headers,
+    )
+    response = client.get(f"/api/tasks/list/{shopping.id}/task/", headers=headers)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()[0]["id"] == base_data["alice"]["cheese"].id
+    assert response.json()[1]["id"] == base_data["alice"]["eggs"].id
+    assert response.json()[2]["id"] == base_data["alice"]["spam"].id
