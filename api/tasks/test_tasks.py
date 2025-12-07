@@ -152,28 +152,26 @@ def test_create_task(client, base_data):
     """
     A user can create a new task
     """
-    alice = base_data["alice"]["auth_header"]
-    response = client.get("/api/tasks/list/", headers=alice)
-    assert response.status_code == status.HTTP_200_OK
-    first_list_id = response.json()[0]["id"]
+    headers = base_data["alice"]["auth_header"]
+    chores_id = base_data["alice"]["chores"].id
     response = client.post(
-        f"/api/tasks/list/{first_list_id}/task/",
+        f"/api/tasks/list/{chores_id}/task/",
         data={"text": "wash the dishes"},
-        headers=alice,
+        headers=headers,
     )
     # The new task was created successfully
     assert response.status_code == status.HTTP_201_CREATED
     new_task_id = response.json()["id"]
     # The new task is in the list
-    response = client.get(f"/api/tasks/list/{first_list_id}/task/", headers=alice)
+    response = client.get(f"/api/tasks/list/{chores_id}/task/", headers=headers)
     # The last item in the list, should be the newly added task
     assert response.json()[-1]["id"] == new_task_id
     assert response.json()[-1]["text"] == "wash the dishes"
     assert response.json()[-1]["complete"] is False
     # And we can access it directly
     response = client.get(
-        f"/api/tasks/list/{first_list_id}/task/{new_task_id}/",
-        headers=alice,
+        f"/api/tasks/list/{chores_id}/task/{new_task_id}/",
+        headers=headers,
     )
     assert response.status_code == status.HTTP_200_OK
     assert response.json()["id"] == new_task_id
@@ -186,33 +184,25 @@ def test_update_a_task(client, base_data):
     """
     A user can update a task
     """
-    alice = base_data["alice"]["auth_header"]
-    # Get the first list
-    response = client.get("/api/tasks/list/", headers=alice)
-    first_list_id = response.json()[0]["id"]
-    # Get the last task on that list
-    response = client.get(f"/api/tasks/list/{first_list_id}/task/", headers=alice)
-    last_task_id = response.json()[-1]["id"]
-    response = client.get(
-        f"/api/tasks/list/{first_list_id}/task/{last_task_id}/",
-        headers=alice,
-    )
+    headers = base_data["alice"]["auth_header"]
+    chores_id = base_data["alice"]["chores"].id
+    ironing = base_data["alice"]["ironing"]
     # Make sure it's not already complete
-    assert response.json()["complete"] is False
+    assert ironing.complete is False
     # Update the task
-    response = client.put(
-        f"/api/tasks/list/{first_list_id}/task/{last_task_id}/",
-        headers=alice,
-        # We should just be pass a dictionary here, but it seems to be broken
-        # so, we pass a string and explicitly set the content type
+    response = client.patch(
+        f"/api/tasks/list/{chores_id}/task/{ironing.id}/",
+        headers=headers,
+        # patch doesn't have the "json" parameter, so we have to do data that we json encode ourselves,
+        # and we also need to add the content type header.
         data=json.dumps({"complete": True}),
         content_type="application/json",
     )
     assert response.status_code == status.HTTP_200_OK
     # Check when we get the task again, it's now complete
     response = client.get(
-        f"/api/tasks/list/{first_list_id}/task/{last_task_id}/",
-        headers=alice,
+        f"/api/tasks/list/{chores_id}/task/{ironing.id}/",
+        headers=headers,
     )
     # Make sure it's not already complete
     assert response.json()["complete"] is True
