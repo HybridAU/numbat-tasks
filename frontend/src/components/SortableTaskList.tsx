@@ -52,7 +52,6 @@ export function SortableTaskList({ complete }: { complete: boolean }) {
     const newIndex = taskIds.indexOf(Number(over?.id));
     const newOrder = arrayMove(taskIds, oldIndex, newIndex);
 
-    // TODO should this be part of the mutation?
     // Optimistically update to the new value, after we do the mutation, the query will be invalidated,
     // but we continue to display stale data while it's refetching, this is to stop it the task bouncing
     // back to its original position for a second.
