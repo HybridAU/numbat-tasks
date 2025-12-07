@@ -34,7 +34,11 @@ export default function Task({ task }: { task: TaskDetails }) {
     <Stack ref={setNodeRef} style={style}>
       <Stack direction="row" alignItems="center">
         {currentList.sort_order === "manual" && (
-          <Stack {...attributes} {...listeners} sx={{ cursor: "pointer" }}>
+          <Stack
+            {...attributes}
+            {...listeners}
+            sx={{ cursor: "pointer", touchAction: "none" }}
+          >
             <DragIndicatorIcon />
           </Stack>
         )}
