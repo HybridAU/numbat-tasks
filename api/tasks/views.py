@@ -27,7 +27,10 @@ class TaskViewSet(viewsets.ModelViewSet):
             owner=self.request.user,
         )
         if list_object.sort_order == SortOrder.MANUAL:
-            # TODO explain what's going on here... and write some unit tests
+            # This essentially creates an ephemeral column called "position"
+            # then adds a "when" statement e.g. When(id=5, position=3)
+            # for each value in the manual_order list. If the task id is not
+            # in the manual_order list, we default to position 0 make it show at the top.
             when_statements = []
             for position, task_id in enumerate(list_object.manual_order):
                 when_statements.append(When(id=task_id, then=position + 1))

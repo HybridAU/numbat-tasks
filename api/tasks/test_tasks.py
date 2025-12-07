@@ -75,7 +75,13 @@ def base_users(client):
     jobs = List.objects.create(owner=bob, name="jobs to be done")
     Task.objects.create(list=jobs, text="mow the lawn", complete=True)
     Task.objects.create(list=jobs, text="paint the house")
-    books = List.objects.create(owner=bob, name="books I want to read")
+    books = List.objects.create(
+        owner=bob,
+        name="books I want to read",
+        sort_order="manual",
+        manual_order=[10, 8, 9],  # TODO order after creating
+    )
+    # These tasks get id 8, 9 and 10
     Task.objects.create(list=books, text="Terry Pratchett - Night Watch", complete=True)
     Task.objects.create(list=books, text="Andy Weir - Project Hail Mary")
     Task.objects.create(list=books, text="Ben Aaronovitch - Rivers of London")
@@ -197,3 +203,66 @@ def test_can_not_access_another_users_tasks(client, base_users):
     # Bob can't see the task
     response = client.get(f"/api/tasks/list/{list_id}/task/{task_id}/", headers=bob)
     assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+# TODO These tests don't work, but just committing what I've got and I'll come back to it when
+# I've got some free time
+@pytest.mark.django_db
+def test_manual_list_order(client, base_users):
+    """
+    A user can manually sort a list
+    """
+    bob = base_users["bob"]["auth_header"]
+    response = client.get("/api/tasks/list/4/task/", headers=bob)
+    assert response.status_code == status.HTTP_200_OK
+    # Check the books are returned in the order set in manual_order
+    assert response.json()[0]["id"] == 10
+    assert response.json()[1]["id"] == 8
+    assert response.json()[2]["id"] == 9
+
+
+@pytest.mark.django_db
+def test_manual_list_order_new_tasks(client, base_users):
+    """
+    New tasks are added to the top of the list if they don't exist in the manual_order
+    """
+    bob = base_users["bob"]["auth_header"]
+    # Add a new book to the list
+    client.post(
+        "/api/tasks/list/4/task/",
+        data={"text": "Old man's war"},
+        headers=bob,
+    )
+    response = client.get("/api/tasks/list/4/", headers=bob)
+    breakpoint()
+    assert response.status_code == status.HTTP_200_OK
+    # Check the manual order still only has 3 items
+    assert response.json()["manual_order"] == [10, 8, 9]
+
+    # Check the books are returned in the order set in manual_order,
+    # but with the new book at the top of the list
+    response = client.get("/api/tasks/list/4/task/", headers=bob)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()[0]["id"] == 11
+    assert response.json()[1]["id"] == 10
+    assert response.json()[2]["id"] == 8
+    assert response.json()[3]["id"] == 9
+
+
+@pytest.mark.django_db
+def test_manual_list_order_update_order(client, base_users):
+    """
+    Updating the manual_order changes the order the tasks are returned
+    """
+    bob = base_users["bob"]["auth_header"]
+    # Add a new book to the list
+    client.post(
+        "/api/tasks/list/4/",
+        data={"manual_order": "[9, 8, 10]"},
+        headers=bob,
+    )
+    response = client.get("/api/tasks/list/4/", headers=bob)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()[1]["id"] == 9
+    assert response.json()[2]["id"] == 8
+    assert response.json()[3]["id"] == 10
