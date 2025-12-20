@@ -115,7 +115,9 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
         onClose={handleClose}
         fullScreen
         disableRestoreFocus
-        TransitionComponent={Transition}
+        slots={{
+          transition: Transition,
+        }}
       >
         <Form control={control}>
           <AppBar sx={{ position: "relative" }}>

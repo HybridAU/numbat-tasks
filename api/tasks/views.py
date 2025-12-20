@@ -1,5 +1,5 @@
 from django.db.models import Case, IntegerField, When
-from rest_framework import viewsets
+from rest_framework import filters, viewsets
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 
@@ -11,6 +11,8 @@ from tasks.serializers import ListSerializer, TaskSerializer
 class ListViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwnerOrNone]
     serializer_class = ListSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ["name", "task__text"]
 
     def get_queryset(self):
         return List.objects.filter(owner=self.request.user)
