@@ -15,6 +15,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Form, useForm } from "react-hook-form";
 import { lists } from "../api/lists.ts";
+import useDebounce from "../hooks/useDebounce.ts";
 import FormTextField from "./form/FormTextField.tsx";
 import SearchListResult from "./SearchListResult.tsx";
 
@@ -40,11 +41,11 @@ export default function SearchListsButton() {
     defaultValues: { search: "" },
   });
 
-  // TODO debounce watch
   const searchText = watch("search");
+  const debouncedSearchText = useDebounce(searchText, 300);
   const { data } = useQuery({
-    queryKey: ["Lists", searchText],
-    queryFn: () => lists({ search: searchText }),
+    queryKey: ["Lists", debouncedSearchText],
+    queryFn: () => lists({ search: debouncedSearchText }),
   });
 
   return (
@@ -91,7 +92,11 @@ export default function SearchListsButton() {
           </Stack>
         </Form>
         {data?.map((list) => (
-          <SearchListResult key={list.id} list={list} />
+          <SearchListResult
+            key={list.id}
+            list={list}
+            closeFunction={handleClose}
+          />
         ))}
       </Dialog>
       <IconButton color="inherit">
