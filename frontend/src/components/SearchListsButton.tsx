@@ -41,11 +41,10 @@ export default function SearchListsButton() {
     defaultValues: { search: "" },
   });
 
-  const searchText = watch("search");
-  const debouncedSearchText = useDebounce(searchText, 300);
+  const searchText = useDebounce(watch("search"), 300);
   const { data } = useQuery({
-    queryKey: ["Lists", debouncedSearchText],
-    queryFn: () => lists({ search: debouncedSearchText }),
+    queryKey: ["Lists", searchText],
+    queryFn: () => lists({ search: searchText }),
   });
 
   return (
