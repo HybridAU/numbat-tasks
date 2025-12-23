@@ -5,6 +5,7 @@ export default function useDebounce(value: string, delay: number) {
 
   useEffect(() => {
     // Could also put some logic here to make it a minimum of 3 characters
+
     const handler = setTimeout(() => {
       setDebounceValue(value);
     }, delay);

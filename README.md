@@ -39,11 +39,11 @@ This is currently in development, at some point I'll make this repo public.
   - [ ] Home page
   - [ ] Docs
   - [ ] Demo site
-- [ ] Basic sorting and filtering (by date / name)
+- [X] Basic sorting and filtering (by date / name)
 - [ ] Search tasks
   - [ ] Search current list (client side)
-  - [ ] Search all lists (server side)
-- [ ] Reorder / custom order for tasks (maybe https://github.com/incuna/django-orderable)
+  - [X] Search all lists (server side)
+- [X] Reorder / custom order for tasks (maybe https://github.com/incuna/django-orderable)
 - [ ] Webauthn for login
 - [ ] Share tasks lists with other users
 - [ ] Progressive web app
