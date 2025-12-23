@@ -1,7 +1,9 @@
 from django.db.models import Case, IntegerField, When
 from rest_framework import filters, viewsets
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from tasks.models import List, SortOrder, Task
 from tasks.permissions import IsListOwnerOrNone, IsOwnerOrNone
@@ -16,6 +18,14 @@ class ListViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return List.objects.filter(owner=self.request.user)
+
+    # TODO still needs work on serializer...
+    @action(detail=True, methods=["post"])
+    def uncheck_all_tasks(self, request, pk=None):
+        list_object = self.get_object()
+        all_tasks = Task.objects.filter(list=list_object)
+        all_tasks.update(complete=False)
+        return Response({"status": "All tasks unchecked"})
 
 
 class TaskViewSet(viewsets.ModelViewSet):
