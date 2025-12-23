@@ -17,7 +17,7 @@ import { Form, useForm } from "react-hook-form";
 import { lists } from "../api/lists.ts";
 import useDebounce from "../hooks/useDebounce.ts";
 import FormTextField from "./form/FormTextField.tsx";
-import SearchListResult from "./SearchListResult.tsx";
+import TaskListButton from "./TaskListButton.tsx";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -91,7 +91,7 @@ export default function SearchListsButton() {
           </Stack>
         </Form>
         {data?.map((list) => (
-          <SearchListResult
+          <TaskListButton
             key={list.id}
             list={list}
             closeFunction={handleClose}
