@@ -100,7 +100,7 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
 
   const { data } = useQuery({
     queryKey: ["Lists"],
-    queryFn: () => lists(),
+    queryFn: () => lists({}),
   });
 
   const { mutate } = useMutation({

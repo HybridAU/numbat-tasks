@@ -129,7 +129,9 @@ export default function AddEditList({
         onClose={handleClose}
         fullScreen
         disableRestoreFocus
-        TransitionComponent={Transition}
+        slots={{
+          transition: Transition,
+        }}
       >
         <Form control={control}>
           <AppBar sx={{ position: "relative" }}>

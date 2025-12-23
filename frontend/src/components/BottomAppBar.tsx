@@ -1,8 +1,8 @@
-import SearchIcon from "@mui/icons-material/Search";
-import { AppBar, Box, IconButton, Toolbar } from "@mui/material";
+import { AppBar, Box, Toolbar } from "@mui/material";
 import AddEditTask from "./AddEditTask";
 import ListActionsMenu from "./ListActionsMenu";
 import NavDraw from "./NavDraw";
+import SearchListsButton from "./SearchListsButton.tsx";
 
 export default function BottomAppBar() {
   return (
@@ -11,10 +11,7 @@ export default function BottomAppBar() {
         <NavDraw />
         <AddEditTask />
         <Box sx={{ flexGrow: 1 }} />
-        {/* TODO this search button does nothing, it's just a place holder */}
-        <IconButton color="inherit">
-          <SearchIcon />
-        </IconButton>
+        <SearchListsButton />
         <ListActionsMenu />
       </Toolbar>
     </AppBar>

@@ -19,6 +19,10 @@ export type ListDetails = {
   archived: boolean;
 };
 
+export type searchListRequest = {
+  search?: string;
+};
+
 export type addListRequest = {
   name: string;
   archived?: boolean;
@@ -40,8 +44,13 @@ export type deleteListRequest = {
 
 type ListsResponse = ListDetails[];
 
-const lists = async (): Promise<ListsResponse> => {
-  const response = await fetchWithAuth("/api/tasks/list/");
+const lists = async ({ search }: searchListRequest): Promise<ListsResponse> => {
+  let url = "/api/tasks/list/";
+  if (search) {
+    const params = new URLSearchParams({ search: search });
+    url = `/api/tasks/list/?${params.toString()}`;
+  }
+  const response = await fetchWithAuth(url);
   return (await response.json()) as ListsResponse;
 };
 
@@ -51,7 +60,6 @@ const addList = async ({
   sort_order,
   manual_order,
 }: addListRequest): Promise<ListDetails> => {
-  console.log("adding");
   const response = await fetchWithAuth("/api/tasks/list/", {
     method: "POST",
     headers: {

@@ -236,6 +236,39 @@ def test_can_not_access_another_users_tasks(client, base_data):
 
 
 @pytest.mark.django_db
+def test_can_not_search_for_another_users_tasks(client, base_data):
+    """
+    Bob can not search for a task and find a list that belongs to Alice
+    """
+    search = "/api/tasks/list/?search=cheese"
+    # When Bob searches for "cheese" he gets no results
+    response = client.get(search, headers=base_data["bob"]["auth_header"])
+    assert response.json() == []
+    # But when Alice does the same search, she gets her shopping list come back
+    response = client.get(search, headers=base_data["alice"]["auth_header"])
+    assert response.json()[0]["name"] == "Shopping"
+
+
+@pytest.mark.django_db
+def test_can_search_a_list_by_task_name_or_list_name(client, base_data):
+    """
+    Can search for a task in a list, or the name of a list and both will find results.
+    """
+    # Searching for egg (full text is "eggs" with an s) finds the shopping list
+    response = client.get(
+        "/api/tasks/list/?search=egg",
+        headers=base_data["alice"]["auth_header"],
+    )
+    assert response.json()[0]["name"] == "Shopping"
+    # Searching shop also finds the shopping list
+    response = client.get(
+        "/api/tasks/list/?search=shop",
+        headers=base_data["alice"]["auth_header"],
+    )
+    assert response.json()[0]["name"] == "Shopping"
+
+
+@pytest.mark.django_db
 def test_manual_list_order(client, base_data):
     """
     A user can manually sort a list
