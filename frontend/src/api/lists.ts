@@ -42,6 +42,10 @@ export type deleteListRequest = {
   listId: number;
 };
 
+export type uncheckListRequest = {
+  listId: number;
+};
+
 type ListsResponse = ListDetails[];
 
 const lists = async ({ search }: searchListRequest): Promise<ListsResponse> => {
@@ -116,4 +120,22 @@ const deleteList = async ({ listId }: deleteListRequest): Promise<void> => {
   throw new Error(`${response.statusText}`);
 };
 
-export { lists, addList, updateList, deleteList };
+const uncheckAllTasks = async ({
+  listId,
+}: uncheckListRequest): Promise<void> => {
+  const response = await fetchWithAuth(
+    `/api/tasks/list/${listId}/uncheck_all_tasks/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  if (response.ok) {
+    return;
+  }
+  throw new Error(`${response.statusText}`);
+};
+
+export { lists, addList, updateList, deleteList, uncheckAllTasks };

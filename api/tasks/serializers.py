@@ -36,6 +36,15 @@ class ListSerializer(serializers.ModelSerializer):
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
 
+class EmptySerializer(serializers.Serializer):
+    """
+    An empty serializer, that can be used for endpoints that take a POST with no data / body
+    (e.g. the uncheck_all_tasks endpoint)
+    """
+
+    pass
+
+
 class TaskSerializer(NestedHyperlinkedModelSerializer):
     class Meta:
         model = Task

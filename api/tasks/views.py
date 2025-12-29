@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from tasks.models import List, SortOrder, Task
 from tasks.permissions import IsListOwnerOrNone, IsOwnerOrNone
-from tasks.serializers import ListSerializer, TaskSerializer
+from tasks.serializers import EmptySerializer, ListSerializer, TaskSerializer
 
 
 class ListViewSet(viewsets.ModelViewSet):
@@ -19,10 +19,9 @@ class ListViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return List.objects.filter(owner=self.request.user)
 
-    # TODO still needs work on serializer...
-    @action(detail=True, methods=["post"])
-    def uncheck_all_tasks(self, request, pk=None):
-        list_object = self.get_object()
+    @action(detail=True, methods=["post"], serializer_class=EmptySerializer)
+    def uncheck_all_tasks(self, request, pk):
+        list_object = get_object_or_404(List, pk=pk, owner=self.request.user)
         all_tasks = Task.objects.filter(list=list_object)
         all_tasks.update(complete=False)
         return Response({"status": "All tasks unchecked"})
