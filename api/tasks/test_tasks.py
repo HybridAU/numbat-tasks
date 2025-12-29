@@ -250,6 +250,27 @@ def test_can_not_search_for_another_users_tasks(client, base_data):
 
 
 @pytest.mark.django_db
+def test_can_not_call_uncheck_all_tasks_for_another_users_list(client, base_data):
+    """
+    Bob can not call `uncheck_all_tasks` for Alice's shopping list.
+    """
+    endpoint = f"/api/tasks/list/{base_data['alice']['shopping'].id}/uncheck_all_tasks/"
+    spam_task = f"/api/tasks/list/{base_data['alice']['shopping'].id}/task/{base_data['alice']['spam'].id}/"
+    # When Bob calls the endpoint he gets a 404 because he can't access the list
+    response = client.post(endpoint, headers=base_data["bob"]["auth_header"])
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    # And spam is still complete
+    response = client.get(spam_task, headers=base_data["alice"]["auth_header"])
+    assert response.json()["complete"] is True
+    # But when Alice calls the same endpoint, she gets a success response
+    response = client.post(endpoint, headers=base_data["alice"]["auth_header"])
+    assert response.status_code == status.HTTP_200_OK
+    # And spam has been unchecked
+    response = client.get(spam_task, headers=base_data["alice"]["auth_header"])
+    assert response.json()["complete"] is False
+
+
+@pytest.mark.django_db
 def test_can_search_a_list_by_task_name_or_list_name(client, base_data):
     """
     Can search for a task in a list, or the name of a list and both will find results.
