@@ -21,6 +21,12 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
+    # Even when using headless, the third-party provider endpoints are stil
+    # needed for handling e.g. the OAuth handshake. The account views
+    # can be disabled using `HEADLESS_ONLY = True`.
+    path("api/accounts/", include("allauth.urls")),
+    # Include the API endpoints:
+    path("api/_allauth/", include("allauth.headless.urls")),
     path("api/admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

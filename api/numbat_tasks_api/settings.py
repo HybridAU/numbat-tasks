@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "allauth",
+    "allauth.account",
+    "allauth.headless",
     "accounts",
     "rest_framework",
     "tasks",
@@ -55,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "numbat_tasks_api.urls"
@@ -93,6 +97,31 @@ DATABASES = {
 }
 
 
+# Settings for Django-allauth
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    "django.contrib.auth.backends.ModelBackend",
+    # `allauth` specific authentication methods, such as login by email
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_LOGIN_METHODS = {"email"}
+HEADLESS_ONLY = True
+HEADLESS_SERVE_SPECIFICATION = True
+
+# TODO
+# These are the URLs to be implemented by your single-page application.
+BASE_HOSTNAME = config("BASE_HOSTNAME", "http://localhost:8000/")
+HEADLESS_FRONTEND_URLS = {
+    "account_confirm_email": BASE_HOSTNAME + "account/verify-email/{key}",
+    "account_reset_password_from_key": (
+        BASE_HOSTNAME + "account/password/reset/key/{key}"
+    ),
+    "account_signup": f"{BASE_HOSTNAME}account/signup",
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -112,6 +141,9 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = "accounts.CustomUser"
+
+EMAIL_HOST = config("EMAIL_HOST", "mailpit")
+EMAIL_PORT = config("EMAIL_PORT", 1025)
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -136,7 +168,7 @@ STATIC_ROOT = "/static_files/api"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = "/api/tasks/tasks/"
+LOGIN_REDIRECT_URL = "/api/tasks/list/"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (

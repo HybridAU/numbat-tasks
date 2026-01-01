@@ -44,6 +44,9 @@ services:
             - ./docs:/docs
         env_file:
             - .env
+    mailpit:
+        image: axllent/mailpit:v1.28.0
+        command: ["--webroot", "/mailpit/"]
     caddy:
         image: caddy:2-alpine
         ports:

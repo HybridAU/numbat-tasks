@@ -1,4 +1,9 @@
 :80 {
+    redir /mailpit /mailpit/
+    handle_path /mailpit/* {
+        rewrite * /mailpit{path}
+        reverse_proxy mailpit:8025
+    }
 	reverse_proxy /api/* api:8000
 	reverse_proxy /docs/* docs:8000
 	reverse_proxy /* frontend:8000
