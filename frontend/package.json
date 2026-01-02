@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "numbat-tasks",
   "private": true,
   "version": "0.11.0",
   "type": "module",
@@ -32,7 +32,8 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.2.2",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vite-plugin-pwa": "^1.2.0"
   },
-  "packageManager": "pnpm@10.6.4"
+  "packageManager": "pnpm@10.27.0"
 }

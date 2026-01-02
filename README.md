@@ -32,7 +32,7 @@ This is currently in development, at some point I'll make this repo public.
   - [X] Poetry -> Uv
 - [X] Docs how to get set up from zero to self-hosted.
 - [ ] Automatically bump versions after build
-- [ ] Draw a better logo
+- [X] Draw a better logo
 
 ### To be actually useful as a todo list app
 - [ ] Get a domain name and host
@@ -46,7 +46,7 @@ This is currently in development, at some point I'll make this repo public.
 - [X] Reorder / custom order for tasks (maybe https://github.com/incuna/django-orderable)
 - [ ] Webauthn for login
 - [ ] Share tasks lists with other users
-- [ ] Progressive web app
+- [X] Progressive web app
 - [ ] Start date / Due date for 
   - [ ] Push notifications
 - [ ] Sub tasks

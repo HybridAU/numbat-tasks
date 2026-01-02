@@ -2,7 +2,7 @@
 cd /docs
 if [[ "$DEBUG" == "True" ]]; then
     uv sync
-    uv run mkdocs serve
+    uv run mkdocs serve --livereload
 else
     /venv/bin/mkdocs build
     rm -rf /static_files/docs
