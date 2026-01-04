@@ -94,28 +94,29 @@ ALLOWED_HOSTS=tasks.example.com
 ```yaml title="Caddyfile"
 :80 { # (1)!
     handle_path /api/static/* {
-    	root * /static_files/api
+        root * /static_files/api
         file_server
     }
-    handle /api/admin* { # (2)!
-        # Allow only specific IPs to access the Django admin console
-        match remote_ip 1.2.3.4 192.168.1.0/24 {
-            # If matched, continue
-        }
-        # If not in the allowed IPs, stop processing the request (block)
-        abort
+    handle /api/admin/* {  # (2)!
+        # Block any IP address not on the allow list from accessing the Django admin console
+        @blocked not remote_ip 10.1.1.16
+        respond @blocked "Access Denied" 403
+        reverse_proxy api:8000
     }
     handle /api/* {
-    	reverse_proxy api:8000
+        reverse_proxy api:8000
     }
     handle /assets/* {
-      root * /static_files/frontend
-      file_server
+        root * /static_files/frontend
+        file_server
     }
     handle {
-	    root * /static_files/frontend
-	    try_files {path} /index.html
-        header /index.html Cache-Control "public, no-cache, max-age=0, must-revalidate"
+        root * /static_files/frontend
+        file_server
+        route {
+            try_files {path} /index.html
+            header /index.html Cache-Control "public, no-cache, max-age=0, must-revalidate"
+        }
     }
 }
 ```
