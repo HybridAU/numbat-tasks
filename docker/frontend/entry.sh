@@ -1,7 +1,7 @@
 #!/bin/bash
 if [[ "$DEBUG" == "True" ]]; then
     # Reinstall dependencies (these might change during development)
-    pnpm install
+    pnpm install --config.confirmModulesPurge=false
     # start the development server
     pnpm dev --host --port 8000
 else
