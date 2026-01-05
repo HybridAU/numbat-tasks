@@ -1,8 +1,8 @@
 # Numbat Tasks
 
-A self-hosted to do list app
+A self-hosted to-do list app
 
-<img src="/docs/assets/numbat.svg" alt="Numbat Tasks logo" width="100" height="100">
+<img src="/assets/numbat.svg" alt="Numbat Tasks logo" width="100" height="100">
 
 ## Why *another* to-do list app
 Numbat tasks aims to be a personal to-do list app in the Goldilocks zone between too simple and too complex. 

@@ -1,6 +1,6 @@
 # Numbat Tasks
 
-A self-hosted to do list app
+A self-hosted to-do list app
 
 <img src="docs/docs/assets/numbat.svg" alt="Numbat Tasks logo" width="100" height="100">
 
@@ -24,14 +24,13 @@ things like my shopping list and general to-do list for over a year.
 Once I get it feature complete enough that I can convince my wife to switch from Google Keep,
 then I'll know I've truly succeeded.
 
+## Documentation
+Interested? Go [read the docs](https://docs.numbat-tasks.com) to see how to start hosting your own to-do list
+
 ## Core missing features
 - [ ] Config to sign up and [manage users](https://github.com/HybridAU/numbat-tasks/issues/32). 
-      Especially on a fresh install, it would be nice to be able to do everything through a nice
+      Especially on a fresh install, it would be nice to be able to-do everything through a nice
       web interface without needing to run django management commands or use the django admin console.
-- [ ] Get a domain name and host
-  - [ ] Home page
-  - [ ] Docs
-  - [ ] Demo site
 - [ ] [Search tasks](https://github.com/HybridAU/numbat-tasks/issues/34) within the current list
 - [ ] Webauthn for login
 - [ ] Share tasks lists with other users
