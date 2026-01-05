@@ -39,7 +39,7 @@ jobs:
         run: docker image push ghcr.io/hybridau/numbat-tasks-api:${{ github.ref_name }}
       - name: Push Frontend docker images
         run: docker image push ghcr.io/hybridau/numbat-tasks-frontend:${{ github.ref_name }}
-      # Also add the latest tag
+      # Also push the latest tag
       - name: Tag latest API docker images
         run: docker image push ghcr.io/hybridau/numbat-tasks-api:latest
       - name: Tag latest Frontend docker images
