@@ -43,4 +43,4 @@ jobs:
       - name: Tag latest API docker images
         run: docker image push ghcr.io/hybridau/numbat-tasks-api:latest
       - name: Tag latest Frontend docker images
-        run: docker image push ghcr.io/hybridau/numbat-tasks-frontend:tag
+        run: docker image push ghcr.io/hybridau/numbat-tasks-frontend:latest

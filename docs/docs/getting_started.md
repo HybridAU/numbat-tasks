@@ -79,7 +79,7 @@ variables](./environment_variables.md) is available.
 
 ``` title=".env"
 # Can also use "latest" in place of a specfic version number
-VERSION=0.14.0
+VERSION=0.14.1
 
 # Reasonable defaults
 POSTGRES_DB=numbat_tasks
