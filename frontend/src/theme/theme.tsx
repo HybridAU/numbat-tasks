@@ -9,6 +9,14 @@ const theme = createTheme({
       textTransform: "none",
     },
   },
+  palette: {
+    primary: {
+      main: "#552200",
+    },
+    secondary: {
+      main: "#ffe6d5",
+    },
+  },
 });
 
 export default theme;
