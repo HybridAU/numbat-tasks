@@ -14,7 +14,7 @@ class ListViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsOwnerOrNone]
     serializer_class = ListSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ["name", "task__text"]
+    search_fields = ["name", "tasks__text"]
 
     def get_queryset(self):
         return List.objects.filter(owner=self.request.user)
@@ -22,7 +22,7 @@ class ListViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"], serializer_class=EmptySerializer)
     def uncheck_all_tasks(self, request, pk):
         list_object = get_object_or_404(List, pk=pk, owner=self.request.user)
-        all_tasks = Task.objects.filter(list=list_object)
+        all_tasks = list_object.tasks.all()
         all_tasks.update(complete=False)
         return Response({"status": "All tasks unchecked"})
 

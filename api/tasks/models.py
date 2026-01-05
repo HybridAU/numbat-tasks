@@ -25,7 +25,11 @@ class SortOrder(models.TextChoices):
 
 class List(models.Model):
     id = models.BigAutoField(primary_key=True, db_index=True)
-    owner = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE)
+    owner = models.ForeignKey(
+        "accounts.CustomUser",
+        on_delete=models.CASCADE,
+        related_name="lists",
+    )
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=256, blank=True)
@@ -45,7 +49,7 @@ class List(models.Model):
 
 class Task(models.Model):
     id = models.BigAutoField(primary_key=True, db_index=True)
-    list = models.ForeignKey(List, on_delete=models.CASCADE)
+    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name="tasks")
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True)
     text = models.CharField(max_length=256, blank=True, db_index=True)
