@@ -49,7 +49,7 @@ class Task(models.Model):
     created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True, db_index=True)
     text = models.CharField(max_length=256, blank=True, db_index=True)
-    complete = models.BooleanField(blank=False, default=False)
+    complete = models.BooleanField(default=False)
 
     @property
     def text_summary(self):
