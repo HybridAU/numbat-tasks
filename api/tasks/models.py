@@ -25,26 +25,19 @@ class SortOrder(models.TextChoices):
 
 class List(models.Model):
     id = models.BigAutoField(primary_key=True, db_index=True)
-    owner = models.ForeignKey(
-        "accounts.CustomUser",
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-    )
-    created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
-    updated = models.DateTimeField(auto_now=True, null=False, blank=False)
-    name = models.CharField(max_length=256, null=False, blank=True)
+    owner = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=256, blank=True)
     sort_order = models.CharField(
         max_length=20,
         choices=SortOrder,
         default=SortOrder.CREATED_ASCENDING,
-        null=False,
-        blank=False,
     )
     manual_order = models.JSONField(
-        default=list, blank=True, null=False, validators=[validate_manual_order]
+        default=list, blank=True, validators=[validate_manual_order]
     )
-    archived = models.BooleanField(null=False, blank=False, default=False)
+    archived = models.BooleanField(default=False)
 
     def __str__(self):
         return truncate(self.name)
@@ -52,21 +45,11 @@ class List(models.Model):
 
 class Task(models.Model):
     id = models.BigAutoField(primary_key=True, db_index=True)
-    list = models.ForeignKey(List, on_delete=models.CASCADE, null=False, blank=False)
-    created = models.DateTimeField(
-        auto_now_add=True,
-        null=False,
-        blank=False,
-        db_index=True,
-    )
-    updated = models.DateTimeField(
-        auto_now=True,
-        null=False,
-        blank=False,
-        db_index=True,
-    )
-    text = models.CharField(max_length=256, null=False, blank=True, db_index=True)
-    complete = models.BooleanField(null=False, blank=False, default=False)
+    list = models.ForeignKey(List, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated = models.DateTimeField(auto_now=True, db_index=True)
+    text = models.CharField(max_length=256, blank=True, db_index=True)
+    complete = models.BooleanField(blank=False, default=False)
 
     @property
     def text_summary(self):
