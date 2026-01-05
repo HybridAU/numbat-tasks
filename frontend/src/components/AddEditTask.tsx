@@ -29,6 +29,7 @@ import {
 } from "../api/tasks";
 import { useListsState } from "../providers/ListsProvider";
 import FormTextField from "./form/FormTextField";
+import LinkifyText from "./LinkifyText.tsx";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -179,12 +180,12 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
             overflow: "hidden",
             textOverflow: "ellipsis",
             display: "-webkit-box",
-            WebkitLineClamp: "2",
+            WebkitLineClamp: "4",
             WebkitBoxOrient: "vertical",
           }}
           color={task.complete ? "text.secondary" : "text.primary"}
         >
-          {task.text}
+          <LinkifyText text={task.text} />
         </Typography>
       ) : (
         <StyledFab color="secondary" aria-label="add">
