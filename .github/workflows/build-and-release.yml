@@ -30,12 +30,17 @@ jobs:
       # There are actions to do build and push, but they have a little too much magic for me
       # Build
       - name: Build API docker images
-        run: docker build -f docker/api/api.dockerfile -t ghcr.io/hybridau/numbat-tasks-api:${{ github.ref_name }} .
+        run: docker build -f docker/api/api.dockerfile -t ghcr.io/hybridau/numbat-tasks-api:${{ github.ref_name }} -t ghcr.io/hybridau/numbat-tasks-api:latest .
       - name: Build Frontend docker images
-        run: docker build -f docker/frontend/frontend.dockerfile -t ghcr.io/hybridau/numbat-tasks-frontend:${{ github.ref_name }} .
+        run: docker build -f docker/frontend/frontend.dockerfile -t ghcr.io/hybridau/numbat-tasks-frontend:${{ github.ref_name }} -t ghcr.io/hybridau/numbat-tasks-frontend:latest  .
 
       # Push
       - name: Push API docker images
         run: docker image push ghcr.io/hybridau/numbat-tasks-api:${{ github.ref_name }}
       - name: Push Frontend docker images
         run: docker image push ghcr.io/hybridau/numbat-tasks-frontend:${{ github.ref_name }}
+      # Also add the latest tag
+      - name: Tag latest API docker images
+        run: docker image push ghcr.io/hybridau/numbat-tasks-api:latest
+      - name: Tag latest Frontend docker images
+        run: docker image push ghcr.io/hybridau/numbat-tasks-frontend:tag
