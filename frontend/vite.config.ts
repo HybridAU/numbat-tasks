@@ -4,7 +4,31 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), VitePWA({ registerType: "autoUpdate" })],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["favicon.svg", "favicon.ico", "apple-touch-icon.png"],
+      manifest: {
+        name: "Numbat Tasks",
+        short_name: "Numbat Tasks",
+        description: "Open Source to-do list app",
+        theme_color: "#ffe6d5",
+        icons: [
+          {
+            src: "pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+      },
+    }),
+  ],
   resolve: {
     alias: [
       {
