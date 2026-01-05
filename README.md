@@ -25,7 +25,7 @@ Once I get it feature complete enough that I can convince my wife to switch from
 then I'll know I've truly succeeded.
 
 ## Documentation
-Interested? Go [read the docs](https://docs.numbat-tasks.com) to see how to start hosting your own to-do list
+Interested? Go [read the docs](https://docs.numbat-tasks.com/getting_started/) to see how to get started.
 
 ## Core missing features
 - [ ] Config to sign up and [manage users](https://github.com/HybridAU/numbat-tasks/issues/32). 
