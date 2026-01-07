@@ -1,0 +1,73 @@
+name: bump-version.yml
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: "Version to increment (major, minor, or patch)"
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  bump_version:
+    runs-on: ubuntu-slim
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # Install required packages
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      # Calculate new version number
+      - name: Calculate new version
+        run: cd utils && uv sync && uv run python bump_version.py
+
+      # Bump all versions
+      - name: bump version of API
+        run: cd api && uv version 0.15.1
+
+      - name: bump version of docs
+        run: cd docs && uv version 0.15.1
+
+      - name: bump version of frontend
+        run: cd frontend && pnpm version 0.15.1
+
+      - name: Commit changes with new version
+        run: git add -A && git commit -m "Bump version to 0.15.1" && git push
+
+      - name: Tag latest commit
+        run: git tag 0.15.1 && git push origin --tags
+
+      - name: Publish docs
+        run: cd docs && uv sync && uv run mkdocs gh-deploy
+
+      - name: bump version of API
+        run: cd api && uv version 0.15.2-dev
+
+      - name: bump version of docs
+        run: cd docs && uv version 0.15.2-dev
+
+      - name: bump version of frontend
+        run: cd frontend && pnpm version 0.15.2-dev
+
+      - name: Commit changes with new version
+        run: git add -A && git commit -m "Bump version to 0.15.2-dev" && git push
