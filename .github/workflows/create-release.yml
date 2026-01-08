@@ -14,7 +14,7 @@ on:
         default: minor
 
 jobs:
-  bump_version:
+  create_a_new_release:
     runs-on: ubuntu-latest
 
     permissions:
