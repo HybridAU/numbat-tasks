@@ -1,6 +1,6 @@
 [project]
 name = "numbat-tasks-api"
-version = "0.15.1"
+version = "0.15.2"
 description = "Backend API for Numbat Tasks"
 author = "Michael Van Delft <michael@xo.tc>"
 license = "MIT"
