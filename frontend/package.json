@@ -1,7 +1,7 @@
 {
   "name": "numbat-tasks",
   "private": true,
-  "version": "0.15.3",
+  "version": "0.15.4-dev",
   "type": "module",
   "scripts": {
     "dev": "vite",
