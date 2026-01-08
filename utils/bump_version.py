@@ -42,18 +42,17 @@ def calculate_new_version(version, increment):
     return calculated_version
 
 
-if __name__ == "main":
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "increment",
         help="Version to increment. Options are: major, minor, patch, and dev",
     )
     args = parser.parse_args()
-
-    with open("VERSION") as file:
+    with open("VERSION", encoding="utf_8") as file:
         current_version = file.read()
 
     new_version = calculate_new_version(current_version, args.increment)
 
-    with open("VERSION", "w") as file:
+    with open("VERSION", "w", encoding="utf_8") as file:
         file.write(new_version)
