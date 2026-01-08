@@ -27,6 +27,7 @@ export default function LinkifyText({ text }: { text: string }) {
         onClick={(event) => {
           event.stopPropagation();
         }}
+        target="_blank"
       >
         {match.text}
       </Link>,
