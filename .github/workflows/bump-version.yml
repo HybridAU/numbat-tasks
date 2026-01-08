@@ -1,4 +1,5 @@
-name: bump-version.yml
+name: Bump version for release
+
 on:
   workflow_dispatch:
     inputs:
@@ -73,7 +74,10 @@ jobs:
 
       # This should trigger a pipeline to publish the docs
       - name: Publish docs
-        run: cd docs && uv sync && uv run mkdocs gh-deploy
+        run: |
+          cd docs
+          uv sync
+          uv run mkdocs gh-deploy --force
 
       # Calculate dev version number
       - name: Calculate dev version
