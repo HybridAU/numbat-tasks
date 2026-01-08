@@ -7,6 +7,7 @@ WORKDIR /frontend
 
 COPY ./frontend/package.json .
 COPY ./frontend/pnpm-lock.yaml* .
+COPY ./frontend/pnpm-workspace.yaml* .
 
 RUN npm install -g pnpm
 RUN pnpm install

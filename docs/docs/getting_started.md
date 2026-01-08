@@ -77,9 +77,9 @@ volumes:
 All the settings should live in here. The following is the minimum configuration, but a list of [all environment
 variables](./environment_variables.md) is available.
 
-``` title=".env"
-# Can also use "latest" in place of a specfic version number
-VERSION=0.15.0
+```shell title=".env"
+VERSION=latest  # (1)! 
+
 
 # Reasonable defaults
 POSTGRES_DB=numbat_tasks
@@ -90,6 +90,9 @@ ALLOWED_HOSTS=tasks.example.com
 # echo POSTGRES_PASSWORD=$(dd if=/dev/urandom bs=1 count=18 status=none | base64) >> .env
 # echo SECRET_KEY=$(dd if=/dev/urandom bs=1 count=42 status=none | base64) >> .env
 ```
+
+1. You can also pin to a specific version number e.g. `VERSION=1.2.3`
+
 
 ### Caddyfile
 

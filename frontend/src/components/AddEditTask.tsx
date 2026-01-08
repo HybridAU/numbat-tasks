@@ -173,20 +173,31 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
         </Form>
       </Dialog>
       {task?.id ? (
-        <Typography
-          onClick={handleClickOpen}
-          align="left"
-          sx={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: "4",
-            WebkitBoxOrient: "vertical",
-          }}
-          color={task.complete ? "text.secondary" : "text.primary"}
+        <Stack
+          // Adds some padding, so when it's a single line the text is centered vertically
+          // (aligned with the checkbox) but when it's multiple lines the text lines up with the
+          // top of the checkbox.
+          justifyContent="center"
+          direction="column"
+          minHeight="35px"
+          marginBottom="7px"
         >
-          <LinkifyText text={task.text} />
-        </Typography>
+          <Typography
+            onClick={handleClickOpen}
+            align="left"
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: "4",
+              WebkitBoxOrient: "vertical",
+              wordBreak: "break-word",
+            }}
+            color={task.complete ? "text.secondary" : "text.primary"}
+          >
+            <LinkifyText text={task.text} />
+          </Typography>
+        </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add">
           <AddIcon onClick={handleClickOpen} />

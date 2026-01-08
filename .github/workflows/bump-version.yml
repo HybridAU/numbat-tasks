@@ -1,0 +1,98 @@
+name: bump-version.yml
+on:
+  workflow_dispatch:
+    inputs:
+      increment:
+        description: "Version to increment (major, minor, or patch)"
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  bump_version:
+    runs-on: ubuntu-slim
+    permissions:
+      contents: write
+    steps:
+      # Check out the repo and configure git
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Install required packages
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: "latest"
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      # Calculate new version number
+      - name: Calculate new version
+        id: version_new
+        run: |
+          cd utils
+          uv sync
+          uv run python bump_version.py ${{ inputs.increment }}
+          echo version=$(<VERSION) >> $GITHUB_OUTPUT
+
+      # Bump to new version
+      - name: bump version of API
+        run: cd api && uv version ${{ steps.version_new.outputs.version }}
+
+      - name: bump version of docs
+        run: cd docs && uv version ${{ steps.version_new.outputs.version }}
+
+      - name: bump version of frontend
+        run: cd frontend && pnpm version ${{ steps.version_new.outputs.version }}
+
+      - name: Commit changes with new version
+        run: git add -A && git commit -m "Bump version to ${{ steps.version_new.outputs.version }}" && git push
+
+      # This should trigger a docker build
+      - name: Tag latest commit
+        run: git tag ${{ steps.version_new.outputs.version }} && git push origin --tags
+
+      # This should trigger a pipeline to publish the docs
+      - name: Publish docs
+        run: cd docs && uv sync && uv run mkdocs gh-deploy
+
+      # Calculate dev version number
+      - name: Calculate dev version
+        id: version_dev
+        run: |
+          cd utils
+          uv sync
+          uv run python bump_version.py dev
+          echo version=$(<VERSION) >> $GITHUB_OUTPUT
+
+      # Bump to dev version
+      - name: bump version of API
+        run: cd api && uv version ${{ steps.version_dev.outputs.version }}
+
+      - name: bump version of docs
+        run: cd docs && uv version ${{ steps.version_dev.outputs.version }}
+
+      - name: bump version of frontend
+        run: cd frontend && pnpm version ${{ steps.version_dev.outputs.version }}
+
+      - name: Commit changes with new version
+        run: git add -A && git commit -m "Bump version to ${{ steps.version_dev.outputs.version }}" && git push
