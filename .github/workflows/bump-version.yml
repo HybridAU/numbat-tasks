@@ -14,9 +14,17 @@ on:
 jobs:
   bump_version:
     runs-on: ubuntu-slim
+    permissions:
+      contents: write
     steps:
+      # Check out the repo and configure git
       - name: Check out repository code
         uses: actions/checkout@v4
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       # Install required packages
       - name: Install the latest version of uv
@@ -39,35 +47,52 @@ jobs:
 
       # Calculate new version number
       - name: Calculate new version
-        run: cd utils && uv sync && uv run python bump_version.py
+        id: version_new
+        run: |
+          cd utils
+          uv sync
+          uv run python bump_version.py ${{ inputs.increment }}
+          echo version=$(<VERSION) >> $GITHUB_OUTPUT
 
-      # Bump all versions
+      # Bump to new version
       - name: bump version of API
-        run: cd api && uv version 0.15.1
+        run: cd api && uv version ${{ steps.version_new.outputs.version }}
 
       - name: bump version of docs
-        run: cd docs && uv version 0.15.1
+        run: cd docs && uv version ${{ steps.version_new.outputs.version }}
 
       - name: bump version of frontend
-        run: cd frontend && pnpm version 0.15.1
+        run: cd frontend && pnpm version ${{ steps.version_new.outputs.version }}
 
       - name: Commit changes with new version
-        run: git add -A && git commit -m "Bump version to 0.15.1" && git push
+        run: git add -A && git commit -m "Bump version to ${{ steps.version_new.outputs.version }}" && git push
 
+      # This should trigger a docker build
       - name: Tag latest commit
-        run: git tag 0.15.1 && git push origin --tags
+        run: git tag ${{ steps.version_new.outputs.version }} && git push origin --tags
 
+      # This should trigger a pipeline to publish the docs
       - name: Publish docs
         run: cd docs && uv sync && uv run mkdocs gh-deploy
 
+      # Calculate dev version number
+      - name: Calculate dev version
+        id: version_dev
+        run: |
+          cd utils
+          uv sync
+          uv run python bump_version.py dev
+          echo version=$(<VERSION) >> $GITHUB_OUTPUT
+
+      # Bump to dev version
       - name: bump version of API
-        run: cd api && uv version 0.15.2-dev
+        run: cd api && uv version ${{ steps.version_dev.outputs.version }}
 
       - name: bump version of docs
-        run: cd docs && uv version 0.15.2-dev
+        run: cd docs && uv version ${{ steps.version_dev.outputs.version }}
 
       - name: bump version of frontend
-        run: cd frontend && pnpm version 0.15.2-dev
+        run: cd frontend && pnpm version ${{ steps.version_dev.outputs.version }}
 
       - name: Commit changes with new version
-        run: git add -A && git commit -m "Bump version to 0.15.2-dev" && git push
+        run: git add -A && git commit -m "Bump version to ${{ steps.version_dev.outputs.version }}" && git push
