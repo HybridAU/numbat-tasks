@@ -168,6 +168,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               variant="outlined"
               id="text"
               name="text"
+              slotProps={{ htmlInput: { autoCapitalize: "sentences" } }}
             />
           </Stack>
         </Form>
@@ -181,9 +182,13 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
           direction="column"
           minHeight="35px"
           marginBottom="7px"
+          // By putting the onClick on the stack rather than the typography, and making it full width
+          // we make it easier to click on tasks to edit them. This is especially important when the
+          // whole text of the task is a link
+          flex={1}
+          onClick={handleClickOpen}
         >
           <Typography
-            onClick={handleClickOpen}
             align="left"
             sx={{
               overflow: "hidden",

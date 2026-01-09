@@ -38,4 +38,11 @@ export default defineConfig({
     ],
     extensions: [".ts", ".tsx", ".js"],
   },
+  // Work around for infinite loop causing Out Of Memory crash
+  // https://github.com/pnpm/pnpm/issues/10419#issuecomment-3725658142
+  server: {
+    watch: {
+      ignored: ["**/.pnpm-global/**", "**/.pnpm-store/**"],
+    },
+  },
 });

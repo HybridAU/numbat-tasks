@@ -49,9 +49,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          # TODO fix caching
-          # cache: 'pnpm'
-          # cache-dependency-path: frontend/pnpm-lock.yaml
 
       # Calculate new version number
       - name: Calculate new version

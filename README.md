@@ -9,20 +9,17 @@ Numbat tasks aims to be a personal to-do list app in the Goldilocks zone between
 There are [thousands of half built](https://www.commitstrip.com/en/2014/11/25/west-side-project-story/)
 to-do list apps out there, usually with about 3 commits last touched 5 years ago. There is a handful of 
 well-supported and maintained projects, but many of them say things like "Jira replacement with Kanban boards, 
-gantt chart, and burndown charts that the whole team can use". 
+gantt charts, and burndown charts that the whole team can use". 
 
 I wanted a privacy-friendly place to put my shopping list that I felt comfortable exposing to the internet.
 
 Plus, nothing says "procrastinating" like building a massively over-engineered to-do list app,
-rather than actually doing the things.
+rather than actually doing things.
 
 ## Status
 This still very much a work in progress, there are some core features missing (listed below).
-It's stable enough, with minimal features that I've actually managed to use it myself for 
-things like my shopping list and general to-do list for over a year. 
-
-Once I get it feature complete enough that I can convince my wife to switch from Google Keep,
-then I'll know I've truly succeeded.
+It's stable enough. With features that it already exist, I've managed to use it myself
+as my daily to-do list app for things like my shopping list for over a year.
 
 ## Documentation
 Interested? Go [read the docs](https://docs.numbat-tasks.com/getting_started/) to see how to get started.
@@ -39,4 +36,4 @@ Interested? Go [read the docs](https://docs.numbat-tasks.com/getting_started/) t
 - [ ] Sub tasks
 - [ ] Play a happy chime when a task is marked as completed
 
-The irony of having a todo list written in markdown, on a todo list app is not lost on me.
+The irony of having a to-do list written in markdown, on a to-do list app is not lost on me.

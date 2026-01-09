@@ -42,7 +42,7 @@ export default function Task({ task }: { task: TaskDetails }) {
             <DragIndicatorIcon />
           </Stack>
         )}
-        <Stack direction="row" alignItems="flex-start">
+        <Stack direction="row" alignItems="flex-start" flex={1}>
           <Checkbox checked={task.complete} onClick={() => mutate()} />
           <AddEditTask task={task} />
         </Stack>

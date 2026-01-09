@@ -173,6 +173,7 @@ export default function AddEditList({
               variant="outlined"
               id="name"
               name="name"
+              slotProps={{ htmlInput: { autoCapitalize: "sentences" } }}
             />
             <FormCheckbox
               control={control}

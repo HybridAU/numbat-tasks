@@ -14,7 +14,7 @@ gantt chart, and burndown charts that the whole team can use".
 I wanted a privacy-friendly place to put my shopping list that I felt comfortable exposing to the internet.
 
 Plus, nothing says "procrastinating" like building a massively over-engineered to-do list app,
-rather than actually doing the things.
+rather than actually doing things.
 
 
 ## Getting started
