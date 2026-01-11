@@ -1,8 +1,17 @@
-import { CircularProgress, Stack, Typography } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { getTasks } from "../../api/tasks";
 import BottomAppBar from "../../components/BottomAppBar";
-import Task from "../../components/Task";
+import { SortableTaskList } from "../../components/SortableTaskList.tsx";
+import SortOrderMenu from "../../components/SortOrderMenu.tsx";
 import { useListsState } from "../../providers/ListsProvider";
 
 export default function Home() {
@@ -14,27 +23,34 @@ export default function Home() {
     enabled: listsLoaded,
   });
 
-  const sortedTasks = tasks?.sort((a, b) => {
-    // https://typeofnan.dev/sort-array-objects-multiple-properties-javascript/
-    // Only sort on complete if not identical
-    if (a.complete && !b.complete) return 1;
-    if (!a.complete && b.complete) return -1;
-    // if identical (both completed or both not) then sort by date created
-    if (a.created < b.created) return 1;
-    if (a.created > b.created) return -1;
-    // // Both identical, return 0
-    return 0;
-  });
+  const activeTasks = tasks?.filter((task) => !task.complete);
+
+  const completedTasks = tasks?.filter((task) => task.complete);
+
+  const hasCompletedTasks = (completedTasks?.length || 0) > 0;
 
   return (
     <>
-      <Typography variant="h1">{currentList.name}</Typography>
-      {sortedTasks ? (
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="h1">{currentList.name}</Typography>
+        <SortOrderMenu />
+      </Stack>
+      {activeTasks ? (
         // By adding lots of space at the bottom, it makes it clear we have scrolled to the end of the list.
         <Stack pb="6rem">
-          {sortedTasks?.map((task) => (
-            <Task key={task.id} task={task} />
-          ))}
+          <SortableTaskList complete={false} />
+          {hasCompletedTasks && (
+            <Accordion defaultExpanded disableGutters>
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography>
+                  {completedTasks?.length} completed tasks
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <SortableTaskList complete={true} />
+              </AccordionDetails>
+            </Accordion>
+          )}
         </Stack>
       ) : (
         <CircularProgress />

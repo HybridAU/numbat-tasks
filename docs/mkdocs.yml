@@ -6,6 +6,8 @@ theme:
   features:
     - content.code.copy
     - content.code.annotate
+  logo: assets/numbat.svg
+  favicon: assets/numbat.svg
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true

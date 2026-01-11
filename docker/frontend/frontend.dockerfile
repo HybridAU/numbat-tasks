@@ -1,4 +1,4 @@
-FROM node:22-bookworm-slim
+FROM node:25-trixie-slim
 
 ENV VITE_API_BASE_URL=""
 ENV DEBUG=False
@@ -7,8 +7,9 @@ WORKDIR /frontend
 
 COPY ./frontend/package.json .
 COPY ./frontend/pnpm-lock.yaml* .
+COPY ./frontend/pnpm-workspace.yaml* .
 
-RUN corepack enable
+RUN npm install -g pnpm
 RUN pnpm install
 
 COPY ./frontend /frontend

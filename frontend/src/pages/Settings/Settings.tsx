@@ -8,7 +8,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
 export default function Settings() {

@@ -1,9 +1,34 @@
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["favicon.svg", "favicon.ico", "apple-touch-icon.png"],
+      manifest: {
+        name: "Numbat Tasks",
+        short_name: "Numbat Tasks",
+        description: "Open Source to-do list app",
+        theme_color: "#ffe6d5",
+        icons: [
+          {
+            src: "pwa-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "pwa-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+        ],
+      },
+    }),
+  ],
   resolve: {
     alias: [
       {
@@ -12,5 +37,12 @@ export default defineConfig({
       },
     ],
     extensions: [".ts", ".tsx", ".js"],
+  },
+  // Work around for infinite loop causing Out Of Memory crash
+  // https://github.com/pnpm/pnpm/issues/10419#issuecomment-3725658142
+  server: {
+    watch: {
+      ignored: ["**/.pnpm-global/**", "**/.pnpm-store/**"],
+    },
   },
 });

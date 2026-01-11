@@ -1,21 +1,40 @@
 import { fetchWithAuth } from "./fetch.ts";
 
+export type SortOrder =
+  | "text"
+  | "-text"
+  | "created"
+  | "-created"
+  | "updated"
+  | "-updated"
+  | "manual";
+
 export type ListDetails = {
   id: number;
   created: string;
   updated: string;
   name: string;
-  active: boolean;
+  sort_order: SortOrder;
+  manual_order: number[];
+  archived: boolean;
+};
+
+export type searchListRequest = {
+  search?: string;
 };
 
 export type addListRequest = {
   name: string;
-  active?: boolean;
+  archived?: boolean;
+  sort_order?: SortOrder;
+  manual_order?: number[];
 };
 
 export type updateListRequest = {
-  name: string;
-  active: boolean;
+  name?: string;
+  archived?: boolean;
+  sort_order?: SortOrder;
+  manual_order?: number[];
   listId: number;
 };
 
@@ -23,24 +42,39 @@ export type deleteListRequest = {
   listId: number;
 };
 
+export type uncheckListRequest = {
+  listId: number;
+};
+
 type ListsResponse = ListDetails[];
 
-const lists = async (): Promise<ListsResponse> => {
-  const response = await fetchWithAuth("/api/tasks/list/");
+const lists = async ({ search }: searchListRequest): Promise<ListsResponse> => {
+  let url = "/api/tasks/list/";
+  if (search) {
+    const params = new URLSearchParams({ search: search });
+    url = `/api/tasks/list/?${params.toString()}`;
+  }
+  const response = await fetchWithAuth(url);
   return (await response.json()) as ListsResponse;
 };
 
 const addList = async ({
   name,
-  active,
+  archived,
+  sort_order,
+  manual_order,
 }: addListRequest): Promise<ListDetails> => {
-  console.log("adding");
   const response = await fetchWithAuth("/api/tasks/list/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: name, active: active }),
+    body: JSON.stringify({
+      name: name,
+      archived: archived,
+      sort_order: sort_order,
+      manual_order: manual_order,
+    }),
   });
   if (response.ok) {
     return (await response.json()) as ListDetails;
@@ -50,7 +84,9 @@ const addList = async ({
 
 const updateList = async ({
   name,
-  active,
+  archived,
+  sort_order,
+  manual_order,
   listId,
 }: updateListRequest): Promise<ListDetails> => {
   const response = await fetchWithAuth(`/api/tasks/list/${listId}/`, {
@@ -58,7 +94,12 @@ const updateList = async ({
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ name: name, active: active }),
+    body: JSON.stringify({
+      name: name,
+      archived: archived,
+      sort_order: sort_order,
+      manual_order: manual_order,
+    }),
   });
   if (response.ok) {
     return (await response.json()) as ListDetails;
@@ -79,4 +120,22 @@ const deleteList = async ({ listId }: deleteListRequest): Promise<void> => {
   throw new Error(`${response.statusText}`);
 };
 
-export { lists, addList, updateList, deleteList };
+const uncheckAllTasks = async ({
+  listId,
+}: uncheckListRequest): Promise<void> => {
+  const response = await fetchWithAuth(
+    `/api/tasks/list/${listId}/uncheck_all_tasks/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+  if (response.ok) {
+    return;
+  }
+  throw new Error(`${response.statusText}`);
+};
+
+export { lists, addList, updateList, deleteList, uncheckAllTasks };

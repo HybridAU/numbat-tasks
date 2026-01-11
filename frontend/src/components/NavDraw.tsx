@@ -1,7 +1,6 @@
-import ListIcon from "@mui/icons-material/List";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { IconButton } from "@mui/material";
+import { IconButton, Stack, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
@@ -11,20 +10,20 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import type { ListDetails } from "../api/lists";
-import { useListsDispatch, useListsState } from "../providers/ListsProvider";
+import { useNavigate } from "react-router";
+import { useListsState } from "../providers/ListsProvider";
 import AddEditList from "./AddEditList";
+import TaskListButton from "./TaskListButton.tsx";
 
 export default function NavDraw() {
   const [open, setOpen] = React.useState(false);
   const { lists } = useListsState();
-  const listDispatch = useListsDispatch();
   const navigate = useNavigate();
 
-  const handleSelect = (list: ListDetails) => {
-    listDispatch({ type: "SET_CURRENT_LIST", payload: list });
-  };
+  const activeLists = lists.filter((list) => !list.archived);
+  const archivedLists = lists.filter((list) => list.archived);
+  const hasArchivedLists = archivedLists.length > 0;
+
   const toggleDrawer =
     (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -47,21 +46,21 @@ export default function NavDraw() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
-        {lists.map((list) => (
-          <ListItem key={list.id} disablePadding>
-            <ListItemButton
-              onClick={() => {
-                handleSelect(list);
-              }}
-            >
-              <ListItemIcon>
-                <ListIcon />
-              </ListItemIcon>
-              <ListItemText primary={list.name} />
-            </ListItemButton>
-          </ListItem>
+        {activeLists.map((list) => (
+          <TaskListButton key={list.id} list={list} />
         ))}
         <AddEditList editCurrentList={false} />
+        {hasArchivedLists && (
+          <Stack pt={3}>
+            <Divider />
+            <Typography color="text.secondary" textAlign="center" pt={1}>
+              Archived lists
+            </Typography>
+            {archivedLists.map((list) => (
+              <TaskListButton key={list.id} list={list} />
+            ))}
+          </Stack>
+        )}
       </List>
       <Divider />
       <List>

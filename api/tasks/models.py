@@ -1,6 +1,26 @@
 from django.db import models
+from jsonschema import validate
 
 from tasks.utils import truncate
+
+
+def validate_manual_order(value):
+    schema = {
+        "type": "array",
+        "items": {"type": "integer"},
+        "minItems": 0,
+    }
+    validate(instance=value, schema=schema)
+
+
+class SortOrder(models.TextChoices):
+    TEXT_ASCENDING = "text"
+    TEXT_DESCENDING = "-text"
+    CREATED_ASCENDING = "created"
+    CREATED_DESCENDING = "-created"
+    UPDATED_ASCENDING = "updated"
+    UPDATED_DESCENDING = "-updated"
+    MANUAL = "manual"
 
 
 class List(models.Model):
@@ -8,13 +28,20 @@ class List(models.Model):
     owner = models.ForeignKey(
         "accounts.CustomUser",
         on_delete=models.CASCADE,
-        null=False,
-        blank=False,
+        related_name="lists",
     )
-    created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
-    updated = models.DateTimeField(auto_now=True, null=False, blank=False)
-    name = models.CharField(max_length=256, null=False, blank=True)
-    active = models.BooleanField(null=False, blank=False, default=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=256, blank=True)
+    sort_order = models.CharField(
+        max_length=20,
+        choices=SortOrder,
+        default=SortOrder.CREATED_ASCENDING,
+    )
+    manual_order = models.JSONField(
+        default=list, blank=True, validators=[validate_manual_order]
+    )
+    archived = models.BooleanField(default=False)
 
     def __str__(self):
         return truncate(self.name)
@@ -22,11 +49,11 @@ class List(models.Model):
 
 class Task(models.Model):
     id = models.BigAutoField(primary_key=True, db_index=True)
-    list = models.ForeignKey(List, on_delete=models.CASCADE, null=False, blank=False)
-    created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
-    updated = models.DateTimeField(auto_now=True, null=False, blank=False)
-    text = models.CharField(max_length=256, null=False, blank=True)
-    complete = models.BooleanField(null=False, blank=False, default=False)
+    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name="tasks")
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated = models.DateTimeField(auto_now=True, db_index=True)
+    text = models.CharField(max_length=256, blank=True, db_index=True)
+    complete = models.BooleanField(default=False)
 
     @property
     def text_summary(self):

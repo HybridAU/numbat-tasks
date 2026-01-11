@@ -1,4 +1,4 @@
-FROM python:3.13-slim-bookworm
+FROM python:3.14-slim-trixie
 
 ENV UV_PROJECT_ENVIRONMENT=/venv
 ENV DEBUG=False

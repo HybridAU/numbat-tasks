@@ -1,0 +1,18 @@
+[project]
+name = "bump-version"
+# All the other versions (API, frontend, docs) I keep in sync, because they are all part of a release
+# but this utility is seperate, so has its own version number.
+version = "1.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.uv]
+# This prevents 'uv run' and 'uv sync' from including dev dependencies by default
+default-groups = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]

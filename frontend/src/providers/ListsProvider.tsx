@@ -1,15 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   use,
   useEffect,
   useReducer,
 } from "react";
 import {
-  type ListDetails,
   addList,
   type addListRequest,
+  type ListDetails,
   lists,
 } from "../api/lists";
 
@@ -25,9 +25,11 @@ const initialState: ListsProviderState = {
   currentList: {
     id: 1,
     name: "Default List",
-    active: true,
+    archived: false,
     created: "",
     updated: "",
+    sort_order: "created",
+    manual_order: [],
   },
   lists: [],
 };
@@ -51,6 +53,7 @@ export function ListsReducer(
 ): ListsProviderState {
   switch (action.type) {
     case "SET_CURRENT_LIST": {
+      localStorage.setItem("listId", action.payload.id.toString());
       return {
         ...state,
         currentList: action.payload,
@@ -63,6 +66,7 @@ export function ListsReducer(
       //  so what we do here is save the id we are looking for to the state, then next time the
       //  Lists query (data) is updated, we use the newListId if it exists.
       //  The joy of working with asynchronous code.
+      localStorage.setItem("listId", action.payload.toString());
       return {
         ...state,
         newListId: action.payload,
@@ -96,7 +100,7 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
 
   const { data } = useQuery({
     queryKey: ["Lists"],
-    queryFn: () => lists(),
+    queryFn: () => lists({}),
   });
 
   const { mutate } = useMutation({
@@ -110,11 +114,14 @@ export default function ListsProvider({ children }: { children: ReactNode }) {
     if (data?.length === 0) {
       mutate({ name: "Default List" });
     } else if (data && !state.listsLoaded) {
+      // Check if the previously loaded listId is in local storage, and if so use it.
+      const listId = localStorage.getItem("listId");
+      const previousList = data.find((list) => list.id === Number(listId));
       dispatch({
         type: "INITIAL_LOAD",
         payload: {
           listsLoaded: true,
-          currentList: data[0],
+          currentList: previousList || data[0],
           lists: data,
         },
       });

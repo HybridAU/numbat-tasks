@@ -15,20 +15,21 @@ import {
 import { styled } from "@mui/material/styles";
 import type { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import * as React from "react";
+import { useState } from "react";
 import { Form, useForm } from "react-hook-form";
 import {
-  type TaskDetails,
   addTask,
   type addTaskRequest,
   deleteTask,
   type deleteTaskRequest,
+  type TaskDetails,
   updateTask,
   type updateTaskRequest,
 } from "../api/tasks";
 import { useListsState } from "../providers/ListsProvider";
 import FormTextField from "./form/FormTextField";
+import LinkifyText from "./LinkifyText.tsx";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -115,7 +116,9 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
         onClose={handleClose}
         fullScreen
         disableRestoreFocus
-        TransitionComponent={Transition}
+        slots={{
+          transition: Transition,
+        }}
       >
         <Form control={control}>
           <AppBar sx={{ position: "relative" }}>
@@ -165,12 +168,41 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               variant="outlined"
               id="text"
               name="text"
+              slotProps={{ htmlInput: { autoCapitalize: "sentences" } }}
             />
           </Stack>
         </Form>
       </Dialog>
       {task?.id ? (
-        <Typography onClick={handleClickOpen}>{task.text}</Typography>
+        <Stack
+          // Adds some padding, so when it's a single line the text is centered vertically
+          // (aligned with the checkbox) but when it's multiple lines the text lines up with the
+          // top of the checkbox.
+          justifyContent="center"
+          direction="column"
+          minHeight="35px"
+          marginBottom="7px"
+          // By putting the onClick on the stack rather than the typography, and making it full width
+          // we make it easier to click on tasks to edit them. This is especially important when the
+          // whole text of the task is a link
+          flex={1}
+          onClick={handleClickOpen}
+        >
+          <Typography
+            align="left"
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: "4",
+              WebkitBoxOrient: "vertical",
+              wordBreak: "break-word",
+            }}
+            color={task.complete ? "text.secondary" : "text.primary"}
+          >
+            <LinkifyText text={task.text} />
+          </Typography>
+        </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add">
           <AddIcon onClick={handleClickOpen} />
