@@ -1,8 +1,11 @@
 from django.conf import settings
+from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+import numbat_tasks_api
 from accounts.models import CustomUser
+from numbat_tasks_api.serializers import ConfigSerializer
 
 
 class Config(APIView):
@@ -13,18 +16,16 @@ class Config(APIView):
     authentication_classes = ()
     permission_classes = ()
 
-    # TODO extend_schema so there is some docs
-    def get(self, request, format=None):
+    @extend_schema(responses=ConfigSerializer)
+    def get(self, request):
         """
         API Configuration information
         """
-        version = "0.3.0"
-        initial_setup = CustomUser.objects.all().count() == 0
-        signup_enabled = settings.SIGNUP_ENABLED
-        return Response(
-            {
-                "version": version,
-                "initial_setup": initial_setup,
-                "signup_enabled": signup_enabled,
-            }
+        config = ConfigSerializer(
+            instance={
+                "version": numbat_tasks_api.__version__,
+                "initial_setup": CustomUser.objects.all().count() == 0,
+                "signup_enabled": settings.SIGNUP_ENABLED,
+            },
         )
+        return Response(config.data)
