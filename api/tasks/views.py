@@ -54,7 +54,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                         output_field=IntegerField(),
                     )
                 )
-                .order_by("position")
+                .order_by("position", "-created")
             )
         else:
             tasks = Task.objects.filter(list=list_object).order_by(

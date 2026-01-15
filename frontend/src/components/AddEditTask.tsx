@@ -204,8 +204,8 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
           </Typography>
         </Stack>
       ) : (
-        <StyledFab color="secondary" aria-label="add">
-          <AddIcon onClick={handleClickOpen} />
+        <StyledFab color="secondary" aria-label="add" onClick={handleClickOpen}>
+          <AddIcon />
         </StyledFab>
       )}
     </>
