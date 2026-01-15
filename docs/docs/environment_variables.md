@@ -73,6 +73,12 @@ echo SECRET_KEY=$(dd if=/dev/urandom bs=1 count=42 status=none | base64) >> .env
 
 When enabled, new users can sign up.
 
+!!! Warning
+    Signups are functional, but not really production ready.
+    There is no validation of email address (e.g. Click link to verify your address) and
+    no self-service password reset (typed your password wrong during signup? bad luck).
+
+
 !!! Note
     Even when this is disabled, one user can sign up as part of the [initial setup](initial_setup.md).
 

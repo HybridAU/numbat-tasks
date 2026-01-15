@@ -1,4 +1,5 @@
-from rest_framework import permissions, viewsets
+from django.conf import settings
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -25,10 +26,25 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         permission_classes=(),
     )
     def signup(self, request):
-        # list_object = get_object_or_404(List, pk=pk, owner=self.request.user)
-        # all_tasks = list_object.tasks.all()
-        # all_tasks.update(complete=False)
-        return Response({"foo": "bar"})
+        """
+        Sign up is an unauthenticated endpoint that can be called to create a new user.
+        However it will only allow signups if either there are no existing users (i.e.
+        the initial user) or if signups have been enabled.
+        """
+        is_initial_signup = CustomUser.objects.all().count() == 0
+        if not is_initial_signup and not settings.SIGNUP_ENABLED:
+            return Response(
+                {"Error": "Signup is currently unavailable"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        serializer = CustomUserSignupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        new_user = serializer.save()
+        # The first user to sign up is automatically a superuser
+        new_user.is_superuser = is_initial_signup
+        new_user.save()
+        return Response(serializer.data)
 
     # def get_serializer_class(self):
     #     if self.action in {"list", "retrieve"}:

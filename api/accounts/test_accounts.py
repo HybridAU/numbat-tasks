@@ -191,5 +191,8 @@ def test_a_superuser_can_update_other_users(client, base_data):
 # TODO
 #  * Tests that passwords are hashed when creating and updating users
 #  * Test signup process
+#   * Test signups_enabled bool does what it's meant to
+#   * Unauthenticated user can sign up if there are no users (initial setup) or sign ups are enabled.
 #   * Can't signup unless 0 users, or signup enabled
 #   * Can't set "is_superuser" during signup, it's fixed based on if there are any users
+#  * Regular user can update their password (with old one?)
