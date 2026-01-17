@@ -18,9 +18,9 @@ class CustomUserPermissions(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if request.user == obj:
-            # regular users can update themselves, as long as they are not trying to change
-            # their "is_superuser" status, we also do this check again after the data is validated
-            # incase there is any deserialization shenanigans like changing the case or something
-            return "is_superuser" not in request.data
+            # Users can update themselves, but they can't change their "is_superuser" status,
+            # or their password (use the change_password endpoint for that) we also check again after the
+            # data is validated incase there is any deserialization shenanigans like changing the case or something
+            return "is_superuser" not in request.data and "password" not in request.data
 
         return request.user.is_superuser

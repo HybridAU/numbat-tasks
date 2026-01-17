@@ -24,6 +24,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
             )
 
         if request and "password" in validated_data:
+            # We also enforce this in the CustomUserPermissions.has_object_permission so in theory
+            # we should never hit this block of code, but defensive programming we check here too.
             raise serializers.ValidationError(
                 {"password": "Use the change_password endpoint to update passwords"}
             )

@@ -340,7 +340,7 @@ def test_a_regular_user_can_update_their_password_only_with_old_password(
         data=json.dumps({"password": new_password}),
         content_type="application/json",
     )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.status_code == status.HTTP_403_FORBIDDEN
     assert response.json() == {
         "password": "Use the change_password endpoint to update passwords"
     }
@@ -402,7 +402,7 @@ def test_a_superuser_can_update_their_password_only_with_old_password(
         data=json.dumps({"password": new_password}),
         content_type="application/json",
     )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.status_code == status.HTTP_403_FORBIDDEN
     assert response.json() == {
         "password": "Use the change_password endpoint to update passwords"
     }
