@@ -188,11 +188,88 @@ def test_a_superuser_can_update_other_users(client, base_data):
     assert bob_object.is_superuser
 
 
+@pytest.mark.django_db
+def test_unauthenticated_user_can_not_access_any_endpoints(client, base_data):
+    """
+    An unauthenticated user can not access any endpoints (except signup)
+    """
+    # We should be blocked before the validation happens, so we don't bother passing through
+    # any data in our post/patch/put requests, but we do need a valid id for the path
+    alice_id = base_data["alice"]["id"]
+    response = client.get("/api/accounts/user/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    response = client.post("/api/accounts/user/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    response = client.get(f"/api/accounts/user/{alice_id}/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    response = client.put(f"/api/accounts/user/{alice_id}/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    response = client.patch(f"/api/accounts/user/{alice_id}/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    response = client.delete(f"/api/accounts/user/{alice_id}/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_regular_user_can_not_access_other_users(client, base_data):
+    """
+    Bob, an authenticated regular user can not directly access other user objects
+    """
+    # Bob can get a list of all users (which contains the same information as the get endpoint)
+    # but can't directly get, update, or delete other users.
+    alice_id = base_data["alice"]["id"]
+    auth_header = base_data["bob"]["auth_header"]
+    response = client.get(f"/api/accounts/user/{alice_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    response = client.put(f"/api/accounts/user/{alice_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    response = client.patch(f"/api/accounts/user/{alice_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    response = client.delete(f"/api/accounts/user/{alice_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_superuser_user_can_modify_other_users(client, base_data):
+    """
+    Alice, an authenticated superuser user can update other users
+    """
+    bob_id = base_data["bob"]["id"]
+    auth_header = base_data["alice"]["auth_header"]
+    response = client.get(f"/api/accounts/user/{bob_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_200_OK
+    response = client.put(
+        f"/api/accounts/user/{bob_id}/",
+        headers=auth_header,
+        # put doesn't have the "json" parameter, so we have to do data that we json encode ourselves,
+        # and we also need to add the content type header.
+        data=json.dumps(
+            {
+                "email": "rober@numbat-tasks.com",
+                "password": "We Are Legion",
+                "first_name": "Robert",
+                "last_name": "Johansson",
+                "is_superuser": True,
+            }
+        ),
+        content_type="application/json",
+    )
+    assert response.status_code == status.HTTP_200_OK
+    response = client.patch(
+        f"/api/accounts/user/{bob_id}/",
+        headers=auth_header,
+        data=json.dumps({"first_name": "Riker"}),
+        content_type="application/json",
+    )
+    assert response.status_code == status.HTTP_200_OK
+    response = client.delete(f"/api/accounts/user/{bob_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
 # TODO
 #  * Tests that passwords are hashed when creating and updating users
 #  * Test signup process
+#   * Unauthenticated user can sign up if there are no users (initial setup)
 #   * Test signups_enabled bool does what it's meant to
-#   * Unauthenticated user can sign up if there are no users (initial setup) or sign ups are enabled.
-#   * Can't signup unless 0 users, or signup enabled
 #   * Can't set "is_superuser" during signup, it's fixed based on if there are any users
 #  * Regular user can update their password (with old one?)
