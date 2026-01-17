@@ -3,6 +3,7 @@ import random
 import string
 
 import pytest
+from django.test import override_settings
 from rest_framework import status
 
 from accounts.models import CustomUser
@@ -38,6 +39,23 @@ def test_view_all_users(client, base_data):
     first_user = response.json()[0]
     assert first_user.get("email") == base_data["alice"]["email"]
     assert first_user.get("id") == base_data["alice"]["id"]
+
+
+@pytest.mark.django_db
+def test_self_endpoint(client, base_data):
+    """
+    Check calling the self endpoint returns information about yourself
+    """
+    response = client.get(
+        "/api/accounts/user/self/",
+        headers=base_data["bob"]["auth_header"],
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()["id"] == base_data["bob"]["id"]
+    assert response.json()["email"] == base_data["bob"]["email"]
+    assert response.json()["first_name"] == base_data["bob"]["first_name"]
+    assert response.json()["last_name"] == base_data["bob"]["last_name"]
+    assert response.json()["is_superuser"] is False
 
 
 @pytest.mark.django_db
@@ -207,6 +225,8 @@ def test_unauthenticated_user_can_not_access_any_endpoints(client, base_data):
     response = client.patch(f"/api/accounts/user/{alice_id}/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     response = client.delete(f"/api/accounts/user/{alice_id}/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    response = client.delete("/api/accounts/user/self/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     response = client.post(f"/api/accounts/user/{alice_id}/change_password/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -462,7 +482,7 @@ def test_alice_can_change_bobs_password(client, base_data):
 
 
 @pytest.mark.django_db
-def test_passwords_are_hashed_when_creating_and_updating_users(client, base_data):
+def test_passwords_are_hashed_when_creating_and_updating_users():
     """
     Passwords are hashed when creating and updating users
     """
@@ -485,8 +505,131 @@ def test_passwords_are_hashed_when_creating_and_updating_users(client, base_data
     assert user.password != new_password
 
 
-# TODO
-#  * Test signup process
-#   * Unauthenticated user can sign up if there are no users (initial setup)
-#   * Test signups_enabled bool does what it's meant to
-#   * Can't set "is_superuser" during signup, it's fixed based on if there are any users
+@pytest.mark.django_db
+def test_a_new_user_can_signup_if_there_are_no_existing_users(client):
+    """
+    Unauthenticated user can sign up if there are no users (initial setup)
+    """
+    password = f"{generate_password()}"
+    # Just to make sure, signup is not enabled, but initial setup is set
+    response = client.get("/api/config/")
+    assert response.json()["initial_setup"] is True
+    assert response.json()["signup_enabled"] is False
+    # Sign up
+    response = client.post(
+        "/api/accounts/user/signup/",
+        data={
+            "email": "alice@numbat-tasks.com",
+            "password": password,
+            "first_name": "Alice",
+        },
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+    # Now signups should be disabled
+    response = client.get("/api/config/")
+    assert response.json()["initial_setup"] is False
+    assert response.json()["signup_enabled"] is False
+    # And Bob can't sign up
+    response = client.post(
+        "/api/accounts/user/signup/",
+        data={
+            "email": "bob@numbat-tasks.com",
+            "password": f"{generate_password()}",
+            "first_name": "Bob",
+        },
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    # And just as a sanity check, Alice can log in.
+    response = client.post(
+        "/api/token/",
+        data={
+            "email": "alice@numbat-tasks.com",
+            "password": password,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    access_token = response.json().get("access")
+    # Also as a sanity check, the first user is a superuser
+    response = client.get(
+        "/api/accounts/user/self/",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert response.json()["is_superuser"] is True
+    assert response.json()["email"] == "alice@numbat-tasks.com"
+
+
+@pytest.mark.django_db
+@override_settings(SIGNUP_ENABLED=True)
+def test_enabling_signups(client, base_data):
+    """
+    Unauthenticated user can sign up if signups are enabled (even though there are existing users)
+    """
+    password = f"{generate_password()}"
+    # Just to make sure, signup is not enabled, and it's not the initial setup
+    response = client.get("/api/config/")
+    assert response.json()["initial_setup"] is False
+    assert response.json()["signup_enabled"] is True
+    # Sign up
+    response = client.post(
+        "/api/accounts/user/signup/",
+        data={
+            "email": "charlie@numbat-tasks.com",
+            "password": password,
+            "first_name": "Charlie",
+            "last_name": "Numbat",
+        },
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+    # As a sanity check, Charlie can log in.
+    response = client.post(
+        "/api/token/",
+        data={
+            "email": "charlie@numbat-tasks.com",
+            "password": password,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    access_token = response.json().get("access")
+    # And charlie is not a superuser
+    response = client.get(
+        "/api/accounts/user/self/",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert response.json()["is_superuser"] is False
+    assert response.json()["email"] == "charlie@numbat-tasks.com"
+
+
+@pytest.mark.django_db
+@override_settings(SIGNUP_ENABLED=True)
+def test_cant_set_superuser_during_signup(client, base_data):
+    """
+    Can't set is_superuser during signup
+    """
+    password = f"{generate_password()}"
+    client.post(
+        "/api/accounts/user/signup/",
+        data={
+            "email": "eve@numbat-tasks.com",
+            "password": password,
+            "first_name": "Eve",
+            "last_name": "Numbat",
+            # Eve tries to sign up as a superuser
+            "is_superuser": True,
+        },
+    )
+    response = client.post(
+        "/api/token/",
+        data={
+            "email": "eve@numbat-tasks.com",
+            "password": password,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    access_token = response.json().get("access")
+    # Eve has signed up successfully, but she is not a superuser
+    response = client.get(
+        "/api/accounts/user/self/",
+        headers={"Authorization": f"Bearer {access_token}"},
+    )
+    assert response.json()["is_superuser"] is False
+    assert response.json()["email"] == "eve@numbat-tasks.com"

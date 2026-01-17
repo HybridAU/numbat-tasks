@@ -24,7 +24,7 @@ def generate_base_data(client):
         },
         "bob": {
             "email": "bob@numbat-tasks.com",
-            "first_name": "Alice",
+            "first_name": "Bob",
             "last_name": "Numbat",
             "password": "".join(
                 random.choices(string.ascii_letters + string.digits, k=18)

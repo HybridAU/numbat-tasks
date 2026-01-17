@@ -91,8 +91,6 @@ def test_update_a_task(client, base_data):
     assert response.json()["complete"] is True
 
 
-# TODO: More of these tests, this feels like somewhere it's easy to slip up
-#       and have direct object reference bugs or similar.
 @pytest.mark.django_db
 def test_can_not_access_another_users_tasks(client, base_data):
     """

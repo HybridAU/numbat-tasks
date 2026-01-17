@@ -48,7 +48,14 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         # The first user to sign up is automatically a superuser
         new_user.is_superuser = is_initial_signup
         new_user.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=["get"], url_path="self")
+    def get_self(self, request):
+        """
+        Get details about yourself when you don't know your ID
+        """
+        return Response(CustomUserSerializer(request.user).data)
 
     @extend_schema(request=ChangePasswordSerializer, responses=CustomUserSerializer)
     @action(
