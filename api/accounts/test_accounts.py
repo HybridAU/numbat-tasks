@@ -140,16 +140,16 @@ def test_regular_user_can_not_make_themself_a_superuser_patch(client, base_data)
 
 
 @pytest.mark.django_db
-def test_regular_user_can_not_make_themself_a_superuser_put(client, base_data):
+def test_put_method_is_unavalible(client, base_data):
     """
-    Bob, a regular user, can not make himself a superuser
+    Alice can not call the PUT method for the users endpoint
     """
     # Same as the test above, but with put instead of patch
     bob_id = base_data["bob"]["id"]
     response = client.put(
         f"/api/accounts/user/{bob_id}/",
-        headers=base_data["bob"]["auth_header"],
-        # patch doesn't have the "json" parameter, so we have to do data that we json encode ourselves,
+        headers=base_data["alice"]["auth_header"],
+        # put doesn't have the "json" parameter, so we have to do data that we json encode ourselves,
         # and we also need to add the content type header.
         data=json.dumps(
             {
@@ -164,9 +164,7 @@ def test_regular_user_can_not_make_themself_a_superuser_put(client, base_data):
         ),
         content_type="application/json",
     )
-    assert response.status_code == status.HTTP_403_FORBIDDEN
-    bob_object = CustomUser.objects.get(id=bob_id)
-    assert not bob_object.is_superuser
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
 @pytest.mark.django_db
@@ -203,6 +201,7 @@ def test_unauthenticated_user_can_not_access_any_endpoints(client, base_data):
     response = client.get(f"/api/accounts/user/{alice_id}/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     response = client.put(f"/api/accounts/user/{alice_id}/")
+    # Authenticated users get a 405 here, but unauthenticated still gets a 401
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     response = client.patch(f"/api/accounts/user/{alice_id}/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
@@ -222,7 +221,7 @@ def test_regular_user_can_not_access_other_users(client, base_data):
     response = client.get(f"/api/accounts/user/{alice_id}/", headers=auth_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
     response = client.put(f"/api/accounts/user/{alice_id}/", headers=auth_header)
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
     response = client.patch(f"/api/accounts/user/{alice_id}/", headers=auth_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
     response = client.delete(f"/api/accounts/user/{alice_id}/", headers=auth_header)
@@ -238,7 +237,7 @@ def test_superuser_user_can_modify_other_users(client, base_data):
     auth_header = base_data["alice"]["auth_header"]
     response = client.get(f"/api/accounts/user/{bob_id}/", headers=auth_header)
     assert response.status_code == status.HTTP_200_OK
-    response = client.put(
+    response = client.patch(
         f"/api/accounts/user/{bob_id}/",
         headers=auth_header,
         # put doesn't have the "json" parameter, so we have to do data that we json encode ourselves,
@@ -246,7 +245,6 @@ def test_superuser_user_can_modify_other_users(client, base_data):
         data=json.dumps(
             {
                 "email": "rober@numbat-tasks.com",
-                "password": "We Are Legion",
                 "first_name": "Robert",
                 "last_name": "Johansson",
                 "is_superuser": True,
@@ -266,10 +264,40 @@ def test_superuser_user_can_modify_other_users(client, base_data):
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
 
+@pytest.mark.django_db
+def test_must_use_the_change_password_endpoint_to_update_passwords(client, base_data):
+    """
+    Alice, an authenticated superuser must still use the change_password endpoint
+    to update a user's password.
+    """
+    bob_id = base_data["bob"]["id"]
+    auth_header = base_data["alice"]["auth_header"]
+    response = client.get(f"/api/accounts/user/{bob_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_200_OK
+    response = client.patch(
+        f"/api/accounts/user/{bob_id}/",
+        headers=auth_header,
+        data=json.dumps(
+            {
+                "email": "rober@numbat-tasks.com",
+                "password": "We Are Legion",
+                "first_name": "Robert",
+                "last_name": "Johansson",
+                "is_superuser": True,
+            }
+        ),
+        content_type="application/json",
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {
+        "password": "Use the change_password endpoint to update passwords"
+    }
+
+
 # TODO
-#  * Tests that passwords are hashed when creating and updating users
 #  * Test signup process
 #   * Unauthenticated user can sign up if there are no users (initial setup)
 #   * Test signups_enabled bool does what it's meant to
 #   * Can't set "is_superuser" during signup, it's fixed based on if there are any users
+#  * Tests that passwords are hashed when creating and updating users
 #  * Regular user can update their password (with old one?)
