@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { getConfig } from "../../api/config.ts";
-import token, { type SignInRequest } from "../../api/token";
+import signup, { type SignUpRequest } from "../../api/user.ts";
 import FormTextField from "../../components/form/FormTextField";
 import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
@@ -22,15 +22,13 @@ export default function SignUp() {
   });
 
   const { mutate, error } = useMutation({
-    mutationFn: (data: SignInRequest) => token(data),
-    onSuccess: (result) => {
-      authenticationsDispatch({
-        type: "SET_LOGGED_IN",
-        payload: { accessToken: result.access, refreshToken: result.refresh },
+    mutationFn: (data: SignUpRequest) => signup(data),
+    onSuccess: (_result) => {
+      // Invalidate config, because now it may no longer be the initial signup, and
+      // we don't want to get looped back to the signup screen after we navigate to home
+      queryClient.invalidateQueries({ queryKey: ["config"] }).then(() => {
+        navigate("/sign-in");
       });
-      // Invalidate config, because now it may no longer be the initial signup
-      queryClient.invalidateQueries({ queryKey: ["config"] });
-      navigate("/");
     },
   });
 
@@ -104,7 +102,7 @@ export default function SignUp() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          onClick={handleSubmit((data: SignInRequest) => {
+          onClick={handleSubmit((data: SignUpRequest) => {
             mutate(data);
           })}
         >
