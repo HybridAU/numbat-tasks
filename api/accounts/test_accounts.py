@@ -9,6 +9,13 @@ from accounts.models import CustomUser
 from numbat_tasks_api.test_utils import generate_base_data
 
 
+def generate_password():
+    """
+    A little utility function to generate a random password to use in tests.
+    """
+    return random.choices(string.ascii_letters + string.digits, k=18)
+
+
 @pytest.fixture()
 def base_data(client):
     return generate_base_data(client)
@@ -70,9 +77,7 @@ def test_superuser_can_create_new_users(client, base_data):
             "email": "charlie@numbat-tasks.com",
             "first_name": "Charlie",
             "last_name": "Numbat",
-            "password": "".join(
-                random.choices(string.ascii_letters + string.digits, k=18)
-            ),
+            "password": f"{generate_password()}",
             "is_superuser": False,
         },
     )
@@ -92,9 +97,7 @@ def test_regular_user_can_not_create_new_users(client, base_data):
             "email": "charlie@numbat-tasks.com",
             "first_name": "Charlie",
             "last_name": "Numbat",
-            "password": "".join(
-                random.choices(string.ascii_letters + string.digits, k=18)
-            ),
+            "password": f"{generate_password()}",
             "is_superuser": False,
         },
     )
@@ -156,9 +159,7 @@ def test_put_method_is_unavalible(client, base_data):
                 "email": "bob@numbat-tasks.com",
                 "first_name": "Bob",
                 "last_name": "Numbat",
-                "password": "".join(
-                    random.choices(string.ascii_letters + string.digits, k=18)
-                ),
+                "password": f"{generate_password()}",
                 "is_superuser": True,
             }
         ),
@@ -229,7 +230,9 @@ def test_regular_user_can_not_access_other_users(client, base_data):
     response = client.delete(f"/api/accounts/user/{alice_id}/", headers=auth_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
     response = client.post(
-        f"/api/accounts/user/{alice_id}/change_password/", headers=auth_header
+        f"/api/accounts/user/{alice_id}/change_password/",
+        data={"new_password": "foo"},
+        headers=auth_header,
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
@@ -286,7 +289,7 @@ def test_must_use_the_change_password_endpoint_to_update_passwords(client, base_
         data=json.dumps(
             {
                 "email": "rober@numbat-tasks.com",
-                "password": "We Are Legion",
+                "password": f"{generate_password()}",
                 "first_name": "Robert",
                 "last_name": "Johansson",
                 "is_superuser": True,
@@ -300,10 +303,190 @@ def test_must_use_the_change_password_endpoint_to_update_passwords(client, base_
     }
 
 
+@pytest.mark.django_db
+def test_a_regular_user_can_update_their_password_only_with_old_password(
+    client, base_data
+):
+    """
+    Bob can update his password, but only when he provides his old password.
+    """
+    # Bob can't directly update his password.
+    bob_id = base_data["bob"]["id"]
+    auth_header = base_data["bob"]["auth_header"]
+    new_password = f"{generate_password()}"
+    response = client.patch(
+        f"/api/accounts/user/{bob_id}/",
+        headers=auth_header,
+        data=json.dumps({"password": new_password}),
+        content_type="application/json",
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {
+        "password": "Use the change_password endpoint to update passwords"
+    }
+    # Bob can't call change_password without providing the old one
+    response = client.post(
+        f"/api/accounts/user/{bob_id}/change_password/",
+        headers=auth_header,
+        data={"new_password": new_password},
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {"old_password": "old_password does not match"}
+    # Bob can't call change_password if he provides the wrong old password.
+    response = client.post(
+        f"/api/accounts/user/{bob_id}/change_password/",
+        headers=auth_header,
+        data={
+            "old_password": f"{generate_password()}",
+            "new_password": new_password,
+        },
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {"old_password": "old_password does not match"}
+    # Finally, bob can update his password with the correct old one
+    response = client.post(
+        f"/api/accounts/user/{bob_id}/change_password/",
+        headers=auth_header,
+        data={
+            "old_password": base_data["bob"]["password"],
+            "new_password": new_password,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    # And now just to prove it, he logs in with his new password.
+    response = client.post(
+        "/api/token/",
+        data={
+            "email": base_data["bob"]["email"],
+            "password": new_password,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert "access" in response.json()
+
+
+@pytest.mark.django_db
+def test_a_superuser_can_update_their_password_only_with_old_password(
+    client, base_data
+):
+    """
+    Alice can update her password, but only when she provides her old password.
+    """
+    # This is pretty much a straight copy-paste of the test above, but with alice instead of bob
+    alice_id = base_data["alice"]["id"]
+    auth_header = base_data["alice"]["auth_header"]
+    new_password = f"{generate_password()}"
+    response = client.patch(
+        f"/api/accounts/user/{alice_id}/",
+        headers=auth_header,
+        data=json.dumps({"password": new_password}),
+        content_type="application/json",
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {
+        "password": "Use the change_password endpoint to update passwords"
+    }
+    # Alice can't call change_password without providing the old one
+    response = client.post(
+        f"/api/accounts/user/{alice_id}/change_password/",
+        headers=auth_header,
+        data={"new_password": new_password},
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {"old_password": "old_password does not match"}
+    # Alice can't call change_password if he provides the wrong old password.
+    response = client.post(
+        f"/api/accounts/user/{alice_id}/change_password/",
+        headers=auth_header,
+        data={
+            "old_password": f"{generate_password()}",
+            "new_password": new_password,
+        },
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.json() == {"old_password": "old_password does not match"}
+    # Finally, alice can update her password with the correct old one
+    response = client.post(
+        f"/api/accounts/user/{alice_id}/change_password/",
+        headers=auth_header,
+        data={
+            "old_password": base_data["alice"]["password"],
+            "new_password": new_password,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    # And now just to prove it, she logs in with her new password.
+    response = client.post(
+        "/api/token/",
+        data={
+            "email": base_data["alice"]["email"],
+            "password": new_password,
+        },
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert "access" in response.json()
+
+
+@pytest.mark.django_db
+def test_bob_can_not_change_alices_password(client, base_data):
+    """
+    Bob can't change Alice's password, even with the correct old one.
+    """
+    # This is pretty much a straight copy-paste of the test above, but with alice instead of bob
+    alice_id = base_data["alice"]["id"]
+    auth_header = base_data["bob"]["auth_header"]
+    response = client.post(
+        f"/api/accounts/user/{alice_id}/change_password/",
+        headers=auth_header,
+        data={
+            "old_password": base_data["alice"]["password"],
+            "new_password": f"{generate_password()}",
+        },
+    )
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+@pytest.mark.django_db
+def test_alice_can_change_bobs_password(client, base_data):
+    """
+    Alice a superuser, can set a new password for Bob, even without his old one.
+    """
+    bob_id = base_data["bob"]["id"]
+    auth_header = base_data["alice"]["auth_header"]
+    response = client.post(
+        f"/api/accounts/user/{bob_id}/change_password/",
+        headers=auth_header,
+        data={"new_password": f"{generate_password()}"},
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_passwords_are_hashed_when_creating_and_updating_users(client, base_data):
+    """
+    Passwords are hashed when creating and updating users
+    """
+    # We are not going to get into the weeds here of how the hashing works, because we are using
+    # Django's make_password function, and we leave it up to that to decide (PBKDF2, etc...)
+    # but we check that saving a user, the password isn't saved directly to the database.
+    new_password = f"{generate_password()}"
+    # First, create a user
+    user = CustomUser.objects.create(
+        email="charlie@numbat-tasks.com",
+        password=new_password,
+    )
+    # The password has been hashed when the user was created
+    assert user.password != new_password
+    # Reset the password
+    user.password = new_password
+    assert user.password == new_password
+    # As soon as we save it, the password is hashed
+    user.save()
+    assert user.password != new_password
+
+
 # TODO
 #  * Test signup process
 #   * Unauthenticated user can sign up if there are no users (initial setup)
 #   * Test signups_enabled bool does what it's meant to
 #   * Can't set "is_superuser" during signup, it's fixed based on if there are any users
-#  * Tests that passwords are hashed when creating and updating users
-#  * Regular user can update their password (with old one?)

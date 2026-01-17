@@ -1,7 +1,9 @@
 from django.conf import settings
+from django.contrib.auth.hashers import check_password
 from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from accounts.models import CustomUser
@@ -36,7 +38,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         is_initial_signup = CustomUser.objects.all().count() == 0
         if not is_initial_signup and not settings.SIGNUP_ENABLED:
             return Response(
-                {"Error": "Signup is currently unavailable"},
+                {"error": "Signup is currently unavailable"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -49,7 +51,35 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @extend_schema(request=ChangePasswordSerializer, responses=CustomUserSerializer)
-    @action(detail=True, methods=["post"])
-    def change_password(self, request):
-        """ """
-        pass
+    @action(
+        detail=True,
+        methods=["post"],
+        permission_classes=[permissions.IsAuthenticated],
+    )
+    def change_password(self, request, pk):
+        """
+        # There are two flows here;
+        #  * A user changing their own password, must validate their old password
+        #  * A superuser changing another users password, old password is not required.
+        """
+        user_object = get_object_or_404(CustomUser, pk=pk)
+        serializer = ChangePasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        if user_object == request.user and not check_password(
+            password=serializer.validated_data.get("old_password"),
+            encoded=user_object.password,
+        ):
+            return Response(
+                {"old_password": "old_password does not match"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if user_object != request.user and not request.user.is_superuser:
+            return Response(
+                {"error": "Must be a super user to change another user's password"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        user_object.password = serializer.validated_data.get("new_password")
+        user_object.save()
+        return Response(CustomUserSerializer(user_object).data)
