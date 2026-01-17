@@ -194,7 +194,32 @@ def test_manual_list_order_new_tasks(client, base_data):
     """
     headers = base_data["alice"]["auth_header"]
     shopping = base_data["alice"]["shopping"]
-    # Add a new book to the list
+    # Add avocado to the shopping list
+    response = client.post(
+        f"/api/tasks/list/{shopping.id}/task/",
+        data={"text": "avocado"},
+        headers=headers,
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+    avocado_id = response.json()["id"]
+    response = client.get(f"/api/tasks/list/{shopping.id}/", headers=headers)
+    assert response.status_code == status.HTTP_200_OK
+    # Check the manual order still only has 3 items
+    assert response.json()["manual_order"] == [
+        base_data["alice"]["eggs"].id,
+        base_data["alice"]["cheese"].id,
+        base_data["alice"]["spam"].id,
+    ]
+    # Check the shopping list is returned in the order set in manual_order,
+    # but with the new item at the top of the list
+    response = client.get(f"/api/tasks/list/{shopping.id}/task/", headers=headers)
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json()[0]["id"] == avocado_id
+    assert response.json()[1]["id"] == base_data["alice"]["eggs"].id
+    assert response.json()[2]["id"] == base_data["alice"]["cheese"].id
+    assert response.json()[3]["id"] == base_data["alice"]["spam"].id
+    # Next bacon, and again it's at the top of the list, bumping avocado down to second place,
+    # followed by the items that have been manually ordered.
     response = client.post(
         f"/api/tasks/list/{shopping.id}/task/",
         data={"text": "bacon"},
@@ -210,15 +235,13 @@ def test_manual_list_order_new_tasks(client, base_data):
         base_data["alice"]["cheese"].id,
         base_data["alice"]["spam"].id,
     ]
-
-    # Check the shopping list is returned in the order set in manual_order,
-    # but with the new item at the top of the list
     response = client.get(f"/api/tasks/list/{shopping.id}/task/", headers=headers)
     assert response.status_code == status.HTTP_200_OK
     assert response.json()[0]["id"] == bacon_id
-    assert response.json()[1]["id"] == base_data["alice"]["eggs"].id
-    assert response.json()[2]["id"] == base_data["alice"]["cheese"].id
-    assert response.json()[3]["id"] == base_data["alice"]["spam"].id
+    assert response.json()[1]["id"] == avocado_id
+    assert response.json()[2]["id"] == base_data["alice"]["eggs"].id
+    assert response.json()[3]["id"] == base_data["alice"]["cheese"].id
+    assert response.json()[4]["id"] == base_data["alice"]["spam"].id
 
 
 @pytest.mark.django_db
