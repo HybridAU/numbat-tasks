@@ -65,9 +65,9 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     )
     def change_password(self, request, pk):
         """
-        # There are two flows here;
-        #  * A user changing their own password, must validate their old password
-        #  * A superuser changing another users password, old password is not required.
+        There are two flows here;
+         * A user changing their own password, must validate their old password
+         * A superuser changing another users password, old password is not required.
         """
         user_object = get_object_or_404(CustomUser, pk=pk)
         serializer = ChangePasswordSerializer(data=request.data)

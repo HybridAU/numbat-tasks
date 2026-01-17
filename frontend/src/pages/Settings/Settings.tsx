@@ -29,8 +29,14 @@ export default function Settings() {
     <>
       <Stack direction="column" sx={{ alignItems: "flex-start" }}>
         <Typography>Version: {config?.version}</Typography>
-        <Typography>Signup Enabled: {config?.signup_enabled}</Typography>
-        <Button onClick={handleSignOut} startIcon={<LogoutIcon />}>
+        <Typography>
+          Signup Enabled: {config?.signup_enabled?.toString()}
+        </Typography>
+        <Button
+          onClick={handleSignOut}
+          startIcon={<LogoutIcon />}
+          sx={{ paddingTop: "10px" }}
+        >
           Logout
         </Button>
       </Stack>

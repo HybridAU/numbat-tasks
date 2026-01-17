@@ -1,6 +1,6 @@
 import { Alert, Button, Container, Stack, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { getConfig } from "../../api/config.ts";
@@ -11,6 +11,8 @@ import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvid
 export default function SignUp() {
   const authenticationsDispatch = useAuthenticationsDispatch();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
@@ -26,6 +28,8 @@ export default function SignUp() {
         type: "SET_LOGGED_IN",
         payload: { accessToken: result.access, refreshToken: result.refresh },
       });
+      // Invalidate config, because now it may no longer be the initial signup
+      queryClient.invalidateQueries({ queryKey: ["config"] });
       navigate("/");
     },
   });

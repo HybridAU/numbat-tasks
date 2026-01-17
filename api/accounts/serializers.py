@@ -33,10 +33,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 class CustomUserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    is_superuser = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ["id", "email", "password", "first_name", "last_name"]
+        fields = ["id", "email", "password", "first_name", "last_name", "is_superuser"]
 
 
 class ChangePasswordSerializer(serializers.Serializer):
