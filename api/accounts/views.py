@@ -1,4 +1,5 @@
 from django.conf import settings
+from drf_spectacular.utils import extend_schema
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -47,15 +48,8 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         new_user.save()
         return Response(serializer.data)
 
-    @action(
-        detail=True,
-        methods=["post"],
-        serializer_class=ChangePasswordSerializer,
-    )
+    @extend_schema(request=ChangePasswordSerializer, responses=CustomUserSerializer)
+    @action(detail=True, methods=["post"])
     def change_password(self, request):
-        """
-        Sign up is an unauthenticated endpoint that can be called to create a new user.
-        However, it will only allow signups if either there are no existing users (i.e.
-        the initial user) or if signups have been enabled.
-        """
+        """ """
         pass

@@ -207,6 +207,8 @@ def test_unauthenticated_user_can_not_access_any_endpoints(client, base_data):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     response = client.delete(f"/api/accounts/user/{alice_id}/")
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    response = client.post(f"/api/accounts/user/{alice_id}/change_password/")
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.django_db
@@ -225,6 +227,10 @@ def test_regular_user_can_not_access_other_users(client, base_data):
     response = client.patch(f"/api/accounts/user/{alice_id}/", headers=auth_header)
     assert response.status_code == status.HTTP_403_FORBIDDEN
     response = client.delete(f"/api/accounts/user/{alice_id}/", headers=auth_header)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    response = client.post(
+        f"/api/accounts/user/{alice_id}/change_password/", headers=auth_header
+    )
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
