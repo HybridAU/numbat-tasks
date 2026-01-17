@@ -6,10 +6,8 @@ import { useNavigate } from "react-router";
 import { getConfig } from "../../api/config.ts";
 import signup, { type SignUpRequest } from "../../api/user.ts";
 import FormTextField from "../../components/form/FormTextField";
-import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
 export default function SignUp() {
-  const authenticationsDispatch = useAuthenticationsDispatch();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
