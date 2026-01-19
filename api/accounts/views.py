@@ -73,6 +73,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         serializer = ChangePasswordSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        # A user changing their own password must provide their old password
         if user_object == request.user and not check_password(
             password=serializer.validated_data.get("old_password"),
             encoded=user_object.password,
@@ -81,6 +82,8 @@ class CustomUserViewSet(viewsets.ModelViewSet):
                 {"old_password": "old_password does not match"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        # Only a superuser can change another user's password.
         if user_object != request.user and not request.user.is_superuser:
             return Response(
                 {"error": "Must be a super user to change another user's password"},

@@ -23,7 +23,7 @@ export default function SignUp() {
     mutationFn: (data: SignUpRequest) => signup(data),
     onSuccess: (_result) => {
       // Invalidate config, because now it may no longer be the initial signup, and
-      // we don't want to get looped back to the signup screen after we navigate to home
+      // we don't want to get looped back to the signup screen after we navigate to sign in
       queryClient.invalidateQueries({ queryKey: ["config"] }).then(() => {
         navigate("/sign-in");
       });
@@ -82,17 +82,6 @@ export default function SignUp() {
           label="Password"
           type="password"
           id="password"
-          autoComplete="current-password"
-        />
-        <FormTextField
-          control={control}
-          margin="normal"
-          required
-          fullWidth
-          name="confirmPassword"
-          label="Confirm Password"
-          type="password"
-          id="confirmPassword"
           autoComplete="current-password"
         />
         <Button

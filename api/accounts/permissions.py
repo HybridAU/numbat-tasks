@@ -13,7 +13,7 @@ class CustomUserPermissions(permissions.BasePermission):
         if request.method in ("PUT", "PATCH"):
             return True
 
-        # Super
+        # Superuser can POST (creat new users) but regular users can't
         return request.user.is_superuser
 
     def has_object_permission(self, request, view, obj):

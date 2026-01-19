@@ -1,16 +1,26 @@
 # User Management
 
-User management with a nice GUI through the frontend is still on the to do list, so for now we are using the Django admin console.
+## The first user
+The first user to sign up to a numbat tasks instance will be marked as a "superuser". This user can 
+manage other users, create new accounts, reset passwords, and delete accounts.
 
-The recommended approach is to create an administrative user by running
+One user can sign up even with the `SIGNUP_ENABLED` [environment variable](environment_variables.md#signup_enabled)
+is set to false (the default)
 
-## Create a super user
-This will be the administrator of the numbat-tasks instance
+The API endpoints exist for user management, however a nice GUI through the frontend is still on the to-do list,
+so for now the Django admin console is the only way to manage users.
+
+While the first user to sign up is a superuser, they do not get the "staff" status, this is by design as
+long term we don't want users to have to log into the Django admin console. However, for now we will need
+to create a superuser with the staff status.
+
+## Create a superuser with the staff status
+This will create a superuser that can log in to the Django admin console.
 
 ```shell
 docker compose exec -it api /venv/bin/python /api/manage.py createsuperuser
 ```
 
-## Create are regular user
-Once the super user has been created, log in to the [admin panel](http://localhost:8000/api/admin/accounts/customuser/) 
-and create a regular user for day-to-day use, the user does not need any permissions other than "Active".
+## Create and manage other users
+Once the superuser has been created, log in to the [admin panel](http://localhost:8000/api/admin/accounts/customuser/) 
+and from there you can create/update/delete other users (and tasks)

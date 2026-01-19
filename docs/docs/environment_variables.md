@@ -80,7 +80,7 @@ When enabled, new users can sign up.
 
 
 !!! Note
-    Even when this is disabled, one user can sign up as part of the [initial setup](initial_setup.md).
+    Even when this is disabled, the [first use](user_management.md) can still sign up as part of the initial setup.
 
 ## UV_PROJECT_ENVIRONMENT
 

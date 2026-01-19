@@ -251,7 +251,7 @@ def test_regular_user_can_not_access_other_users(client, base_data):
     assert response.status_code == status.HTTP_403_FORBIDDEN
     response = client.post(
         f"/api/accounts/user/{alice_id}/change_password/",
-        data={"new_password": "foo"},
+        data={"new_password": f"{generate_password()}"},
         headers=auth_header,
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
@@ -342,7 +342,7 @@ def test_a_regular_user_can_update_their_password_only_with_old_password(
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert response.json() == {
-        "password": "Use the change_password endpoint to update passwords"
+        "detail": "You do not have permission to perform this action."
     }
     # Bob can't call change_password without providing the old one
     response = client.post(
@@ -404,7 +404,7 @@ def test_a_superuser_can_update_their_password_only_with_old_password(
     )
     assert response.status_code == status.HTTP_403_FORBIDDEN
     assert response.json() == {
-        "password": "Use the change_password endpoint to update passwords"
+        "detail": "You do not have permission to perform this action."
     }
     # Alice can't call change_password without providing the old one
     response = client.post(
@@ -633,3 +633,54 @@ def test_cant_set_superuser_during_signup(client, base_data):
     )
     assert response.json()["is_superuser"] is False
     assert response.json()["email"] == "eve@numbat-tasks.com"
+
+
+@pytest.mark.django_db
+def test_password_requirements_enforced_signup(client):
+    """
+    Password complexity requirements are applied during signup
+    """
+    good_password = f"{generate_password()}"
+    # Alice can't sign up with a bad password
+    response = client.post(
+        "/api/accounts/user/signup/",
+        data={
+            "email": "alice@numbat-tasks.com",
+            "password": "a",
+            "first_name": "Alice",
+        },
+    )
+    # Signup failed, and the reason was the password
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "password" in response.json()
+
+    # Alice signs up with a good password
+    response = client.post(
+        "/api/accounts/user/signup/",
+        data={
+            "email": "alice@numbat-tasks.com",
+            "password": good_password,
+            "first_name": "Alice",
+        },
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+
+
+@pytest.mark.django_db
+def test_password_requirements_enforced_change_password(client, base_data):
+    """
+    Password complexity requirements are applied on the change_password endpoint
+    """
+    # Alice can't change her password to a bad one
+    alice_id = base_data["alice"]["id"]
+    response = client.post(
+        f"/api/accounts/user/{alice_id}/change_password/",
+        headers=base_data["alice"]["auth_header"],
+        data={
+            "old_password": base_data["alice"]["password"],
+            "new_password": "a",
+        },
+    )
+    # Change password failed, and the reason was the new_password
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "new_password" in response.json()
