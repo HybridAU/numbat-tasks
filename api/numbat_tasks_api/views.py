@@ -24,8 +24,8 @@ class Config(APIView):
         config = ConfigSerializer(
             instance={
                 "version": numbat_tasks_api.__version__,
-                "initial_setup": CustomUser.objects.all().count() == 0,
+                "initial_setup": not CustomUser.objects.all().exists(),
                 "signup_enabled": settings.SIGNUP_ENABLED,
-            },
+            }
         )
         return Response(config.data)
