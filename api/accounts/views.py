@@ -35,7 +35,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         However, it will only allow signups if either there are no existing users (i.e.
         the initial user) or if signups have been enabled.
         """
-        is_initial_signup = CustomUser.objects.all().count() == 0
+        is_initial_signup = not CustomUser.objects.all().exists()
         if not is_initial_signup and not settings.SIGNUP_ENABLED:
             return Response(
                 {"error": "Signup is currently unavailable"},
