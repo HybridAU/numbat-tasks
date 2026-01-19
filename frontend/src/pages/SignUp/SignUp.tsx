@@ -1,31 +1,32 @@
 import { Alert, Button, Container, Stack, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Form, useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { getConfig } from "../../api/config.ts";
-import token, { type SignInRequest } from "../../api/token";
+import signup, { type SignUpRequest } from "../../api/user.ts";
 import FormTextField from "../../components/form/FormTextField";
-import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
-export default function SignIn() {
-  const authenticationsDispatch = useAuthenticationsDispatch();
+export default function SignUp() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const { control, handleSubmit } = useForm({
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const { mutate, error } = useMutation({
-    mutationFn: (data: SignInRequest) => token(data),
-    onSuccess: (result) => {
-      authenticationsDispatch({
-        type: "SET_LOGGED_IN",
-        payload: { accessToken: result.access, refreshToken: result.refresh },
+    mutationFn: (data: SignUpRequest) => signup(data),
+    onSuccess: (_result) => {
+      // Invalidate config, because now it may no longer be the initial signup, and
+      // we don't want to get looped back to the signup screen after we navigate to sign in
+      queryClient.invalidateQueries({ queryKey: ["config"] }).then(() => {
+        navigate("/sign-in");
       });
-      navigate("/");
     },
   });
 
@@ -33,20 +34,27 @@ export default function SignIn() {
     queryKey: ["config"],
     queryFn: () => getConfig(),
   });
+  const signUpAvailable = config?.signup_enabled || config?.initial_setup;
 
-  if (config?.initial_setup) navigate("/sign-up");
+  if (isLoading)
+    return (
+      <Stack
+        height="400px"
+        width="100%"
+        sx={{ justifyContent: "center", alignItems: "center" }}
+      >
+        <CircularProgress size="4rem" />
+      </Stack>
+    );
 
-  return isLoading ? (
-    <Stack
-      height="400px"
-      width="100%"
-      sx={{ justifyContent: "center", alignItems: "center" }}
-    >
-      <CircularProgress size="4rem" />
-    </Stack>
-  ) : (
+  if (!signUpAvailable)
+    return (
+      <Typography variant="h1">Signups are not currently available</Typography>
+    );
+
+  return (
     <Container component="main" maxWidth="xs">
-      <Typography variant="h1">Sign In</Typography>
+      <Typography variant="h1">Create a new account</Typography>
       {error && (
         <Alert severity="error">
           Error:
@@ -81,16 +89,13 @@ export default function SignIn() {
           fullWidth
           variant="contained"
           sx={{ mt: 3, mb: 2 }}
-          onClick={handleSubmit((data: SignInRequest) => {
+          onClick={handleSubmit((data: SignUpRequest) => {
             mutate(data);
           })}
         >
-          Sign In
+          Sign Up
         </Button>
       </Form>
-      {config?.signup_enabled && (
-        <Button onClick={() => navigate("/sign-up")}>New here? Sign up</Button>
-      )}
     </Container>
   );
 }

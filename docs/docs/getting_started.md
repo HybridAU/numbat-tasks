@@ -131,7 +131,7 @@ ALLOWED_HOSTS=tasks.example.com
    tasks.example.com {
       ...
    ```
-    banana
+
 2. Restricting the Django admin console to specific IPs optional, but encouraged
 
 ### Running
@@ -141,7 +141,9 @@ docker compose up -d
 ```
 
 ### Create a user and login
-See [user management](user_management.md) for steps on creating a user and logging in.
+You can now navigate to the site, you should be directed to the signup page to create an account.
+
+See [user management](user_management.md) for steps on creating and managing more users.
 
 ## Delete everything and start again
 

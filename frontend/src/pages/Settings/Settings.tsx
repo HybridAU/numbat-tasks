@@ -8,7 +8,9 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
+import { getConfig } from "../../api/config.ts";
 import { useAuthenticationsDispatch } from "../../providers/AuthenticationProvider.tsx";
 
 export default function Settings() {
@@ -18,11 +20,23 @@ export default function Settings() {
     authenticationsDispatch({ type: "SET_LOGGED_OUT", payload: null });
     navigate("/sign-in");
   };
+  const { data: config } = useQuery({
+    queryKey: ["config"],
+    queryFn: () => getConfig(),
+  });
 
   return (
     <>
       <Stack direction="column" sx={{ alignItems: "flex-start" }}>
-        <Button onClick={handleSignOut} startIcon={<LogoutIcon />}>
+        <Typography>Version: {config?.version}</Typography>
+        <Typography>
+          Signup Enabled: {config?.signup_enabled?.toString()}
+        </Typography>
+        <Button
+          onClick={handleSignOut}
+          startIcon={<LogoutIcon />}
+          sx={{ paddingTop: "10px" }}
+        >
           Logout
         </Button>
       </Stack>

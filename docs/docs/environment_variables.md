@@ -67,6 +67,21 @@ A key can be generated with
 echo SECRET_KEY=$(dd if=/dev/urandom bs=1 count=42 status=none | base64) >> .env
 ```
 
+## SIGNUP_ENABLED
+
+**Default:** `false`
+
+When enabled, new users can sign up.
+
+!!! Warning
+    Signups are functional, but not really production ready.
+    There is no validation of email address (e.g. Click link to verify your address) and
+    no self-service password reset (typed your password wrong during signup? bad luck).
+
+
+!!! Note
+    Even when this is disabled, the [first use](user_management.md) can still sign up as part of the initial setup.
+
 ## UV_PROJECT_ENVIRONMENT
 
 **Default:** `/venv`

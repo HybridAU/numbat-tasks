@@ -13,8 +13,7 @@ class CustomUserManager(BaseUserManager):
         Create and save a user with the given email, and password.
         """
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.password = make_password(password)
+        user = self.model(email=email, password=password, **extra_fields)
         user.save(using=self._db)
         return user
 
@@ -68,13 +67,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("user")
         verbose_name_plural = _("users")
 
-    def clean(self):
-        super().clean()
-        # TODO: This is fine for dev, but we don't want to start mangling
-        #       user passwords because the default hashing algorithm changed.
-        if self.password and self.password[:21] != "pbkdf2_sha256$720000$":
-            # password has been changed / set, need to hash it
+    def save(self, **kwargs):
+        if self.pk is None:
+            # It's a new object, and we need to hash the password
             self.password = make_password(self.password)
+        if self.pk:
+            # It's an existing object
+            original_obj = CustomUser.objects.get(id=self.pk)
+            if original_obj.password != self.password:
+                # password has been changed / set, need to hash it
+                self.password = make_password(self.password)
+        super().save(**kwargs)
 
     def get_full_name(self):
         """

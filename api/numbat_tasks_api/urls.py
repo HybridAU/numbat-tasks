@@ -20,10 +20,14 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from numbat_tasks_api import views
+
 urlpatterns = [
     path("api/admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/accounts/", include("accounts.urls")),
+    path("api/config/", views.Config.as_view(), name="config"),
     path("api/tasks/", include("tasks.urls")),
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
