@@ -59,7 +59,7 @@ export default function AddEditList({
   const deleteEnabled = lists.length > 1 && editCurrentList;
 
   const { control, handleSubmit, reset } = useForm({
-    defaultValues: { name: "", archived: false },
+    defaultValues: { name: "", pinned: false, archived: false },
   });
 
   const handleOpen = () => {
@@ -76,19 +76,23 @@ export default function AddEditList({
   const handleSaveClick = ({
     name,
     archived,
+    pinned,
   }: {
     name: string;
     archived: boolean;
+    pinned: boolean;
   }) => {
     if (editCurrentList) {
       doUpdateList({
         name: name,
+        pinned: pinned,
         archived: archived,
         listId: currentList.id,
       });
     } else {
       doAddList({
         name: name,
+        pinned: pinned,
         archived: archived,
       });
     }
@@ -174,6 +178,12 @@ export default function AddEditList({
               id="name"
               name="name"
               slotProps={{ htmlInput: { autoCapitalize: "sentences" } }}
+            />
+            <FormCheckbox
+              control={control}
+              label="pinned"
+              id="pinned"
+              name="pinned"
             />
             <FormCheckbox
               control={control}

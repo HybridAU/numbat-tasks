@@ -30,6 +30,7 @@ import {
 import { useListsState } from "../providers/ListsProvider";
 import FormTextField from "./form/FormTextField";
 import LinkifyText from "./LinkifyText.tsx";
+import ResetExistingTasks from "./ResetExistingTasks.tsx";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -84,9 +85,11 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
     setOpen(false);
   };
 
-  const { control, handleSubmit, reset, setValue } = useForm({
+  const { control, handleSubmit, reset, setValue, watch } = useForm({
     defaultValues: { text: "" },
   });
+
+  const searchText = watch("text");
 
   const { mutate: doAddTask } = useMutation({
     mutationFn: (data: addTaskRequest) => addTask(data),
@@ -170,6 +173,12 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               name="text"
               slotProps={{ htmlInput: { autoCapitalize: "sentences" } }}
             />
+            {task?.id === undefined && (
+              <ResetExistingTasks
+                searchText={searchText}
+                closeFunction={handleClose}
+              />
+            )}
           </Stack>
         </Form>
       </Dialog>

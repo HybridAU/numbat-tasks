@@ -28,6 +28,7 @@ class ListSerializer(serializers.ModelSerializer):
             "created",
             "updated",
             "name",
+            "pinned",
             "sort_order",
             "manual_order",
             "archived",

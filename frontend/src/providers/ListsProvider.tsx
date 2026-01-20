@@ -25,6 +25,7 @@ const initialState: ListsProviderState = {
   currentList: {
     id: 1,
     name: "Default List",
+    pinned: false,
     archived: false,
     created: "",
     updated: "",
