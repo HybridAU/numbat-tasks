@@ -17,7 +17,12 @@ class ListViewSet(viewsets.ModelViewSet):
     search_fields = ["name", "tasks__text"]
 
     def get_queryset(self):
-        return List.objects.filter(owner=self.request.user)
+        return List.objects.filter(
+            owner=self.request.user,
+        ).order_by(
+            "-pinned",
+            "-created",
+        )
 
     @action(detail=True, methods=["post"], serializer_class=EmptySerializer)
     def uncheck_all_tasks(self, request, pk):

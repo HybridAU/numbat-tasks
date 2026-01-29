@@ -1,14 +1,22 @@
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { IconButton, Stack, Typography } from "@mui/material";
-import Box from "@mui/material/Box";
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Stack,
+  SwipeableDrawer,
+  Typography,
+} from "@mui/material";
 import * as React from "react";
 import { useNavigate } from "react-router";
 import { useListsState } from "../providers/ListsProvider";
@@ -46,19 +54,31 @@ export default function NavDraw() {
       onKeyDown={toggleDrawer(false)}
     >
       <List>
+        <AddEditList editCurrentList={false} />
         {activeLists.map((list) => (
           <TaskListButton key={list.id} list={list} />
         ))}
-        <AddEditList editCurrentList={false} />
         {hasArchivedLists && (
           <Stack pt={3}>
             <Divider />
-            <Typography color="text.secondary" textAlign="center" pt={1}>
-              Archived lists
-            </Typography>
-            {archivedLists.map((list) => (
-              <TaskListButton key={list.id} list={list} />
-            ))}
+            <Accordion defaultExpanded disableGutters>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                // Prevent the click on the AccordionSummary from closing the NavDraw
+                onClick={(event) => {
+                  event.stopPropagation();
+                }}
+              >
+                <Typography color="text.secondary" textAlign="center" pt={1}>
+                  Archived lists
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {archivedLists.map((list) => (
+                  <TaskListButton key={list.id} list={list} />
+                ))}
+              </AccordionDetails>
+            </Accordion>
           </Stack>
         )}
       </List>

@@ -1,4 +1,5 @@
 import ListIcon from "@mui/icons-material/List";
+import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -24,7 +25,11 @@ export default function TaskListButton({
   return (
     <ListItem>
       <ListItemIcon sx={{ marginRight: "-30px" }}>
-        <ListIcon />
+        {list.pinned ? (
+          <PushPinOutlinedIcon sx={{ transform: "rotate(-45deg)" }} />
+        ) : (
+          <ListIcon />
+        )}
       </ListItemIcon>
       <ListItemButton onClick={handelClick}>
         <ListItemText primary={list.name} />

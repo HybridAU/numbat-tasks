@@ -14,6 +14,7 @@ export type ListDetails = {
   created: string;
   updated: string;
   name: string;
+  pinned: boolean;
   sort_order: SortOrder;
   manual_order: number[];
   archived: boolean;
@@ -25,6 +26,7 @@ export type searchListRequest = {
 
 export type addListRequest = {
   name: string;
+  pinned?: boolean;
   archived?: boolean;
   sort_order?: SortOrder;
   manual_order?: number[];
@@ -32,6 +34,7 @@ export type addListRequest = {
 
 export type updateListRequest = {
   name?: string;
+  pinned?: boolean;
   archived?: boolean;
   sort_order?: SortOrder;
   manual_order?: number[];
@@ -60,6 +63,7 @@ const lists = async ({ search }: searchListRequest): Promise<ListsResponse> => {
 
 const addList = async ({
   name,
+  pinned,
   archived,
   sort_order,
   manual_order,
@@ -71,6 +75,7 @@ const addList = async ({
     },
     body: JSON.stringify({
       name: name,
+      pinned: pinned,
       archived: archived,
       sort_order: sort_order,
       manual_order: manual_order,
@@ -84,6 +89,7 @@ const addList = async ({
 
 const updateList = async ({
   name,
+  pinned,
   archived,
   sort_order,
   manual_order,
@@ -96,6 +102,7 @@ const updateList = async ({
     },
     body: JSON.stringify({
       name: name,
+      pinned: pinned,
       archived: archived,
       sort_order: sort_order,
       manual_order: manual_order,

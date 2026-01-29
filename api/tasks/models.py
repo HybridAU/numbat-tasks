@@ -30,9 +30,10 @@ class List(models.Model):
         on_delete=models.CASCADE,
         related_name="lists",
     )
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True, db_index=True)
     updated = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=256, blank=True)
+    pinned = models.BooleanField(default=False, db_index=True)
     sort_order = models.CharField(
         max_length=20,
         choices=SortOrder,
