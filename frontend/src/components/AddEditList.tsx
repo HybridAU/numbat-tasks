@@ -1,21 +1,24 @@
 import AddIcon from "@mui/icons-material/Add";
+import ArchiveOutlinedIcon from "@mui/icons-material/ArchiveOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PushPinOutlinedIcon from "@mui/icons-material/PushPinOutlined";
 import SaveIcon from "@mui/icons-material/Save";
+import UnarchiveOutlinedIcon from "@mui/icons-material/UnarchiveOutlined";
 import {
   AppBar,
   Dialog,
   IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
   Slide,
   Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MenuItem from "@mui/material/MenuItem";
 import type { TransitionProps } from "@mui/material/transitions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
@@ -30,8 +33,8 @@ import {
   type updateListRequest,
 } from "../api/lists";
 import { useListsDispatch, useListsState } from "../providers/ListsProvider";
-import FormCheckbox from "./form/FormCheckbox";
 import FormTextField from "./form/FormTextField";
+import FormToggleButton from "./form/FormToggleButton.tsx";
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -64,7 +67,11 @@ export default function AddEditList({
 
   const handleOpen = () => {
     editCurrentList &&
-      reset({ name: currentList.name, archived: currentList.archived });
+      reset({
+        name: currentList.name,
+        pinned: currentList.pinned,
+        archived: currentList.archived,
+      });
     setOpen(true);
   };
   const handleClose = () => {
@@ -75,12 +82,12 @@ export default function AddEditList({
 
   const handleSaveClick = ({
     name,
-    archived,
     pinned,
+    archived,
   }: {
     name: string;
-    archived: boolean;
     pinned: boolean;
+    archived: boolean;
   }) => {
     if (editCurrentList) {
       doUpdateList({
@@ -167,7 +174,7 @@ export default function AddEditList({
               </IconButton>
             </Toolbar>
           </AppBar>
-          <Stack pt="2rem" px="1rem">
+          <Stack pt="2rem" px="1rem" gap={1}>
             <FormTextField
               autoFocus
               required
@@ -179,17 +186,43 @@ export default function AddEditList({
               name="name"
               slotProps={{ htmlInput: { autoCapitalize: "sentences" } }}
             />
-            <FormCheckbox
+            <FormToggleButton
               control={control}
-              label="pinned"
               id="pinned"
               name="pinned"
+              value="pinned"
+              sx={{ maxWidth: "sm" }}
+              activeLabel={
+                <Stack direction="row" alignItems="center">
+                  <PushPinOutlinedIcon sx={{ transform: "rotate(-45deg)" }} />
+                  <Typography>Pinned</Typography>
+                </Stack>
+              }
+              inactiveLabel={
+                <Stack direction="row" alignItems="center">
+                  <PushPinOutlinedIcon />
+                  <Typography>Not Pinned</Typography>
+                </Stack>
+              }
             />
-            <FormCheckbox
+            <FormToggleButton
               control={control}
-              label="archived"
               id="archived"
               name="archived"
+              value="archived"
+              sx={{ maxWidth: "sm" }}
+              activeLabel={
+                <Stack direction="row" alignItems="center">
+                  <UnarchiveOutlinedIcon />
+                  <Typography>Archived</Typography>
+                </Stack>
+              }
+              inactiveLabel={
+                <Stack direction="row" alignItems="center">
+                  <ArchiveOutlinedIcon />
+                  <Typography>Not Archived</Typography>
+                </Stack>
+              }
             />
           </Stack>
         </Form>

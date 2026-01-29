@@ -1,4 +1,4 @@
-import { Checkbox, Stack, Typography } from "@mui/material";
+import { Checkbox, Divider, Stack, Typography } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getTasks, type TaskDetails, updateTask } from "../api/tasks.ts";
 import { useListsState } from "../providers/ListsProvider.tsx";
@@ -37,17 +37,26 @@ export default function ResetExistingTasks({
   });
 
   const matchingTasks = tasks?.filter(
-    (task) => task.complete === true && task.text.includes(searchText),
+    (task) =>
+      task.complete === true &&
+      task.text.toLowerCase().includes(searchText.toLowerCase()) &&
+      searchText !== "",
   );
-  if (matchingTasks?.length && matchingTasks.length < 4) {
+  if (matchingTasks?.length && matchingTasks.length <= 5) {
     return (
-      <Stack direction="column">
+      <Stack
+        direction="column"
+        bgcolor="secondary.main"
+        marginTop={1}
+        borderRadius={3}
+        divider={<Divider variant="middle" />}
+      >
         {matchingTasks.map((task) => (
           <Stack
             direction="row"
             key={task.id}
             onClick={() => uncheckTask(task)}
-            gap={2}
+            alignItems="center"
           >
             <Checkbox checked />
             <Typography
