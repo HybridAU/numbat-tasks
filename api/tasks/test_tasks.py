@@ -25,9 +25,41 @@ def test_create_list(client, base_data):
     assert response.status_code == status.HTTP_201_CREATED
     new_list_id = response.json()["id"]
     response = client.get("/api/tasks/list/", headers=alice)
+    # The first item in the list, should be the newly added task
+    assert response.json()[0]["id"] == new_list_id
+    assert response.json()[0]["name"] == "Movies to watch"
+
+
+@pytest.mark.django_db
+def test_list_order_is_pinned_then_created(client, base_data):
+    """
+    Alice create a new list which is now at the top (newest),
+    then she pins a list, and now that's at the top.
+    """
+    headers = base_data["alice"]["auth_header"]
+    shopping_list_id = base_data["alice"]["shopping"].id
+    response = client.post(
+        "/api/tasks/list/",
+        data={"name": "Movies to watch"},
+        headers=headers,
+    )
+    assert response.status_code == status.HTTP_201_CREATED
+    new_list_id = response.json()["id"]
+    response = client.get("/api/tasks/list/", headers=headers)
     # The last item in the list, should be the newly added task
-    assert response.json()[-1]["id"] == new_list_id
-    assert response.json()[-1]["name"] == "Movies to watch"
+    assert response.json()[0]["id"] == new_list_id
+    assert response.json()[0]["name"] == "Movies to watch"
+    # Now she pins her shopping list and that's at the top
+    client.patch(
+        f"/api/tasks/list/{shopping_list_id}/",
+        data=json.dumps({"pinned": True}),
+        headers=headers,
+        content_type="application/json",
+    )
+    response = client.get("/api/tasks/list/", headers=headers)
+    # The last item in the list, should be the newly added task
+    assert response.json()[0]["id"] == shopping_list_id
+    assert response.json()[0]["name"] == "Shopping"
 
 
 @pytest.mark.django_db
