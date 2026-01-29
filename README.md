@@ -25,10 +25,7 @@ as my daily to-do list app for things like my shopping list for over a year.
 Interested? Go [read the docs](https://docs.numbat-tasks.com/getting_started/) to see how to get started.
 
 ## Core missing features
-- [ ] Config to sign up and [manage users](https://github.com/HybridAU/numbat-tasks/issues/32). 
-      Especially on a fresh install, it would be nice to be able to-do everything through a nice
-      web interface without needing to run django management commands or use the django admin console.
-- [ ] [Search tasks](https://github.com/HybridAU/numbat-tasks/issues/34) within the current list
+- [ ] A nice frontend to [manage users](https://github.com/HybridAU/numbat-tasks/issues/32).
 - [ ] Webauthn for login
 - [ ] Share tasks lists with other users
 - [ ] Start date / Due date for 
@@ -36,4 +33,4 @@ Interested? Go [read the docs](https://docs.numbat-tasks.com/getting_started/) t
 - [ ] Sub tasks
 - [ ] Play a happy chime when a task is marked as completed
 
-The irony of having a to-do list written in markdown, on a to-do list app is not lost on me.
+The irony of having a to-do list written in Markdown, on a to-do list app is not lost on me.
