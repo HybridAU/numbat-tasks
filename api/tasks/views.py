@@ -38,7 +38,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         list_object = get_object_or_404(
-            List,
+            List.objects.prefetch_related("tasks__subtasks"),
             id=self.kwargs["list_pk"],
             owner=self.request.user,
         )

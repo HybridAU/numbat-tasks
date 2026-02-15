@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -161,3 +163,15 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
 }
+
+# Django Debug Toolbar, only enabled if `DEBUG` is true (i.e. Development build)
+# and we are not running auto tests
+TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
+ENABLE_DJANGO_DEBUG_TOOLBAR = DEBUG and not TESTING
+
+if ENABLE_DJANGO_DEBUG_TOOLBAR:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda _: ENABLE_DJANGO_DEBUG_TOOLBAR,
+    }

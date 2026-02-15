@@ -17,12 +17,13 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "ipython>=9.9.0",
+    "django-debug-toolbar>=6.2.0",
+    "ipython>=9.10.0",
     "pytest-django>=4.11.1",
-    "ruff>=0.14.11",
+    "ruff>=0.15.1",
 ]
 production = [
-    "gunicorn>=23.0.0",
+    "gunicorn>=24.1.1",
 ]
 
 [tool.pytest.ini_options]

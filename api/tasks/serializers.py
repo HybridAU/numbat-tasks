@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 
-from tasks.models import List, Task
+from tasks.models import List, SubTask, Task
 
 
 class ParentListDefault:
@@ -46,9 +46,16 @@ class EmptySerializer(serializers.Serializer):
     pass
 
 
+class SubTaskSerializer(NestedHyperlinkedModelSerializer):
+    class Meta:
+        model = SubTask
+        fields = ["id", "created", "updated", "text", "complete"]
+
+
 class TaskSerializer(NestedHyperlinkedModelSerializer):
     class Meta:
         model = Task
-        fields = ["id", "list", "created", "updated", "text", "complete"]
+        fields = ["id", "list", "created", "updated", "text", "complete", "subtasks"]
 
     list = serializers.HiddenField(default=ParentListDefault())
+    subtasks = SubTaskSerializer(many=True)

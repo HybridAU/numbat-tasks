@@ -59,3 +59,31 @@ class Task(models.Model):
     @property
     def text_summary(self):
         return truncate(self.text)
+
+
+# TODO
+#  * URLs (or just post it in the task endpoint?)
+#  * Check with the django-debug-toolbar serializer prefetch_related working.
+#  * build the front end...
+
+
+# I debated for a very long time if I should have a separate subtask model
+# or just have the existing task model refer to itself. In the end I went with
+# a separate model because I could see a future where task have features (e.g.
+# due date) that I don't want on sub-tasks. And it feels cleaner. But honestly,
+# I'm still not sure if this is the best approach or not.
+class SubTask(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    task = models.ForeignKey(
+        "tasks.Task",
+        on_delete=models.CASCADE,
+        related_name="subtasks",
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    text = models.CharField(max_length=256, blank=True, db_index=True)
+    complete = models.BooleanField(default=False)
+
+    @property
+    def text_summary(self):
+        return truncate(self.text)
