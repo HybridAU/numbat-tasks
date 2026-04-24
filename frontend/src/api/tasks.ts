@@ -86,4 +86,4 @@ const deleteTask = async ({
   throw new Error(`${response.statusText}`);
 };
 
-export { getTasks, addTask, updateTask, deleteTask };
+export { addTask, deleteTask, getTasks, updateTask };

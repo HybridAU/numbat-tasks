@@ -145,4 +145,4 @@ const uncheckAllTasks = async ({
   throw new Error(`${response.statusText}`);
 };
 
-export { lists, addList, updateList, deleteList, uncheckAllTasks };
+export { addList, deleteList, lists, uncheckAllTasks, updateList };
