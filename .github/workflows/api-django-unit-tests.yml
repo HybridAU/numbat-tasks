@@ -16,4 +16,4 @@ jobs:
               timeout-minutes: 2
 
             # Actual Tests
-            - run: docker compose run -e UV_PROJECT_ENVIRONMENT=~/venv -e UV_TOOL_BIN_DIR=~/venv/bin/ -e UV_NO_DEV=0 api uv run pytest
+            - run: docker compose run -e UV_PROJECT_ENVIRONMENT=/home/nonroot/venv/ -e UV_TOOL_BIN_DIR=/home/nonroot/venv/bin/ -e UV_NO_DEV=0 api uv run pytest
