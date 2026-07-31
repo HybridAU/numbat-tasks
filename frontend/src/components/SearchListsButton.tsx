@@ -74,7 +74,7 @@ export default function SearchListsButton() {
               </Typography>
             </Toolbar>
           </AppBar>
-          <Stack pt="2rem" px="1rem">
+          <Stack sx={{ pt: "2rem", px: "1rem" }}>
             <FormTextField
               autoFocus
               required

@@ -45,7 +45,7 @@ export default function Settings() {
           <IconButton color="inherit" onClick={() => navigate("/")}>
             <ArrowBackIcon />
           </IconButton>
-          <Typography ml="2rem" variant="h6" component="div">
+          <Typography sx={{ ml: "2rem" }} variant="h6" component="div">
             Settings
           </Typography>
         </Toolbar>

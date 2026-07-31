@@ -32,7 +32,7 @@ export default function Task({ task }: { task: TaskDetails }) {
   };
   return (
     <Stack ref={setNodeRef} style={style}>
-      <Stack direction="row" alignItems="flex-start">
+      <Stack direction="row" sx={{ alignItems: "flex-start", flex: 1 }}>
         {currentList.sort_order === "manual" && (
           <Stack
             {...attributes}
@@ -42,7 +42,7 @@ export default function Task({ task }: { task: TaskDetails }) {
             <DragIndicatorIcon />
           </Stack>
         )}
-        <Stack direction="row" alignItems="flex-start" flex={1}>
+        <Stack direction="row" sx={{ alignItems: "flex-start", flex: 1 }}>
           <Checkbox checked={task.complete} onClick={() => mutate()} />
           <AddEditTask task={task} />
         </Stack>
