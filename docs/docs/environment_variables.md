@@ -88,7 +88,7 @@ When enabled, new users can sign up.
 
 Specifies the path for
 the [uv virtual environment](https://docs.astral.sh/uv/configuration/environment/#uv_project_environment). Only really
-relent during development.
+relevant during development.
 
 ## VERSION
 

@@ -117,9 +117,12 @@ export function AuthenticationSpinner({ children }: { children: ReactNode }) {
   if (accessToken) return children;
   return (
     <Stack
-      height="400px"
-      width="100%"
-      sx={{ justifyContent: "center", alignItems: "center" }}
+      sx={{
+        height: "400px",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
     >
       <CircularProgress size="4rem" />
     </Stack>

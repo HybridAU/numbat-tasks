@@ -31,13 +31,19 @@ export default function Home() {
 
   return (
     <>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
+      <Stack
+        direction="row"
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <Typography variant="h1">{currentList.name}</Typography>
         <SortOrderMenu />
       </Stack>
       {activeTasks ? (
         // By adding lots of space at the bottom, it makes it clear we have scrolled to the end of the list.
-        <Stack pb="6rem">
+        <Stack sx={{ pb: "6rem" }}>
           <SortableTaskList complete={false} />
           {hasCompletedTasks && (
             <Accordion defaultExpanded disableGutters>

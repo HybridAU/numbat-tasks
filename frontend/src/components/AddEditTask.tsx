@@ -161,7 +161,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               </IconButton>
             </Toolbar>
           </AppBar>
-          <Stack pt="2rem" px="1rem">
+          <Stack sx={{ pt: "2rem", px: "1rem" }}>
             <FormTextField
               autoFocus
               required
@@ -184,17 +184,18 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
       </Dialog>
       {task?.id ? (
         <Stack
-          // Adds some padding, so when it's a single line the text is centered vertically
-          // (aligned with the checkbox) but when it's multiple lines the text lines up with the
-          // top of the checkbox.
-          justifyContent="center"
-          direction="column"
-          minHeight="35px"
-          marginBottom="7px"
-          // By putting the onClick on the stack rather than the typography, and making it full width
-          // we make it easier to click on tasks to edit them. This is especially important when the
-          // whole text of the task is a link
-          flex={1}
+          sx={{
+            // Adds some padding, so when it's a single line the text is centered vertically
+            // (aligned with the checkbox) but when it's multiple lines the text lines up with the
+            // top of the checkbox.
+            justifyContent: "center",
+            minHeight: "35px",
+            marginBottom: "7px",
+            // By putting the onClick on the stack rather than the typography, and making it full width
+            // we make it easier to click on tasks to edit them. This is especially important when the
+            // whole text of the task is a link
+            flex: 1,
+          }}
           onClick={handleClickOpen}
         >
           <Typography

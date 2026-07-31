@@ -174,7 +174,7 @@ export default function AddEditList({
               </IconButton>
             </Toolbar>
           </AppBar>
-          <Stack pt="2rem" px="1rem" gap={1}>
+          <Stack sx={{ pt: "2rem", px: "1rem", gap: 1 }}>
             <FormTextField
               autoFocus
               required
@@ -193,13 +193,13 @@ export default function AddEditList({
               value="pinned"
               sx={{ maxWidth: "sm" }}
               activeLabel={
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" sx={{ alignItems: "center" }}>
                   <PushPinOutlinedIcon sx={{ transform: "rotate(-45deg)" }} />
                   <Typography>Pinned</Typography>
                 </Stack>
               }
               inactiveLabel={
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" sx={{ alignItems: "center" }}>
                   <PushPinOutlinedIcon />
                   <Typography>Not Pinned</Typography>
                 </Stack>
@@ -212,13 +212,13 @@ export default function AddEditList({
               value="archived"
               sx={{ maxWidth: "sm" }}
               activeLabel={
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" sx={{ alignItems: "center" }}>
                   <UnarchiveOutlinedIcon />
                   <Typography>Archived</Typography>
                 </Stack>
               }
               inactiveLabel={
-                <Stack direction="row" alignItems="center">
+                <Stack direction="row" sx={{ alignItems: "center" }}>
                   <ArchiveOutlinedIcon />
                   <Typography>Not Archived</Typography>
                 </Stack>
