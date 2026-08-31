@@ -38,9 +38,12 @@ export default function SignIn() {
 
   return isLoading ? (
     <Stack
-      height="400px"
-      width="100%"
-      sx={{ justifyContent: "center", alignItems: "center" }}
+      sx={{
+        height: "400px",
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
     >
       <CircularProgress size="4rem" />
     </Stack>

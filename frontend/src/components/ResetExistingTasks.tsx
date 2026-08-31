@@ -45,10 +45,11 @@ export default function ResetExistingTasks({
   if (matchingTasks?.length && matchingTasks.length <= 5) {
     return (
       <Stack
-        direction="column"
-        bgcolor="secondary.main"
-        marginTop={1}
-        borderRadius={3}
+        sx={{
+          mt: 1,
+          borderRadius: 3,
+          bgcolor: "secondary.main",
+        }}
         divider={<Divider variant="middle" />}
       >
         {matchingTasks.map((task) => (
@@ -56,7 +57,7 @@ export default function ResetExistingTasks({
             direction="row"
             key={task.id}
             onClick={() => uncheckTask(task)}
-            alignItems="center"
+            sx={{ alignItems: "center" }}
           >
             <Checkbox checked />
             <Typography

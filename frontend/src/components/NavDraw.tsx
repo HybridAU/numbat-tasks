@@ -59,7 +59,7 @@ export default function NavDraw() {
           <TaskListButton key={list.id} list={list} />
         ))}
         {hasArchivedLists && (
-          <Stack pt={3}>
+          <Stack sx={{ pt: 3 }}>
             <Divider />
             <Accordion defaultExpanded disableGutters>
               <AccordionSummary
@@ -69,7 +69,10 @@ export default function NavDraw() {
                   event.stopPropagation();
                 }}
               >
-                <Typography color="text.secondary" textAlign="center" pt={1}>
+                <Typography
+                  sx={{ textAlign: "center", pt: 1 }}
+                  color="text.secondary"
+                >
                   Archived lists
                 </Typography>
               </AccordionSummary>
