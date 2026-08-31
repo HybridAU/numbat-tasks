@@ -190,7 +190,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
             // top of the checkbox.
             justifyContent: "center",
             minHeight: "35px",
-            marginBottom: "7px",
+            marginTop: "4px",
             // By putting the onClick on the stack rather than the typography, and making it full width
             // we make it easier to click on tasks to edit them. This is especially important when the
             // whole text of the task is a link
@@ -212,6 +212,10 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
           >
             <LinkifyText text={task.text} />
           </Typography>
+          {task.subtasks?.map((subtask) => (
+            // TODO this is ugly as sin, just a place holder for now..
+            <Typography>{subtask.text}</Typography>
+          ))}
         </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add" onClick={handleClickOpen}>

@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "./fetch.ts";
+import type { SubTaskDetails } from "./subtasks.ts";
 
 export type TaskDetails = {
   id: number;
@@ -6,6 +7,7 @@ export type TaskDetails = {
   updated: string;
   text: string;
   complete: boolean;
+  subtasks?: SubTaskDetails[];
 };
 
 type TasksResponse = TaskDetails[];
