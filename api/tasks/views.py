@@ -5,9 +5,14 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from tasks.models import List, SortOrder, Task
+from tasks.models import List, SortOrder, SubTask, Task
 from tasks.permissions import IsListOwnerOrNone, IsOwnerOrNone
-from tasks.serializers import EmptySerializer, ListSerializer, TaskSerializer
+from tasks.serializers import (
+    EmptySerializer,
+    ListSerializer,
+    SubTaskSerializer,
+    TaskSerializer,
+)
 
 
 class ListViewSet(viewsets.ModelViewSet):
@@ -67,3 +72,18 @@ class TaskViewSet(viewsets.ModelViewSet):
             )
 
         return tasks
+
+
+class SubTaskViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsListOwnerOrNone]
+    serializer_class = SubTaskSerializer
+
+    def get_queryset(self):
+        task_object = get_object_or_404(
+            Task.objects.all(),
+            id=self.kwargs["task_pk"],
+            list=self.kwargs["list_pk"],
+        )
+        subtasks = SubTask.objects.filter(task=task_object)
+
+        return subtasks

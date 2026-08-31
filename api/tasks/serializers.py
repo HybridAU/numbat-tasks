@@ -19,6 +19,24 @@ class ParentListDefault:
         return parent_list
 
 
+class ParentTaskDefault:
+    requires_context = True
+
+    def __call__(self, serializer_field):
+        list_id = serializer_field.context["view"].kwargs["list_pk"]
+        parent_list = List.objects.filter(id=list_id).first()
+
+        task_id = serializer_field.context["view"].kwargs["task_pk"]
+        parent_task = Task.objects.filter(id=task_id, list=parent_list).first()
+        if (
+            not parent_list
+            or not parent_task
+            or parent_list.owner != serializer_field.context["request"].user
+        ):
+            raise ValidationError()
+        return parent_task
+
+
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
@@ -49,7 +67,9 @@ class EmptySerializer(serializers.Serializer):
 class SubTaskSerializer(NestedHyperlinkedModelSerializer):
     class Meta:
         model = SubTask
-        fields = ["id", "created", "updated", "text", "complete"]
+        fields = ["id", "created", "updated", "text", "complete", "task"]
+
+    task = serializers.HiddenField(default=ParentTaskDefault())
 
 
 class TaskSerializer(NestedHyperlinkedModelSerializer):
@@ -58,4 +78,4 @@ class TaskSerializer(NestedHyperlinkedModelSerializer):
         fields = ["id", "list", "created", "updated", "text", "complete", "subtasks"]
 
     list = serializers.HiddenField(default=ParentListDefault())
-    subtasks = SubTaskSerializer(many=True)
+    subtasks = SubTaskSerializer(many=True, read_only=True)
