@@ -6,7 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from tasks.models import List, SortOrder, SubTask, Task
-from tasks.permissions import IsListOwnerOrNone, IsOwnerOrNone
+from tasks.permissions import (
+    IsListOwnerOrNone,
+    IsSubTaskListOwnerOrNone,
+    IsTaskOwnerOrNone,
+)
 from tasks.serializers import (
     EmptySerializer,
     ListSerializer,
@@ -16,7 +20,7 @@ from tasks.serializers import (
 
 
 class ListViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsOwnerOrNone]
+    permission_classes = [IsAuthenticated, IsListOwnerOrNone]
     serializer_class = ListSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ["name", "tasks__text"]
@@ -38,12 +42,12 @@ class ListViewSet(viewsets.ModelViewSet):
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsListOwnerOrNone]
+    permission_classes = [IsAuthenticated, IsTaskOwnerOrNone]
     serializer_class = TaskSerializer
 
     def get_queryset(self):
         list_object = get_object_or_404(
-            List.objects.prefetch_related("tasks__subtasks"),
+            List.objects.all(),
             id=self.kwargs["list_pk"],
             owner=self.request.user,
         )
@@ -75,7 +79,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
 
 class SubTaskViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsListOwnerOrNone]
+    permission_classes = [IsAuthenticated, IsSubTaskListOwnerOrNone]
     serializer_class = SubTaskSerializer
 
     def get_queryset(self):

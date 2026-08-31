@@ -151,7 +151,18 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAdminUser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Just return JSON by default, rather than HTML that includes doc strings
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
 }
+if DEBUG:
+    # When in debug mode, can log into django admin console (to get a cookie)
+    # then browse the API with HTML pages (not quite swagger docs, but similar)
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += (
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    )
+    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] += (
+        "rest_framework.authentication.SessionAuthentication",
+    )
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
