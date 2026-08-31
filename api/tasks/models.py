@@ -62,8 +62,7 @@ class Task(models.Model):
 
 
 # TODO
-#  * URLs (or just post it in the task endpoint?)
-#  * Check with the django-debug-toolbar serializer prefetch_related working.
+#  * unit tests (more of the Alice can't access Bob's sub tasks)
 #  * build the front end...
 
 
