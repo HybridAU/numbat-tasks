@@ -60,10 +60,20 @@ class Task(models.Model):
     def text_summary(self):
         return truncate(self.text)
 
+    def __str__(self):
+        return f"{self.list} - {self.text_summary}"
+
 
 # TODO
+#  * Uncheck all tasks to work on subtasks.
 #  * unit tests (more of the Alice can't access Bob's sub tasks)
 #  * build the front end...
+#   * Button to add subtasks to a task in the edit menu
+#    * Test adding subtask while adding a new task, before saving...
+#   * Subtask stack (foldable) with empty task at the end
+#   * Click on a subtask to edit it
+#   * Delete button a the end of subtask
+#   * Sub task ordering
 
 
 # I debated for a very long time if I should have a separate subtask model

@@ -4,6 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import {
   AppBar,
+  Button,
   Dialog,
   Fab,
   IconButton,
@@ -31,6 +32,7 @@ import { useListsState } from "../providers/ListsProvider";
 import FormTextField from "./form/FormTextField";
 import LinkifyText from "./LinkifyText.tsx";
 import ResetExistingTasks from "./ResetExistingTasks.tsx";
+import SubTaskStack from "./SubTaskStack.tsx";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -181,41 +183,46 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
             )}
           </Stack>
         </Form>
+        {/* TODO add stack with margin here rather than on button. */}
+        {task?.subtasks?.length ? (
+          <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
+        ) : (
+          <Button sx={{ margin: 3 }} variant="contained">
+            Add subtasks
+          </Button>
+        )}
       </Dialog>
       {task?.id ? (
-        <Stack
-          sx={{
-            // Adds some padding, so when it's a single line the text is centered vertically
-            // (aligned with the checkbox) but when it's multiple lines the text lines up with the
-            // top of the checkbox.
-            justifyContent: "center",
-            minHeight: "35px",
-            marginTop: "4px",
+        <Stack>
+          <Stack
+            sx={{
+              // Adds some padding, so when it's a single line the text is centered vertically
+              // (aligned with the checkbox) but when it's multiple lines the text lines up with the
+              // top of the checkbox.
+              marginTop: "9px",
+              flex: 1,
+            }}
             // By putting the onClick on the stack rather than the typography, and making it full width
             // we make it easier to click on tasks to edit them. This is especially important when the
             // whole text of the task is a link
-            flex: 1,
-          }}
-          onClick={handleClickOpen}
-        >
-          <Typography
-            align="left"
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "-webkit-box",
-              WebkitLineClamp: "4",
-              WebkitBoxOrient: "vertical",
-              wordBreak: "break-word",
-            }}
-            color={task.complete ? "text.secondary" : "text.primary"}
+            onClick={handleClickOpen}
           >
-            <LinkifyText text={task.text} />
-          </Typography>
-          {task.subtasks?.map((subtask) => (
-            // TODO this is ugly as sin, just a place holder for now..
-            <Typography>{subtask.text}</Typography>
-          ))}
+            <Typography
+              align="left"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: "4",
+                WebkitBoxOrient: "vertical",
+                wordBreak: "break-word",
+              }}
+              color={task.complete ? "textSecondary" : "textPrimary"}
+            >
+              <LinkifyText text={task.text} />
+            </Typography>
+          </Stack>
+          <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
         </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add" onClick={handleClickOpen}>

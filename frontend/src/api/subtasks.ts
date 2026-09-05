@@ -41,7 +41,7 @@ const getSubTasks = async ({
   taskId,
 }: subTasksRequest): Promise<SubTasksResponse> => {
   const response = await fetchWithAuth(
-    `/api/tasks/list/${listId}/task/${taskId}/subtask`,
+    `/api/tasks/list/${listId}/task/${taskId}/subtask/`,
   );
   return (await response.json()) as SubTasksResponse;
 };
@@ -52,7 +52,7 @@ const addSubTask = async ({
   taskId,
 }: addSubTaskRequest): Promise<SubTaskDetails> => {
   const response = await fetchWithAuth(
-    `/api/tasks/list/${listId}/task/${taskId}/subtask`,
+    `/api/tasks/list/${listId}/task/${taskId}/subtask/`,
     {
       method: "POST",
       body: JSON.stringify({ text: text }),
@@ -72,7 +72,7 @@ const updateSubTask = async ({
   subTaskId,
 }: updateSubTaskRequest): Promise<SubTaskDetails> => {
   const response = await fetchWithAuth(
-    `/api/tasks/list/${listId}/task/${taskId}/subtask/${subTaskId}`,
+    `/api/tasks/list/${listId}/task/${taskId}/subtask/${subTaskId}/`,
     {
       method: "PATCH",
       body: JSON.stringify({ text: text, complete: complete }),
@@ -90,7 +90,7 @@ const deleteSubTask = async ({
   subTaskId,
 }: deleteSubTaskRequest): Promise<void> => {
   const response = await fetchWithAuth(
-    `/api/tasks/list/${listId}/task/${taskId}/subtask/${subTaskId}`,
+    `/api/tasks/list/${listId}/task/${taskId}/subtask/${subTaskId}/`,
     {
       method: "DELETE",
     },
@@ -101,4 +101,4 @@ const deleteSubTask = async ({
   throw new Error(`${response.statusText}`);
 };
 
-export { type addSubTask, deleteSubTask, type getSubTasks, type updateSubTask };
+export { type addSubTask, deleteSubTask, type getSubTasks, updateSubTask };
