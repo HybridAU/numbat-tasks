@@ -101,4 +101,4 @@ const deleteSubTask = async ({
   throw new Error(`${response.statusText}`);
 };
 
-export { type addSubTask, deleteSubTask, type getSubTasks, updateSubTask };
+export { addSubTask, deleteSubTask, getSubTasks, updateSubTask };

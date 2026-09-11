@@ -82,14 +82,6 @@ When enabled, new users can sign up.
 !!! Note
     Even when this is disabled, the [first use](user_management.md) can still sign up as part of the initial setup.
 
-## UV_PROJECT_ENVIRONMENT
-
-**Default:** `/venv`
-
-Specifies the path for
-the [uv virtual environment](https://docs.astral.sh/uv/configuration/environment/#uv_project_environment). Only really
-relevant during development.
-
 ## VERSION
 
 **Default:** `""` (empty string)
@@ -103,3 +95,51 @@ Not used in the docker containers directly, but by docker compose to select the 
 URL for the api, this can be a full domain name for example you could have the frontend hosted by a CDN at
 `https://tasks.example.com/` and the API on a different server at `https://api.example.com/`. Although then you would
 need to set up [Django CORS headers](https://pypi.org/project/django-cors-headers/) which is not implemented yet.
+
+# Environment variables for uv
+Numbat Tasks uses [uv](https://docs.astral.sh/uv/) for python package management. So all [uv environment variables](https://docs.astral.sh/uv/reference/environment/) are supported. 
+
+The following values are set in the docker image
+
+## UV_PROJECT_ENVIRONMENT
+
+**Default:** `/venv`
+
+Specifies the path for
+the [uv virtual environment](https://docs.astral.sh/uv/configuration/environment/#uv_project_environment). Only really
+relevant during development.
+
+## PYTHONUNBUFFERED
+
+**Default:** `1`
+
+Keeps Python from buffering stdout and stderr to avoid situations where
+the application crashes without emitting any logs due to buffering. 
+(Not technically uv but included here because it comes from 
+[uv's best practice docker image](https://github.com/astral-sh/uv-docker-example))
+
+##  UV_COMPILE_BYTECODE
+
+**Default:** `1`
+
+Enable bytecode compilation which makes things run quicker, but take slightly longer to star.
+## UV_LINK_MODE
+
+**Default:** `copy`
+
+Copy from the cache instead of linking since it's a mounted volume
+
+## UV_NO_DEV
+
+**Default:** `1`
+
+Omit installing development dependencies, for example 
+[pytest](https://docs.pytest.org) and [Django debug toolbar](https://django-debug-toolbar.readthedocs.io/).
+
+They will get installed if started in development mode, but shouldn't form part of the base image.
+
+## UV_TOOL_BIN_DIR
+
+**Default:** `/usr/local/bin`
+
+Ensure installed tools can be executed out of the box

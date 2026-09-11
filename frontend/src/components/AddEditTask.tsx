@@ -19,6 +19,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { useState } from "react";
 import { Form, useForm } from "react-hook-form";
+import { addSubTask } from "../api/subtasks.ts";
 import {
   addTask,
   type addTaskRequest,
@@ -114,6 +115,18 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
       handleClose();
     },
   });
+
+  const { mutate: doAddEmptySubtask } = useMutation({
+    mutationFn: () => {
+      if (task?.id === undefined) {
+        throw new Error("Can not create subtask until parent has been created");
+      }
+      return addSubTask({ taskId: task?.id, text: "", listId: currentList.id });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
+    },
+  });
   return (
     <>
       <Dialog
@@ -183,14 +196,19 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
             )}
           </Stack>
         </Form>
-        {/* TODO add stack with margin here rather than on button. */}
-        {task?.subtasks?.length ? (
-          <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
-        ) : (
-          <Button sx={{ margin: 3 }} variant="contained">
-            Add subtasks
-          </Button>
-        )}
+        <Stack sx={{ margin: 3 }}>
+          {task?.subtasks?.length ? (
+            <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
+          ) : (
+            <Button
+              variant="contained"
+              disabled={!task?.id}
+              onClick={() => doAddEmptySubtask()}
+            >
+              Add subtasks
+            </Button>
+          )}
+        </Stack>
       </Dialog>
       {task?.id ? (
         <Stack>
