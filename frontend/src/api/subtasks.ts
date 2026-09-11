@@ -1,6 +1,9 @@
 import { fetchWithAuth } from "./fetch.ts";
+import type { TaskDetails } from "./tasks.ts";
 
 export type SubTaskDetails = {
+  // Only included when creating a subtask for a task that doesn't exist yet
+  parentTask?: TaskDetails;
   id: number;
   created: string;
   updated: string;
@@ -17,7 +20,7 @@ type subTasksRequest = {
 
 export type addSubTaskRequest = {
   listId: number;
-  taskId: number;
+  taskId?: number;
   text: string;
   complete?: boolean;
 };
@@ -51,17 +54,44 @@ const addSubTask = async ({
   listId,
   taskId,
 }: addSubTaskRequest): Promise<SubTaskDetails> => {
-  const response = await fetchWithAuth(
-    `/api/tasks/list/${listId}/task/${taskId}/subtask/`,
-    {
+  if (taskId === undefined) {
+    // Before we can add a subtask, we need to create the parent task
+    const response = await fetchWithAuth(`/api/tasks/list/${listId}/task/`, {
       method: "POST",
-      body: JSON.stringify({ text: text }),
-    },
-  );
-  if (response.ok) {
-    return (await response.json()) as SubTaskDetails;
+      body: JSON.stringify({ text: " " }),
+    });
+    if (response.ok) {
+      const parentTask = (await response.json()) as TaskDetails;
+      taskId = parentTask.id;
+      const subTaskResponse = await fetchWithAuth(
+        `/api/tasks/list/${listId}/task/${taskId}/subtask/`,
+        {
+          method: "POST",
+          body: JSON.stringify({ text: text }),
+        },
+      );
+      if (subTaskResponse.ok) {
+        return {
+          ...(await subTaskResponse.json()),
+          parentTask: parentTask,
+        } as SubTaskDetails;
+      }
+      throw new Error(`${response.statusText}`);
+    }
+    throw new Error(`${response.statusText}`);
+  } else {
+    const response = await fetchWithAuth(
+      `/api/tasks/list/${listId}/task/${taskId}/subtask/`,
+      {
+        method: "POST",
+        body: JSON.stringify({ text: text }),
+      },
+    );
+    if (response.ok) {
+      return (await response.json()) as SubTaskDetails;
+    }
+    throw new Error(`${response.statusText}`);
   }
-  throw new Error(`${response.statusText}`);
 };
 
 const updateSubTask = async ({
@@ -101,4 +131,4 @@ const deleteSubTask = async ({
   throw new Error(`${response.statusText}`);
 };
 
-export { type addSubTask, deleteSubTask, type getSubTasks, updateSubTask };
+export { addSubTask, deleteSubTask, getSubTasks, updateSubTask };

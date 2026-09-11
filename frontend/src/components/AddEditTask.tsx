@@ -19,6 +19,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { useState } from "react";
 import { Form, useForm } from "react-hook-form";
+import { addSubTask } from "../api/subtasks.ts";
 import {
   addTask,
   type addTaskRequest,
@@ -57,21 +58,22 @@ type AddEditTaskProps = {
 };
 
 export default function AddEditTask({ task }: AddEditTaskProps) {
+  const [fooTask, setFooTask] = useState(task);
   const queryClient = useQueryClient();
   const { currentList } = useListsState();
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
-    if (task) {
-      setValue("text", task.text || "");
+    if (fooTask) {
+      setValue("text", fooTask.text || "");
     }
     setOpen(true);
   };
 
   const handleSaveClick = (text: string) => {
-    if (task?.id) {
+    if (fooTask?.id) {
       doUpdateTask({
         listId: currentList.id,
-        taskId: task.id,
+        taskId: fooTask.id,
         text: text,
       });
     } else {
@@ -114,6 +116,18 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
       handleClose();
     },
   });
+
+  const { mutate: doAddEmptySubtask } = useMutation({
+    mutationFn: () =>
+      addSubTask({ listId: currentList.id, taskId: fooTask?.id, text: "" }),
+    onSuccess: (response) => {
+      if (response.parentTask) {
+        console.log(response.parentTask.id);
+        setFooTask(response.parentTask);
+      }
+      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
+    },
+  });
   return (
     <>
       <Dialog
@@ -139,13 +153,13 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
                 Add Task
               </Typography>
-              {task?.id && (
+              {fooTask?.id && (
                 <IconButton
                   color="error"
                   onClick={() =>
                     doDeleteTask({
                       listId: currentList.id,
-                      taskId: task.id,
+                      taskId: fooTask.id,
                     })
                   }
                 >
@@ -175,7 +189,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               name="text"
               slotProps={{ htmlInput: { autoCapitalize: "sentences" } }}
             />
-            {task?.id === undefined && (
+            {fooTask?.id === undefined && (
               <ResetExistingTasks
                 searchText={searchText}
                 closeFunction={handleClose}
@@ -183,16 +197,17 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
             )}
           </Stack>
         </Form>
-        {/* TODO add stack with margin here rather than on button. */}
-        {task?.subtasks?.length ? (
-          <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
-        ) : (
-          <Button sx={{ margin: 3 }} variant="contained">
-            Add subtasks
-          </Button>
-        )}
+        <Stack sx={{ margin: 3 }}>
+          {fooTask?.subtasks?.length ? (
+            <SubTaskStack listId={currentList.id} task={fooTask}></SubTaskStack>
+          ) : (
+            <Button variant="contained" onClick={() => doAddEmptySubtask()}>
+              Add subtasks
+            </Button>
+          )}
+        </Stack>
       </Dialog>
-      {task?.id ? (
+      {fooTask?.id ? (
         <Stack>
           <Stack
             sx={{
@@ -217,12 +232,12 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
                 WebkitBoxOrient: "vertical",
                 wordBreak: "break-word",
               }}
-              color={task.complete ? "textSecondary" : "textPrimary"}
+              color={fooTask.complete ? "textSecondary" : "textPrimary"}
             >
-              <LinkifyText text={task.text} />
+              <LinkifyText text={fooTask.text} />
             </Typography>
           </Stack>
-          <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
+          <SubTaskStack listId={currentList.id} task={fooTask}></SubTaskStack>
         </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add" onClick={handleClickOpen}>
