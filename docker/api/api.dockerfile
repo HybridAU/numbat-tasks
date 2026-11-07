@@ -1,7 +1,7 @@
 # Based on the uv best practice example for docker images
 # https://github.com/astral-sh/uv-docker-example/blob/e791995e0bc1edab8caef7205b8801ced07f1acd/Dockerfile
 # Use a Python image with uv pre-installed
-FROM ghcr.io/astral-sh/uv:python3.14-trixie-slim
+FROM ghcr.io/astral-sh/uv:python3.15-trixie-slim
 
 # Setup a non-root user
 RUN groupadd --system --gid 999 nonroot \
