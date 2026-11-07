@@ -2,9 +2,9 @@
 cd /docs
 if [[ "$DEBUG" == "True" ]]; then
     uv sync
-    uv run mkdocs serve --livereload
+    uv run zensical serve
 else
-    /venv/bin/mkdocs build
+    /venv/bin/zensical build
     rm -rf /static_files/docs
     mv /docs/site /static_files/docs
 fi
