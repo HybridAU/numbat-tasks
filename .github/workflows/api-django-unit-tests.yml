@@ -6,7 +6,7 @@ jobs:
         steps:
             # Setup
             - name: Check out repository code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
             - run: cp base.env .env
             # Start the database in the background
             - run: docker compose up -d database

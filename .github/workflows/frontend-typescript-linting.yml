@@ -10,7 +10,7 @@ jobs:
         steps:
             # Based on https://github.com/pnpm/action-setup?tab=readme-ov-file#use-cache-to-reduce-installation-time
             - name: Check out repository code
-              uses: actions/checkout@v4
+              uses: actions/checkout@v7
 
             - uses: pnpm/action-setup@v4
               name: Install pnpm
