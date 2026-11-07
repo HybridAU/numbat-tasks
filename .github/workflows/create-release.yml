@@ -102,13 +102,6 @@ jobs:
       - name: Tag latest Frontend docker images
         run: docker image push ghcr.io/hybridau/numbat-tasks-frontend:latest
 
-      # This should trigger a pipeline to publish the docs
-      - name: Publish docs
-        run: |
-          cd docs
-          uv sync
-          uv run mkdocs gh-deploy --force
-
       # Calculate dev version number
       - name: Calculate dev version
         id: version_dev

@@ -1,0 +1,23 @@
+[project]
+site_name = "Numbat Tasks Documentation"
+site_url = "https://docs.numbat-task.com/docs/"
+dev_addr = "0.0.0.0:8000"
+
+[project.theme]
+variant = "modern"
+logo = "assets/numbat.svg"
+favicon = "assets/numbat.svg"
+features = [
+    "content.code.copy",
+    "content.code.annotate"
+]
+
+[project.markdown_extensions]
+admonition = {}
+pymdownx.details = {}
+pymdownx.inlinehilite = {}
+pymdownx.snippets = {}
+pymdownx.superfences = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
