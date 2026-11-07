@@ -1,6 +1,6 @@
 import { Stack } from "@mui/material";
 import type { TaskDetails } from "../api/tasks.ts";
-import AddEditSubTask from "./AddEditSubTask.tsx";
+import EditSubTask from "./EditSubTask.tsx";
 
 type SubTaskStackProps = {
   listId: number;
@@ -11,13 +11,14 @@ export default function SubTaskStack({ listId, task }: SubTaskStackProps) {
   return (
     <Stack>
       {task.subtasks?.map((subtask) => (
-        <AddEditSubTask
+        <EditSubTask
           key={subtask.id}
           subtask={subtask}
           taskId={task.id}
           listId={listId}
         />
       ))}
+      {/*<AddSubTask listId={listId} taskId={task.id} />*/}
     </Stack>
   );
 }

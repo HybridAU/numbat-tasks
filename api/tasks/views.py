@@ -88,6 +88,6 @@ class SubTaskViewSet(viewsets.ModelViewSet):
             id=self.kwargs["task_pk"],
             list=self.kwargs["list_pk"],
         )
-        subtasks = SubTask.objects.filter(task=task_object)
+        subtasks = SubTask.objects.filter(task=task_object).order_by("text")
 
         return subtasks

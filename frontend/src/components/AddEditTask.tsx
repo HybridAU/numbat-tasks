@@ -234,6 +234,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
                 WebkitLineClamp: "4",
                 WebkitBoxOrient: "vertical",
                 wordBreak: "break-word",
+                minHeight: "1rem",
               }}
               color={task.complete ? "textSecondary" : "textPrimary"}
             >

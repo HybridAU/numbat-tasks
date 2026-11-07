@@ -93,6 +93,9 @@ class SubTask(models.Model):
     text = models.CharField(max_length=256, blank=True, db_index=True)
     complete = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ["created"]
+
     @property
     def text_summary(self):
         return truncate(self.text)
