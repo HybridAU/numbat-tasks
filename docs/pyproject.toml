@@ -1,6 +1,6 @@
 [project]
 name = "numbat-tasks-docs"
-version = "1.2.1.dev0"
+version = "1.2.1"
 description = "Documentation for Numbat Tasks"
 requires-python = ">=3.15"
 dependencies = [
