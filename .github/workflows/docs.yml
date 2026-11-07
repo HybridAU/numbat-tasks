@@ -21,21 +21,23 @@ jobs:
 
       - name: Check out repository code
         uses: actions/checkout@v7
+
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2  # v10.3.3
         with:
           version: "latest"
 
-      # Install
-      - name: Install
+      - name: zensical build
         run: |
           cd docs
           uv sync
           uv run zensical build --clean
-      - run: pip install zensical
 
-      - uses: actions/upload-pages-artifact@v5
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v5
         with:
           path: docs/site
-      - uses: actions/deploy-pages@v5
+
+      - name: deploy pages
+        uses: actions/deploy-pages@v5
         id: deployment
