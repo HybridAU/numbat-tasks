@@ -114,6 +114,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
       handleClose();
     },
   });
+  const hasSubTasks = !!task?.subtasks?.length;
 
   return (
     <>
@@ -228,11 +229,13 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               <LinkifyText text={task.text} />
             </Typography>
           </Stack>
-          <SubTaskStack
-            listId={currentList.id}
-            task={task}
-            showDelete={false}
-          ></SubTaskStack>
+          {hasSubTasks && (
+            <SubTaskStack
+              listId={currentList.id}
+              task={task}
+              showDelete={false}
+            ></SubTaskStack>
+          )}
         </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add" onClick={handleClickOpen}>
