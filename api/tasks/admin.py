@@ -20,5 +20,5 @@ class TaskAdmin(admin.ModelAdmin):
 
 
 @admin.register(SubTask)
-class TaskAdmin(admin.ModelAdmin):
+class SubTaskAdmin(admin.ModelAdmin):
     list_display = ["id", "text_summary", "complete"]
