@@ -4,7 +4,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import {
   AppBar,
-  Button,
   Dialog,
   Fab,
   IconButton,
@@ -19,7 +18,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { useState } from "react";
 import { Form, useForm } from "react-hook-form";
-import { addSubTask } from "../api/subtasks.ts";
 import {
   addTask,
   type addTaskRequest,
@@ -30,6 +28,7 @@ import {
   type updateTaskRequest,
 } from "../api/tasks";
 import { useListsState } from "../providers/ListsProvider";
+import AddSubTaskButton from "./AddSubTaskButton.tsx";
 import FormTextField from "./form/FormTextField";
 import LinkifyText from "./LinkifyText.tsx";
 import ResetExistingTasks from "./ResetExistingTasks.tsx";
@@ -116,17 +115,6 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
     },
   });
 
-  const { mutate: doAddEmptySubtask } = useMutation({
-    mutationFn: () => {
-      if (task?.id === undefined) {
-        throw new Error("Can not create subtask until parent has been created");
-      }
-      return addSubTask({ taskId: task?.id, text: "", listId: currentList.id });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tasks", currentList.id] });
-    },
-  });
   return (
     <>
       <Dialog
@@ -197,21 +185,20 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
           </Stack>
         </Form>
         <Stack sx={{ margin: 3 }}>
-          {task?.subtasks?.length ? (
-            <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
-          ) : (
-            <Button
-              variant="contained"
-              disabled={!task?.id}
-              onClick={() => doAddEmptySubtask()}
-            >
-              Add subtasks
-            </Button>
+          {task && (
+            <Stack>
+              <SubTaskStack
+                listId={currentList.id}
+                task={task}
+                showDelete
+              ></SubTaskStack>
+              <AddSubTaskButton listId={currentList.id} taskId={task.id} />
+            </Stack>
           )}
         </Stack>
       </Dialog>
       {task?.id ? (
-        <Stack>
+        <Stack sx={{ flexGrow: 1 }}>
           <Stack
             sx={{
               // Adds some padding, so when it's a single line the text is centered vertically
@@ -241,7 +228,11 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
               <LinkifyText text={task.text} />
             </Typography>
           </Stack>
-          <SubTaskStack listId={currentList.id} task={task}></SubTaskStack>
+          <SubTaskStack
+            listId={currentList.id}
+            task={task}
+            showDelete={false}
+          ></SubTaskStack>
         </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add" onClick={handleClickOpen}>

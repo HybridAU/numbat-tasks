@@ -98,11 +98,21 @@ ALLOWED_HOSTS=tasks.example.com
 
 ```yaml title="Caddyfile"
 :80 { # (1)!
+    header {
+        # Enforce a basic Content Security Policy
+        Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=';" # (2)!
+        # Recommended security headers
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "no-referrer"
+        # Only enable Strict Transport Security if you have SSL enabled.
+        # Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    }
     handle_path /api/static/* {
         root * /static_files/api
         file_server
     }
-    handle /api/admin/* {  # (2)!
+    handle /api/admin/* {  # (3)!
         # Block any IP address not on the allow list from accessing the Django admin console
         @blocked not remote_ip 10.1.1.16
         respond @blocked "Access Denied" 403
@@ -132,7 +142,9 @@ ALLOWED_HOSTS=tasks.example.com
       ...
    ```
 
-2. Restricting the Django admin console to specific IPs optional, but encouraged
+2. This SHA256 hash is for a blank string, see <https://github.com/emotion-js/emotion/issues/2996>
+
+3. Restricting the Django admin console to specific IPs optional, but encouraged
 
 ### Running
 Place those three files in the same directory and to start the site run

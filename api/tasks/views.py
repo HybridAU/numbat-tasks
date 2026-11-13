@@ -37,7 +37,9 @@ class ListViewSet(viewsets.ModelViewSet):
     def uncheck_all_tasks(self, request, pk):
         list_object = get_object_or_404(List, pk=pk, owner=self.request.user)
         all_tasks = list_object.tasks.all()
+        all_subtasks = SubTask.objects.filter(task__in=all_tasks)
         all_tasks.update(complete=False)
+        all_subtasks.update(complete=False)
         return Response({"status": "All tasks unchecked"})
 
 
