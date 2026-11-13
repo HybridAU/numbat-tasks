@@ -5,21 +5,27 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tasks', '0010_list_pinned_alter_list_created'),
+        ("tasks", "0010_list_pinned_alter_list_created"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='SubTask',
+            name="SubTask",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('updated', models.DateTimeField(auto_now=True)),
-                ('text', models.CharField(blank=True, db_index=True, max_length=256)),
-                ('complete', models.BooleanField(default=False)),
-                ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='subtasks', to='tasks.task')),
+                ("id", models.BigAutoField(primary_key=True, serialize=False)),
+                ("created", models.DateTimeField(auto_now_add=True)),
+                ("updated", models.DateTimeField(auto_now=True)),
+                ("text", models.CharField(blank=True, db_index=True, max_length=256)),
+                ("complete", models.BooleanField(default=False)),
+                (
+                    "task",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="subtasks",
+                        to="tasks.task",
+                    ),
+                ),
             ],
         ),
     ]

@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tasks', '0011_subtask'),
+        ("tasks", "0011_subtask"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='subtask',
-            options={'ordering': ['created']},
+            name="subtask",
+            options={"ordering": ["created"]},
         ),
     ]
