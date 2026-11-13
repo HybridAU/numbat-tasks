@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -149,7 +151,18 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.IsAdminUser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    # Just return JSON by default, rather than HTML that includes doc strings
+    "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
 }
+if DEBUG:
+    # When in debug mode, can log into django admin console (to get a cookie)
+    # then browse the API with HTML pages (not quite swagger docs, but similar)
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] += (
+        "rest_framework.renderers.BrowsableAPIRenderer",
+    )
+    REST_FRAMEWORK["DEFAULT_AUTHENTICATION_CLASSES"] += (
+        "rest_framework.authentication.SessionAuthentication",
+    )
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
@@ -161,3 +174,15 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
 }
+
+# Django Debug Toolbar, only enabled if `DEBUG` is true (i.e. Development build)
+# and we are not running auto tests
+TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
+ENABLE_DJANGO_DEBUG_TOOLBAR = DEBUG and not TESTING
+
+if ENABLE_DJANGO_DEBUG_TOOLBAR:
+    INSTALLED_APPS.append("debug_toolbar")
+    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+    DEBUG_TOOLBAR_CONFIG = {
+        "SHOW_TOOLBAR_CALLBACK": lambda _: ENABLE_DJANGO_DEBUG_TOOLBAR,
+    }

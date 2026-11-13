@@ -71,7 +71,7 @@ export default function NavDraw() {
               >
                 <Typography
                   sx={{ textAlign: "center", pt: 1 }}
-                  color="text.secondary"
+                  color="textSecondary"
                 >
                   Archived lists
                 </Typography>

@@ -1,5 +1,27 @@
 :80 {
+    header {
+        # Test / Apply headers in development, as these will be the recommended
+        # headers for running in production, and it's better if things break in dev.
+        # By design, everything should come from "self", there should be no 3rd party
+        # domains for anything.
+
+        #  * style-src needs unsafe-inline only for development
+        #  * sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk= is for vite react-refresh. Only for development.
+
+        # Enforce a basic Content Security Policy
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-Z2/iFzh9VMlVkEOar1f/oSHWwQk3ve1qk/C2WdsC4Xk='; style-src 'self' 'unsafe-inline'"
+
+        # Additional recommended security headers
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+    }
 	reverse_proxy /api/* api:8000
-	reverse_proxy /docs/* docs:8000
 	reverse_proxy /* frontend:8000
+	handle /docs/* {
+        reverse_proxy docs:8000
+        header {
+            # Overwrite CSP to be blank for docs. We only test CSP for frontend and API.
+	        Content-Security-Policy ""
+	    }
+    }
 }

@@ -5,13 +5,22 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from tasks.models import List, SortOrder, Task
-from tasks.permissions import IsListOwnerOrNone, IsOwnerOrNone
-from tasks.serializers import EmptySerializer, ListSerializer, TaskSerializer
+from tasks.models import List, SortOrder, SubTask, Task
+from tasks.permissions import (
+    IsListOwnerOrNone,
+    IsSubTaskListOwnerOrNone,
+    IsTaskOwnerOrNone,
+)
+from tasks.serializers import (
+    EmptySerializer,
+    ListSerializer,
+    SubTaskSerializer,
+    TaskSerializer,
+)
 
 
 class ListViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsOwnerOrNone]
+    permission_classes = [IsAuthenticated, IsListOwnerOrNone]
     serializer_class = ListSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ["name", "tasks__text"]
@@ -28,17 +37,19 @@ class ListViewSet(viewsets.ModelViewSet):
     def uncheck_all_tasks(self, request, pk):
         list_object = get_object_or_404(List, pk=pk, owner=self.request.user)
         all_tasks = list_object.tasks.all()
+        all_subtasks = SubTask.objects.filter(task__in=all_tasks)
         all_tasks.update(complete=False)
+        all_subtasks.update(complete=False)
         return Response({"status": "All tasks unchecked"})
 
 
 class TaskViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsListOwnerOrNone]
+    permission_classes = [IsAuthenticated, IsTaskOwnerOrNone]
     serializer_class = TaskSerializer
 
     def get_queryset(self):
         list_object = get_object_or_404(
-            List,
+            List.objects.all(),
             id=self.kwargs["list_pk"],
             owner=self.request.user,
         )
@@ -67,3 +78,18 @@ class TaskViewSet(viewsets.ModelViewSet):
             )
 
         return tasks
+
+
+class SubTaskViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsSubTaskListOwnerOrNone]
+    serializer_class = SubTaskSerializer
+
+    def get_queryset(self):
+        task_object = get_object_or_404(
+            Task.objects.all(),
+            id=self.kwargs["task_pk"],
+            list=self.kwargs["list_pk"],
+        )
+        subtasks = SubTask.objects.filter(task=task_object).order_by("text")
+
+        return subtasks

@@ -20,6 +20,7 @@ dev = [
     "ipython>=9.18.1",
     "pytest-django>=4.14.0",
     "ruff>=0.17.4",
+    "django-debug-toolbar>=7.1.1",
 ]
 production = [
     "gunicorn>=26.2.0",

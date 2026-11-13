@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsOwnerOrNone(permissions.BasePermission):
+class IsListOwnerOrNone(permissions.BasePermission):
     """
     Is the owner of the object, or no access at all
     """
@@ -10,10 +10,19 @@ class IsOwnerOrNone(permissions.BasePermission):
         return obj.owner == request.user
 
 
-class IsListOwnerOrNone(permissions.BasePermission):
+class IsTaskOwnerOrNone(permissions.BasePermission):
     """
-    Is the owner of the object, or no access at all
+    Is the owner of the parent list associated with a task, or no access at all
     """
 
     def has_object_permission(self, request, view, obj):
         return obj.list.owner == request.user
+
+
+class IsSubTaskListOwnerOrNone(permissions.BasePermission):
+    """
+    Is the owner of the parent list associated with a subtask, or no access at all
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return obj.task.list.owner == request.user

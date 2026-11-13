@@ -24,7 +24,7 @@ export default function TaskListButton({
 
   return (
     <ListItem>
-      <ListItemIcon sx={{ marginRight: "-30px" }}>
+      <ListItemIcon sx={{ marginRight: "-20px" }}>
         {list.pinned ? (
           <PushPinOutlinedIcon sx={{ transform: "rotate(-45deg)" }} />
         ) : (

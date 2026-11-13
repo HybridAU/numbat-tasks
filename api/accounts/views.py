@@ -47,6 +47,7 @@ class CustomUserViewSet(viewsets.ModelViewSet):
         new_user = serializer.save()
         # The first user to sign up is automatically a superuser
         new_user.is_superuser = is_initial_signup
+        new_user.is_staff = is_initial_signup
         new_user.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

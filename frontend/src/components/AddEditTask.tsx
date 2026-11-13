@@ -28,9 +28,11 @@ import {
   type updateTaskRequest,
 } from "../api/tasks";
 import { useListsState } from "../providers/ListsProvider";
+import AddSubTaskButton from "./AddSubTaskButton.tsx";
 import FormTextField from "./form/FormTextField";
 import LinkifyText from "./LinkifyText.tsx";
 import ResetExistingTasks from "./ResetExistingTasks.tsx";
+import SubTaskStack from "./SubTaskStack.tsx";
 
 const StyledFab = styled(Fab)({
   position: "absolute",
@@ -112,6 +114,7 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
       handleClose();
     },
   });
+
   return (
     <>
       <Dialog
@@ -181,37 +184,55 @@ export default function AddEditTask({ task }: AddEditTaskProps) {
             )}
           </Stack>
         </Form>
+        <Stack sx={{ margin: 3 }}>
+          {task && (
+            <Stack>
+              <SubTaskStack
+                listId={currentList.id}
+                task={task}
+                showDelete
+              ></SubTaskStack>
+              <AddSubTaskButton listId={currentList.id} taskId={task.id} />
+            </Stack>
+          )}
+        </Stack>
       </Dialog>
       {task?.id ? (
-        <Stack
-          sx={{
-            // Adds some padding, so when it's a single line the text is centered vertically
-            // (aligned with the checkbox) but when it's multiple lines the text lines up with the
-            // top of the checkbox.
-            justifyContent: "center",
-            minHeight: "35px",
-            marginBottom: "7px",
+        <Stack sx={{ flexGrow: 1 }}>
+          <Stack
+            sx={{
+              // Adds some padding, so when it's a single line the text is centered vertically
+              // (aligned with the checkbox) but when it's multiple lines the text lines up with the
+              // top of the checkbox.
+              marginTop: "9px",
+              flex: 1,
+            }}
             // By putting the onClick on the stack rather than the typography, and making it full width
             // we make it easier to click on tasks to edit them. This is especially important when the
             // whole text of the task is a link
-            flex: 1,
-          }}
-          onClick={handleClickOpen}
-        >
-          <Typography
-            align="left"
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "-webkit-box",
-              WebkitLineClamp: "4",
-              WebkitBoxOrient: "vertical",
-              wordBreak: "break-word",
-            }}
-            color={task.complete ? "text.secondary" : "text.primary"}
+            onClick={handleClickOpen}
           >
-            <LinkifyText text={task.text} />
-          </Typography>
+            <Typography
+              align="left"
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: "4",
+                WebkitBoxOrient: "vertical",
+                wordBreak: "break-word",
+                minHeight: "1rem",
+              }}
+              color={task.complete ? "textSecondary" : "textPrimary"}
+            >
+              <LinkifyText text={task.text} />
+            </Typography>
+          </Stack>
+          <SubTaskStack
+            listId={currentList.id}
+            task={task}
+            showDelete={false}
+          ></SubTaskStack>
         </Stack>
       ) : (
         <StyledFab color="secondary" aria-label="add" onClick={handleClickOpen}>
